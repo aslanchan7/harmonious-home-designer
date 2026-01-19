@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HighChair
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ed786d4fda02aa24a90d514bd216776b, type: 3}
+      propertyPath: m_TagString
+      value: Furniture
+      objectReference: {fileID: 0}
     - target: {fileID: 8068745960254481067, guid: ed786d4fda02aa24a90d514bd216776b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -87,6 +91,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ed786d4fda02aa24a90d514bd216776b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8125024519227215671}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ed786d4fda02aa24a90d514bd216776b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8687394836179881970}
   m_SourcePrefab: {fileID: 100100000, guid: ed786d4fda02aa24a90d514bd216776b, type: 3}
 --- !u!1 &4427827661297375459 stripped
 GameObject:
@@ -106,3 +113,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Furniture
   furnitureName: HighChair
+--- !u!65 &-8687394836179881970
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4427827661297375459}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 30, z: 10}
+  m_Center: {x: 0, y: 20, z: 0}

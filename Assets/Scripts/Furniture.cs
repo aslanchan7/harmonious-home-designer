@@ -18,21 +18,21 @@ public class Furniture : MonoBehaviour
         this.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
     }
 
-    void Update()
-    {
-        // TESTING SETPOSITION & SETROTATION, TODO: REMOVE AFTER PLAYER INPUTS IMPLEMENTED -----------------------------
-        // -- testing SetPosition
-        if (Input.GetKeyDown(KeyCode.A))
-            SetPosition(new Vector2(transform.position.x - 1f, transform.position.z));
-        if (Input.GetKeyDown(KeyCode.D))
-            SetPosition(new Vector2(transform.position.x + 1f, transform.position.z));
-        if (Input.GetKeyDown(KeyCode.W))
-            SetPosition(new Vector2(transform.position.x, transform.position.z + 1f));
-        if (Input.GetKeyDown(KeyCode.S))
-            SetPosition(new Vector2(transform.position.x, transform.position.z - 1f));
-        // -- testing SetRotation
-        if (Input.GetKeyDown(KeyCode.R))
-            SetRotation(transform.eulerAngles.y + 90f);
-        // -------------------------------------------------------------------------------------------------------------
-    }
+    // void Update()
+    // {
+    //     // TESTING SETPOSITION & SETROTATION, TODO: REMOVE AFTER PLAYER INPUTS IMPLEMENTED -----------------------------
+    //     // -- testing SetPosition
+    //     if (Input.GetKeyDown(KeyCode.A))
+    //         SetPosition(new Vector2(transform.position.x - 1f, transform.position.z));
+    //     if (Input.GetKeyDown(KeyCode.D))
+    //         SetPosition(new Vector2(transform.position.x + 1f, transform.position.z));
+    //     if (Input.GetKeyDown(KeyCode.W))
+    //         SetPosition(new Vector2(transform.position.x, transform.position.z + 1f));
+    //     if (Input.GetKeyDown(KeyCode.S))
+    //         SetPosition(new Vector2(transform.position.x, transform.position.z - 1f));
+    //     // -- testing SetRotation
+    //     if (Input.GetKeyDown(KeyCode.R))
+    //         SetRotation(transform.eulerAngles.y + 90f);
+    //     // -------------------------------------------------------------------------------------------------------------
+    // }
 }
