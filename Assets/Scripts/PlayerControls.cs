@@ -1,45 +1,42 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
-using static RotateDirection;
-using Unity.VisualScripting;
-using UnityEngine.Rendering;
 
-enum RotateDirection
-{
-    Left = -1,
-    Right = 1,
-}
+// enum RotateDirection
+// {
+//     Left = -1,
+//     Right = 1,
+// }
 
 public class PlayerControls : MonoBehaviour
 {
-    private Vector3 positionPointedAt;
-    private Vector2 tilePointedAt;
+    [HideInInspector] public Vector3 MousePos;
+    // private Vector2 tilePointedAt;
     private Vector3 normalDirection;
     private GameObject gameObjectPointedAt;
-    private Furniture furnitureGhost;
+    // public Furniture GhostFurniture;
 
-    [SerializeField]
-    private LayerMask placementLayer;
+    // [SerializeField] private LayerMask placementLayer;
 
-    [SerializeField]
-    private GameObject mouseIndicator;
-    [SerializeField]
-    private Furniture furniturePrefab;
+    // [SerializeField]
+    // private GameObject mouseIndicator;
 
+    // [SerializeField] private Furniture furniturePrefab;
+
+    [Header("References")]
+    [SerializeField] private GridSystem gridSystem;
+
+    [Header("Actions")]
     private InputAction mousePositionAction;
-    [SerializeField]
-    private InputActionReference clickAction;
-    [SerializeField]
-    private InputActionReference rightClickAction;
-    [SerializeField]
-    private InputActionReference rotateAction;
+    [SerializeField] private InputActionReference clickAction;
+    [SerializeField] private InputActionReference rightClickAction;
+    [SerializeField] private InputActionReference rotateAction;
 
     private void Start()
     {
         mousePositionAction = InputSystem.actions.FindAction("Point");
         RaycastMouse();
-        CreateFurnitureGhost();
+        // CreateFurnitureGhost();
     }
 
     private void OnEnable()
@@ -59,15 +56,16 @@ public class PlayerControls : MonoBehaviour
     private void Update()
     {
         RaycastMouse();
-        MoveFurnitureGhostToMouse();
-        mouseIndicator.transform.position = positionPointedAt;
+        // MoveGhostFurniture();
+        // mouseIndicator.transform.position = mousePos;
+        // gridSystem.MoveMouseIndicator(mousePos);
     }
 
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("Clicked!");
-        furnitureGhost.GetComponent<Collider>().enabled = true;
-        CreateFurnitureGhost();
+        Debug.Log("Left-Clicked!");
+        // furnitureGhost.GetComponent<Collider>().enabled = true;
+        // CreateFurnitureGhost();
         // TODO: Integrate placement mechanics with GridSystem and Furniture.
     }
 
@@ -75,16 +73,19 @@ public class PlayerControls : MonoBehaviour
     {
         Debug.Log("Right-clicked!");
         Debug.Log(gameObjectPointedAt);
-        if (gameObjectPointedAt.CompareTag("Furniture"))
-        {
-            Destroy(gameObjectPointedAt);
-        }
+        // if (gameObjectPointedAt.CompareTag("Furniture"))
+        // {
+        //     Destroy(gameObjectPointedAt);
+        // }
         // TODO: Integrate removal mechanics with GridSystem and Furniture.
     }
 
+    // TODO: 
+
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
-        furnitureGhost.SetRotation(furnitureGhost.transform.eulerAngles.y + 90);
+        // furnitureGhost.SetRotation(furnitureGhost.transform.eulerAngles.y + 90);
+        // TODO: access current furniture 
     }
 
     public void RaycastMouse()
@@ -92,37 +93,47 @@ public class PlayerControls : MonoBehaviour
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, placementLayer))
+        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, gridSystem.PlacementLayer))
         {
-            positionPointedAt = hit.point;
+            MousePos = hit.point;
             normalDirection = hit.normal;
             gameObjectPointedAt = hit.collider.gameObject;
 
-            if (NormalIsAlongY())
-            {
-                tilePointedAt = GetTilePosition(hit.point);
-            }
-            else
-            {
-                tilePointedAt = GetTilePosition(hit.point - normalDirection / 2);
-            }
+            // if (NormalIsAlongY())
+            // {
+            //     // tilePointedAt = GetTilePosition(hit.point);
+            //     tilePointedAt = gridSystem.GetGridPos(hit.point);
+            // }
+            // else
+            // {
+            //     tilePointedAt = gridSystem.GetGridPos(hit.point - normalDirection / 2);
+            // }
         }
         // Debug.Log(tilePointedAt);
     }
 
+    /*
     private void CreateFurnitureGhost()
     {
         furnitureGhost = Instantiate(furniturePrefab);
         furnitureGhost.GetComponent<Collider>().enabled = false;
-        MoveFurnitureGhostToMouse();
+        MoveGhostFurniture();
     }
 
+    private void MoveGhostFurniture()
+    {
+        Vector2 gridPos = gridSystem.GetGridPos(mousePos);
+        furnitureGhost.SetPosition(gridPos);
+    }
+    */
+
+    /*
     private void MoveFurnitureGhostToMouse()
     {
         if (NormalIsAlongY())
         {
             // Make sure that the mouse is pointing at the ground.
-            if (Mathf.Abs(positionPointedAt.y) < 1E-12)
+            if (Mathf.Abs(mousePos.y) < 1E-12)
             {
                 furnitureGhost.SetPosition(
                     new Vector2(
@@ -151,6 +162,7 @@ public class PlayerControls : MonoBehaviour
         // TODO: Integrate with GridSystem
         return new Vector2(MathF.Floor(point.x), MathF.Floor(point.z));
     }
+    */
 
     public bool NormalIsAlongY()
     {
