@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5260170438019609655}
   m_Layer: 7
   m_Name: TestFurniture
-  m_TagString: Untagged
+  m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -126,3 +126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Furniture
   furnitureName: TestFurniture
+  LastValidPos: {x: 0, y: 0}
+  MeshRenderer: {fileID: 4710330557815374161}
+  NormalMat: {fileID: 2100000, guid: 0ff648c04f1fbfc4f828ffb622049666, type: 2}
+  GhostMat: {fileID: 2100000, guid: b640afd4979980c4c85064f5d6898dd7, type: 2}
+  InvalidGhostMat: {fileID: 2100000, guid: 0acb0b4739119964fa2ff5fe3ad79eca, type: 2}

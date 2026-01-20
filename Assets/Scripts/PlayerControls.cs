@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using System.Collections;
 
 // enum RotateDirection
 // {
@@ -23,14 +24,17 @@ public class PlayerControls : MonoBehaviour
 
     // [SerializeField] private Furniture furniturePrefab;
 
-    [Header("References")]
-    [SerializeField] private GridSystem gridSystem;
+    // [Header("References")]
+    // [SerializeField] private GridSystem gridSystem;
+    private Furniture selectedFurniture;
 
     [Header("Actions")]
     private InputAction mousePositionAction;
     [SerializeField] private InputActionReference clickAction;
     [SerializeField] private InputActionReference rightClickAction;
     [SerializeField] private InputActionReference rotateAction;
+
+    // private WaitForFixedUpdate waitForFixedUpdate = new();
 
     private void Start()
     {
@@ -63,10 +67,48 @@ public class PlayerControls : MonoBehaviour
 
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("Left-Clicked!");
         // furnitureGhost.GetComponent<Collider>().enabled = true;
         // CreateFurnitureGhost();
         // TODO: Integrate placement mechanics with GridSystem and Furniture.
+        Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit))
+        {
+            if(hit.collider.CompareTag("Furniture") && hit.collider != null)
+            {
+                StartCoroutine(DragUpdate(hit.collider.gameObject));
+                selectedFurniture = hit.collider.GetComponent<Furniture>();
+                GridSystem.Instance.ShowGridVisualizer();
+            } else
+            {
+                selectedFurniture = null;
+                GridSystem.Instance.HideGridVisualizer();
+            }
+        }
+    }
+
+    private IEnumerator DragUpdate(GameObject gameObject)
+    {
+        gameObject.TryGetComponent(out Furniture furniture);
+        furniture.SetGhostMaterial();
+        Vector2 pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
+        while(clickAction.action.ReadValue<float>() != 0)
+        {
+            pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
+            Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, GridSystem.Instance.PlacementLayer))
+            {
+                furniture.MoveGhost(pos);
+            }            
+
+            yield return null;
+        }
+
+        furniture.TryPlace(pos);
+        furniture.SetNormalMat();
     }
 
     private void OnRightClick(InputAction.CallbackContext callbackContext)
@@ -80,12 +122,12 @@ public class PlayerControls : MonoBehaviour
         // TODO: Integrate removal mechanics with GridSystem and Furniture.
     }
 
-    // TODO: 
-
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
-        // furnitureGhost.SetRotation(furnitureGhost.transform.eulerAngles.y + 90);
-        // TODO: access current furniture 
+        if(selectedFurniture != null)
+        {
+            selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
+        }
     }
 
     public void RaycastMouse()
@@ -93,7 +135,7 @@ public class PlayerControls : MonoBehaviour
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, gridSystem.PlacementLayer))
+        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, GridSystem.Instance.PlacementLayer))
         {
             MousePos = hit.point;
             normalDirection = hit.normal;
