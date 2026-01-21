@@ -2,15 +2,23 @@ using UnityEngine;
 
 public class Furniture : MonoBehaviour
 {
+    [Header("Furniture Settings")]
     public string furnitureName;
-    public Vector2 LastValidPos;
+    public Vector2Int Size;
+    [HideInInspector] public Vector2 LastValidPos;
+    private Vector2 centeringOffset = new(0f, 0f); // This is to center the furniture to the grid based on whether it is even/odd length
+
     [Header("References")]
     public MeshRenderer MeshRenderer;
+    public Collider Collider;
     public Material NormalMat, GhostMat, InvalidGhostMat;
 
     private void Start()
     {
         LastValidPos = new(transform.position.x, transform.position.z);
+
+        centeringOffset.x = Size.x % 2 == 0 ? 0.5f : 0f;
+        centeringOffset.y = Size.y % 2 == 0 ? 0.5f : 0f;
     }
 
     // placing furniture on the xz-plane
@@ -31,18 +39,20 @@ public class Furniture : MonoBehaviour
     public void MoveGhost(Vector2 position)
     {
         // Visually move ghost furniture
+        position += centeringOffset;
         transform.position = new Vector3(position.x, transform.position.y, position.y);
         
         // Check if position is a valid pos for the object to move
         Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
-        bool valid = GridSystem.Instance.CheckForEmptyGridPos(gridPos);
+        bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
         MeshRenderer.material = valid ? GhostMat : InvalidGhostMat;
     }
 
     public void TryPlace(Vector2 position)
     {
+        position += centeringOffset;
         Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
-        bool valid = GridSystem.Instance.CheckForEmptyGridPos(gridPos);
+        bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
         if(valid)
         {
             SetPosition(position);
@@ -56,13 +66,13 @@ public class Furniture : MonoBehaviour
     public void SetGhostMaterial()
     {
         MeshRenderer.material = GhostMat;
-        GetComponent<Collider>().enabled = false;
+        Collider.enabled = false;
     }
 
     public void SetNormalMat()
     {
         MeshRenderer.material = NormalMat;
-        GetComponent<Collider>().enabled = true;
+        Collider.enabled = true;
     }
 
     public void SetInvalidGhostMat()

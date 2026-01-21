@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GridSystem : MonoBehaviour
@@ -14,8 +15,8 @@ public class GridSystem : MonoBehaviour
     public LayerMask PlacementLayer;
 
     [Header("Grid Settings")]
-    [SerializeField] private Vector2Int defaultScale = new(10, 10);
-    [HideInInspector] public Vector2Int Size;
+    // [SerializeField] private Vector2Int defaultScale = new(10, 10);
+    public Vector2Int Size;
 
     // Temporary
     [SerializeField] private GameObject testFurniturePrefab;
@@ -34,15 +35,20 @@ public class GridSystem : MonoBehaviour
 
     private void Start()
     {
+        // Check Size is consistent with gridVisualizer
+        if(Mathf.Abs(Size.x - gridVisualizer.transform.localScale.x * 10) > 0.1 || Mathf.Abs(Size.y - gridVisualizer.transform.localScale.z * 10) > 0.1)
+        {
+            Debug.LogError("GridSystem \"Size\" does match GridVisualizer");
+        }
+
         // If grid size is even then set offset; otherwise set offset = 0;
         centerCellOffset.x = Size.x % 2 == 0 ? 0.5f : 0.0f;
         centerCellOffset.z = Size.y % 2 == 0 ? 0.5f : 0.0f;
 
-        // Set Grid Size
-        Size = new((int)(transform.localScale.x * defaultScale.x), (int)(transform.localScale.z * defaultScale.y));
-
         // Initially hide grid visualizer
         HideGridVisualizer();
+
+        Debug.Log(ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), new(2,2)));
     }
 
     private void Update()
@@ -52,13 +58,17 @@ public class GridSystem : MonoBehaviour
 
     public void MoveMouseIndicator(Vector3 pos)
     {
-        Vector3Int gridPos = grid.WorldToCell(pos);
+        Vector2Int gridPos = GetGridPosFromWorldPos(pos);
         Vector3 yOffset = new(0.0f, 0.05f, 0.0f); // This is to prevent z-fighting of the MouseIndicator & the floor plane
-        mouseIndicator.position = gridPos + centerCellOffset + yOffset;
+        mouseIndicator.position = new Vector3(gridPos.x, 0, gridPos.y) + centerCellOffset + yOffset;
     }
 
     public Vector2Int GetGridPosFromWorldPos(Vector3 pos)
     {
+        // if grid is odd, pos + 0.5
+        pos.x += 0.5f - centerCellOffset.x;
+        pos.z += 0.5f - centerCellOffset.z;
+
         Vector3Int gridPos = grid.WorldToCell(pos);
         return new(gridPos.x, gridPos.z);
     }
@@ -84,6 +94,31 @@ public class GridSystem : MonoBehaviour
         return true;
     }
 
+    public bool ValidPosForFurniture(Furniture furniture, Vector2 pos)
+    {
+        for (int i = 0; i < furniture.Size.x; i++)
+        {
+            for (int j = 0; j < furniture.Size.y; j++)
+            {
+                // Raycast at some position based on gridPos and i and j
+                Vector2Int gridPos = new((int)(pos.x - furniture.Size.x/2.0f + i), (int)(pos.y - furniture.Size.y/2.0f + j));
+                Vector3 worldPos = GetWorldPosFromGridPos(gridPos);
+                // Vector3 worldPos  = GetWorldPosFromGridPos(gridPos + new Vector2Int(i, j));
+                worldPos.y = 10000;
+                if(Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
+                {
+                    // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
+                    if(!hit.collider.CompareTag("Floor")) return false;
+                } else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public void HideGridVisualizer()
     {
         gridVisualizer.SetActive(false);
@@ -98,20 +133,16 @@ public class GridSystem : MonoBehaviour
     // Tester function
     public void CreateTestFurniture()
     {
-        Vector2Int cellRangeX = new(-Size.x/2, Size.x/2);
-        Vector2Int cellRangeY = new(-Size.y/2, Size.y/2);
-
-        for (int i = cellRangeX.x; i < cellRangeX.y; i++)
+        for (int i = -Size.x / 2 ; i < Size.x / 2; i++)
         {
-            for (int j = cellRangeY.x; j < cellRangeX.y; j++)
+            for (int j = -Size.y / 2; j < Size.y / 2; j++)
             {
                 Vector2Int gridPos = new(i, j);
 
-                if(CheckForEmptyGridPos(gridPos))
+                if(ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), gridPos))
                 {
-                    Vector3 spawnPos = GetWorldPosFromGridPos(gridPos);
-
-                    Instantiate(testFurniturePrefab, spawnPos, Quaternion.identity);
+                    GameObject instantiated = Instantiate(testFurniturePrefab);
+                    instantiated.GetComponent<Furniture>().TryPlace(gridPos);
 
                     return;
                 }

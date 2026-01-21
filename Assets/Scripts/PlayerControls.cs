@@ -78,7 +78,7 @@ public class PlayerControls : MonoBehaviour
             if(hit.collider.CompareTag("Furniture") && hit.collider != null)
             {
                 StartCoroutine(DragUpdate(hit.collider.gameObject));
-                selectedFurniture = hit.collider.GetComponent<Furniture>();
+                selectedFurniture = hit.collider.transform.parent.GetComponent<Furniture>();
                 GridSystem.Instance.ShowGridVisualizer();
             } else
             {
@@ -90,19 +90,23 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator DragUpdate(GameObject gameObject)
     {
-        gameObject.TryGetComponent(out Furniture furniture);
+        gameObject.transform.parent.TryGetComponent(out Furniture furniture);
         furniture.SetGhostMaterial();
         Vector2 pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
+        // Vector3 mouseIndicatorPos = GridSystem.Instance.mouseIndicator.transform.position;
+        // Vector2 pos = GridSystem.Instance.GetGridPosFromWorldPos(mouseIndicatorPos);
         while(clickAction.action.ReadValue<float>() != 0)
         {
             pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
+            // mouseIndicatorPos = GridSystem.Instance.mouseIndicator.transform.position;
+            // pos = GridSystem.Instance.GetGridPosFromWorldPos(mouseIndicatorPos);
             Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, GridSystem.Instance.PlacementLayer))
             {
                 furniture.MoveGhost(pos);
-            }            
+            }
 
             yield return null;
         }
