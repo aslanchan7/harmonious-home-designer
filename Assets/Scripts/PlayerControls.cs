@@ -34,6 +34,9 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private InputActionReference rightClickAction;
     [SerializeField] private InputActionReference rotateAction;
 
+    [Header("References")]
+    [SerializeField] private MouseIndicator mouseIndicator;
+
     // private WaitForFixedUpdate waitForFixedUpdate = new();
 
     private void Start()
@@ -73,14 +76,15 @@ public class PlayerControls : MonoBehaviour
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit))
         {
-            if(hit.collider.CompareTag("Furniture") && hit.collider != null)
+            if (hit.collider.CompareTag("Furniture") && hit.collider != null)
             {
                 StartCoroutine(DragUpdate(hit.collider.gameObject));
                 selectedFurniture = hit.collider.transform.parent.GetComponent<Furniture>();
                 GridSystem.Instance.ShowGridVisualizer();
-            } else
+            }
+            else
             {
                 selectedFurniture = null;
                 GridSystem.Instance.HideGridVisualizer();
@@ -92,10 +96,14 @@ public class PlayerControls : MonoBehaviour
     {
         gameObject.transform.parent.TryGetComponent(out Furniture furniture);
         furniture.SetGhostMaterial();
-        Vector2 pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
+        // TODO: Change to use mouseIndicator reference
         // Vector3 mouseIndicatorPos = GridSystem.Instance.mouseIndicator.transform.position;
         // Vector2 pos = GridSystem.Instance.GetGridPosFromWorldPos(mouseIndicatorPos);
-        while(clickAction.action.ReadValue<float>() != 0)
+
+        mouseIndicator.SetSize(furniture.Size.x, furniture.Size.y);
+        Vector2 pos = new(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
+
+        while (clickAction.action.ReadValue<float>() != 0)
         {
             pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
             // mouseIndicatorPos = GridSystem.Instance.mouseIndicator.transform.position;
@@ -111,6 +119,7 @@ public class PlayerControls : MonoBehaviour
             yield return null;
         }
 
+        mouseIndicator.SetSize(1, 1);
         furniture.TryPlace(pos);
         furniture.SetNormalMat();
     }
@@ -128,7 +137,7 @@ public class PlayerControls : MonoBehaviour
 
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
-        if(selectedFurniture != null)
+        if (selectedFurniture != null)
         {
             selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
         }

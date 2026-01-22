@@ -6,11 +6,11 @@ public class GridSystem : MonoBehaviour
     public static GridSystem Instance;
 
     [Header("References")]
-    [SerializeField] private Grid grid;
+    [HideInInspector] public Grid grid;
     [SerializeField] private GameObject gridVisualizer;
     public Transform mouseIndicator;
     [SerializeField] private PlayerControls playerControls;
-    
+
     [Header("Layer Mask")]
     public LayerMask PlacementLayer;
 
@@ -20,12 +20,12 @@ public class GridSystem : MonoBehaviour
 
     // Temporary
     [SerializeField] private GameObject testFurniturePrefab;
-    
+
     private Vector3 centerCellOffset = new(0.5f, 0.0f, 0.5f);
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this);
         }
@@ -36,7 +36,7 @@ public class GridSystem : MonoBehaviour
     private void Start()
     {
         // Check Size is consistent with gridVisualizer
-        if(Mathf.Abs(Size.x - gridVisualizer.transform.localScale.x * 10) > 0.1 || Mathf.Abs(Size.y - gridVisualizer.transform.localScale.z * 10) > 0.1)
+        if (Mathf.Abs(Size.x - gridVisualizer.transform.localScale.x * 10) > 0.1 || Mathf.Abs(Size.y - gridVisualizer.transform.localScale.z * 10) > 0.1)
         {
             Debug.LogError("GridSystem \"Size\" does match GridVisualizer");
         }
@@ -48,19 +48,12 @@ public class GridSystem : MonoBehaviour
         // Initially hide grid visualizer
         HideGridVisualizer();
 
-        Debug.Log(ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), new(2,2)));
+        Debug.Log(ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), new(2, 2)));
     }
 
     private void Update()
     {
-        MoveMouseIndicator(playerControls.MousePos);
-    }
-
-    public void MoveMouseIndicator(Vector3 pos)
-    {
-        Vector2Int gridPos = GetGridPosFromWorldPos(pos);
-        Vector3 yOffset = new(0.0f, 0.05f, 0.0f); // This is to prevent z-fighting of the MouseIndicator & the floor plane
-        mouseIndicator.position = new Vector3(gridPos.x, 0, gridPos.y) + centerCellOffset + yOffset;
+        //MoveMouseIndicator(playerControls.MousePos);
     }
 
     public Vector2Int GetGridPosFromWorldPos(Vector3 pos)
@@ -88,7 +81,7 @@ public class GridSystem : MonoBehaviour
         if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
         {
             // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
-            return hit.collider.CompareTag("Floor"); 
+            return hit.collider.CompareTag("Floor");
         }
 
         return true;
@@ -101,15 +94,16 @@ public class GridSystem : MonoBehaviour
             for (int j = 0; j < furniture.Size.y; j++)
             {
                 // Raycast at some position based on gridPos and i and j
-                Vector2Int gridPos = new((int)(pos.x - furniture.Size.x/2.0f + i), (int)(pos.y - furniture.Size.y/2.0f + j));
+                Vector2Int gridPos = new((int)(pos.x - furniture.Size.x / 2.0f + i), (int)(pos.y - furniture.Size.y / 2.0f + j));
                 Vector3 worldPos = GetWorldPosFromGridPos(gridPos);
                 // Vector3 worldPos  = GetWorldPosFromGridPos(gridPos + new Vector2Int(i, j));
                 worldPos.y = 10000;
-                if(Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
+                if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
                 {
                     // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
-                    if(!hit.collider.CompareTag("Floor")) return false;
-                } else
+                    if (!hit.collider.CompareTag("Floor")) return false;
+                }
+                else
                 {
                     return false;
                 }
@@ -126,20 +120,20 @@ public class GridSystem : MonoBehaviour
 
     public void ShowGridVisualizer()
     {
-        gridVisualizer.SetActive(true);       
+        gridVisualizer.SetActive(true);
     }
 
 
     // Tester function
     public void CreateTestFurniture()
     {
-        for (int i = -Size.x / 2 ; i < Size.x / 2; i++)
+        for (int i = -Size.x / 2; i < Size.x / 2; i++)
         {
             for (int j = -Size.y / 2; j < Size.y / 2; j++)
             {
                 Vector2Int gridPos = new(i, j);
 
-                if(ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), gridPos))
+                if (ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), gridPos))
                 {
                     GameObject instantiated = Instantiate(testFurniturePrefab);
                     instantiated.GetComponent<Furniture>().TryPlace(gridPos);

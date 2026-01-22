@@ -39,9 +39,9 @@ public class Furniture : MonoBehaviour
     public void MoveGhost(Vector2 position)
     {
         // Visually move ghost furniture
-        position += centeringOffset;
+        // position += centeringOffset;
         transform.position = new Vector3(position.x, transform.position.y, position.y);
-        
+
         // Check if position is a valid pos for the object to move
         Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
         bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
@@ -50,13 +50,14 @@ public class Furniture : MonoBehaviour
 
     public void TryPlace(Vector2 position)
     {
-        position += centeringOffset;
+        // position += centeringOffset;
         Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
         bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
-        if(valid)
+        if (valid)
         {
             SetPosition(position);
-        } else
+        }
+        else
         {
             SetPosition(LastValidPos);
         }
