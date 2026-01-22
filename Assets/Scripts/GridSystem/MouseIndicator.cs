@@ -45,9 +45,9 @@ public class MouseIndicator : MonoBehaviour
 
     public void SetSize(int x, int y)
     {
-        // Re-set position offset 
-        Pos.x += (gridSystem.Size.x + x) % 2 == 0 ? 0f : 0.5f;
-        Pos.z += (gridSystem.Size.y + y) % 2 == 0 ? 0f : 0.5f;
+        // Re-set position offset
+        Pos.x += (this.Size.x + x) % 2 == 0 ? 0f : 0.5f;
+        Pos.z += (this.Size.y + y) % 2 == 0 ? 0f : 0.5f;
         Pos.y = 0.05f;
         transform.position = Pos;
 
