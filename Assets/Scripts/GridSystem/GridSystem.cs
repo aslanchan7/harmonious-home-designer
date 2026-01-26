@@ -47,13 +47,6 @@ public class GridSystem : MonoBehaviour
 
         // Initially hide grid visualizer
         HideGridVisualizer();
-
-        Debug.Log(ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), new(2, 2)));
-    }
-
-    private void Update()
-    {
-        //MoveMouseIndicator(playerControls.MousePos);
     }
 
     public Vector2Int GetGridPosFromWorldPos(Vector3 pos)
@@ -73,45 +66,31 @@ public class GridSystem : MonoBehaviour
         return worldPos;
     }
 
-    public bool CheckForEmptyGridPos(Vector2Int gridPos)
-    {
-        // Raycast to gridPos and check if hit furniture; if hit then return false, else return true
-        Vector3 worldPos = GetWorldPosFromGridPos(gridPos);
-        worldPos.y = 10000; // Set to high number
-        if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
-        {
-            // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
-            return hit.collider.CompareTag("Floor");
-        }
+    // public bool ValidPosForFurniture(Furniture furniture, Vector2 pos)
+    // {
+    //     for (int i = 0; i < furniture.Size.x; i++)
+    //     {
+    //         for (int j = 0; j < furniture.Size.y; j++)
+    //         {
+    //             // Raycast at some position based on gridPos and i and j
+    //             Vector2Int gridPos = new((int)(pos.x - furniture.Size.x / 2.0f + i), (int)(pos.y - furniture.Size.y / 2.0f + j));
+    //             Vector3 worldPos = GetWorldPosFromGridPos(gridPos);
+    //             // Vector3 worldPos  = GetWorldPosFromGridPos(gridPos + new Vector2Int(i, j));
+    //             worldPos.y = 10000;
+    //             if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
+    //             {
+    //                 // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
+    //                 if (!hit.collider.CompareTag("Floor")) return false;
+    //             }
+    //             else
+    //             {
+    //                 return false;
+    //             }
+    //         }
+    //     }
 
-        return true;
-    }
-
-    public bool ValidPosForFurniture(Furniture furniture, Vector2 pos)
-    {
-        for (int i = 0; i < furniture.Size.x; i++)
-        {
-            for (int j = 0; j < furniture.Size.y; j++)
-            {
-                // Raycast at some position based on gridPos and i and j
-                Vector2Int gridPos = new((int)(pos.x - furniture.Size.x / 2.0f + i), (int)(pos.y - furniture.Size.y / 2.0f + j));
-                Vector3 worldPos = GetWorldPosFromGridPos(gridPos);
-                // Vector3 worldPos  = GetWorldPosFromGridPos(gridPos + new Vector2Int(i, j));
-                worldPos.y = 10000;
-                if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
-                {
-                    // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
-                    if (!hit.collider.CompareTag("Floor")) return false;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
+    //     return true;
+    // }
 
     public void HideGridVisualizer()
     {
@@ -127,20 +106,20 @@ public class GridSystem : MonoBehaviour
     // Tester function
     public void CreateTestFurniture()
     {
-        for (int i = -Size.x / 2; i < Size.x / 2; i++)
-        {
-            for (int j = -Size.y / 2; j < Size.y / 2; j++)
-            {
-                Vector2Int gridPos = new(i, j);
+        // for (int i = -Size.x / 2; i < Size.x / 2; i++)
+        // {
+        //     for (int j = -Size.y / 2; j < Size.y / 2; j++)
+        //     {
+        //         Vector2Int gridPos = new(i, j);
 
-                if (ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), gridPos))
-                {
-                    GameObject instantiated = Instantiate(testFurniturePrefab);
-                    instantiated.GetComponent<Furniture>().TryPlace(gridPos);
+        //         if (ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), gridPos))
+        //         {
+        //             GameObject instantiated = Instantiate(testFurniturePrefab);
+        //             instantiated.GetComponent<Furniture>().TryPlace(gridPos);
 
-                    return;
-                }
-            }
-        }
+        //             return;
+        //         }
+        //     }
+        // }
     }
 }

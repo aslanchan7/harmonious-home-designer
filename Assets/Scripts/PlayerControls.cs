@@ -95,8 +95,6 @@ public class PlayerControls : MonoBehaviour
         while (clickAction.action.ReadValue<float>() != 0)
         {
             pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
-            // mouseIndicatorPos = GridSystem.Instance.mouseIndicator.transform.position;
-            // pos = GridSystem.Instance.GetGridPosFromWorldPos(mouseIndicatorPos);
             Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
             RaycastHit hit;
