@@ -51,6 +51,7 @@ public class MouseIndicator : MonoBehaviour
         Pos.y = 0.05f;
         transform.position = Pos;
 
+        // Set scale of mouse indicator
         transform.localScale = new(x, y, 1f);
         Size = new(x, y);
 

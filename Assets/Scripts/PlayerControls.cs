@@ -63,16 +63,10 @@ public class PlayerControls : MonoBehaviour
     private void Update()
     {
         RaycastMouse();
-        // MoveGhostFurniture();
-        // mouseIndicator.transform.position = mousePos;
-        // gridSystem.MoveMouseIndicator(mousePos);
     }
 
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
-        // furnitureGhost.GetComponent<Collider>().enabled = true;
-        // CreateFurnitureGhost();
-        // TODO: Integrate placement mechanics with GridSystem and Furniture.
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
@@ -80,9 +74,9 @@ public class PlayerControls : MonoBehaviour
         {
             if (hit.collider.CompareTag("Furniture") && hit.collider != null)
             {
-                StartCoroutine(DragUpdate(hit.collider.gameObject));
                 selectedFurniture = hit.collider.transform.parent.GetComponent<Furniture>();
                 GridSystem.Instance.ShowGridVisualizer();
+                StartCoroutine(DragUpdate());
             }
             else
             {
@@ -92,15 +86,10 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private IEnumerator DragUpdate(GameObject gameObject)
+    private IEnumerator DragUpdate()
     {
-        gameObject.transform.parent.TryGetComponent(out Furniture furniture);
-        furniture.SetGhostMaterial();
-        // TODO: Change to use mouseIndicator reference
-        // Vector3 mouseIndicatorPos = GridSystem.Instance.mouseIndicator.transform.position;
-        // Vector2 pos = GridSystem.Instance.GetGridPosFromWorldPos(mouseIndicatorPos);
-
-        mouseIndicator.SetSize(furniture.Size.x, furniture.Size.y);
+        selectedFurniture.SetGhostMaterial();
+        mouseIndicator.SetSize(selectedFurniture.Size.x, selectedFurniture.Size.y);
         Vector2 pos = new(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
 
         while (clickAction.action.ReadValue<float>() != 0)
@@ -113,26 +102,21 @@ public class PlayerControls : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, GridSystem.Instance.PlacementLayer))
             {
-                furniture.MoveGhost(pos);
+                selectedFurniture.MoveGhost(pos);
             }
 
             yield return null;
         }
 
         mouseIndicator.SetSize(1, 1);
-        furniture.TryPlace(pos);
-        furniture.SetNormalMat();
+        selectedFurniture.TryPlace(pos);
+        selectedFurniture.SetNormalMat();
     }
 
     private void OnRightClick(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("Right-clicked!");
+        Debug.Log("This is not implemented! Also right-click is mapped to rotate.");
         Debug.Log(gameObjectPointedAt);
-        // if (gameObjectPointedAt.CompareTag("Furniture"))
-        // {
-        //     Destroy(gameObjectPointedAt);
-        // }
-        // TODO: Integrate removal mechanics with GridSystem and Furniture.
     }
 
     private void OnRotate(InputAction.CallbackContext callbackContext)
@@ -154,72 +138,9 @@ public class PlayerControls : MonoBehaviour
             MousePos = hit.point;
             normalDirection = hit.normal;
             gameObjectPointedAt = hit.collider.gameObject;
-
-            // if (NormalIsAlongY())
-            // {
-            //     // tilePointedAt = GetTilePosition(hit.point);
-            //     tilePointedAt = gridSystem.GetGridPos(hit.point);
-            // }
-            // else
-            // {
-            //     tilePointedAt = gridSystem.GetGridPos(hit.point - normalDirection / 2);
-            // }
-        }
-        // Debug.Log(tilePointedAt);
-    }
-
-    /*
-    private void CreateFurnitureGhost()
-    {
-        furnitureGhost = Instantiate(furniturePrefab);
-        furnitureGhost.GetComponent<Collider>().enabled = false;
-        MoveGhostFurniture();
-    }
-
-    private void MoveGhostFurniture()
-    {
-        Vector2 gridPos = gridSystem.GetGridPos(mousePos);
-        furnitureGhost.SetPosition(gridPos);
-    }
-    */
-
-    /*
-    private void MoveFurnitureGhostToMouse()
-    {
-        if (NormalIsAlongY())
-        {
-            // Make sure that the mouse is pointing at the ground.
-            if (Mathf.Abs(mousePos.y) < 1E-12)
-            {
-                furnitureGhost.SetPosition(
-                    new Vector2(
-                        tilePointedAt.x + 0.5f,
-                        tilePointedAt.y + 0.5f
-                    )
-                );
-            }
-        }
-        else
-        {
-            furnitureGhost.SetPosition(
-                new Vector2(
-                    tilePointedAt.x + 0.5f,
-                    tilePointedAt.y + 0.5f
-                ) + new Vector2(
-                    normalDirection.x,
-                    normalDirection.z
-                )
-            );
         }
     }
-
-    public Vector2 GetTilePosition(Vector3 point)
-    {
-        // TODO: Integrate with GridSystem
-        return new Vector2(MathF.Floor(point.x), MathF.Floor(point.z));
-    }
-    */
-
+    
     public bool NormalIsAlongY()
     {
         return normalDirection == Vector3.up || normalDirection == Vector3.down;
