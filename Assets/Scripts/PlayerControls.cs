@@ -140,6 +140,7 @@ public class PlayerControls : MonoBehaviour
         if (selectedFurniture != null)
         {
             selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
+            mouseIndicator.Rotate();
         }
     }
 

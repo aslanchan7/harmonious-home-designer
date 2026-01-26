@@ -59,4 +59,23 @@ public class MouseIndicator : MonoBehaviour
         Pos.z = Mathf.Clamp(Pos.z, (-gridSystem.Size.y + this.Size.y) / 2f, (gridSystem.Size.y - this.Size.y) / 2f);
 
     }
+
+    public void Rotate()
+    {
+        // Swap x and y of Size
+        int prevX = Size.x;
+        int prevY = Size.y;
+        Size = new(Size.y, Size.x);
+        transform.localScale = new(Size.x, Size.y, 1f);
+
+        // Set Offset
+        Pos.x += (this.Size.x + prevX) % 2 == 0 ? 0f : 0.5f;
+        Pos.z += (this.Size.y + prevY) % 2 == 0 ? 0f : 0.5f;
+        Pos.y = 0.05f;
+        transform.position = Pos;
+
+        // Re-clamp Position
+        Pos.x = Mathf.Clamp(Pos.x, (-gridSystem.Size.x + this.Size.x) / 2f, (gridSystem.Size.x - this.Size.x) / 2f);
+        Pos.z = Mathf.Clamp(Pos.z, (-gridSystem.Size.y + this.Size.y) / 2f, (gridSystem.Size.y - this.Size.y) / 2f);
+    }
 }

@@ -126,8 +126,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Furniture
   furnitureName: TestFurniture
+  Size: {x: 0, y: 0}
   LastValidPos: {x: 0, y: 0}
   MeshRenderer: {fileID: 4710330557815374161}
+  Collider: {fileID: 581467299269893796}
   NormalMat: {fileID: 2100000, guid: 0ff648c04f1fbfc4f828ffb622049666, type: 2}
   GhostMat: {fileID: 2100000, guid: b640afd4979980c4c85064f5d6898dd7, type: 2}
   InvalidGhostMat: {fileID: 2100000, guid: 0acb0b4739119964fa2ff5fe3ad79eca, type: 2}
