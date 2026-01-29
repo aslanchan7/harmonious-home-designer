@@ -110,9 +110,13 @@ public class PlayerControls : MonoBehaviour
             return;
 
         selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
-        if (clickAction.action.ReadValue<float>() != 0 || (selectedFurniture.Size.x + selectedFurniture.Size.y) % 2 == 0)
+        if (clickAction.action.ReadValue<float>() != 0)
         {
             mouseIndicator.Rotate();
+        } else if ((selectedFurniture.Size.x + selectedFurniture.Size.y) % 2 == 0)
+        {
+            mouseIndicator.Rotate();
+            selectedFurniture.LastValidRotation = selectedFurniture.transform.eulerAngles.y;
         }
         else
         {
@@ -138,6 +142,7 @@ public class PlayerControls : MonoBehaviour
                     rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 1) % 4;
                     selectedFurniture.SetPosition(testPosition);
                     mouseIndicator.Rotate();
+                    selectedFurniture.LastValidRotation = selectedFurniture.transform.eulerAngles.y;
                     break;
                 }
             }
