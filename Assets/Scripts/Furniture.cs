@@ -50,7 +50,7 @@ public class Furniture : MonoBehaviour
         transform.eulerAngles = new(transform.eulerAngles.x, LastValidRotation, transform.eulerAngles.z);
 
         // Reset size of furniture
-        Size = Mathf.Abs(LastValidRotation) == 0f || Mathf.Abs(LastValidRotation) == 180f ? StartingSize : new(StartingSize.y, StartingSize.x); 
+        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f ? StartingSize : new(StartingSize.y, StartingSize.x); 
     }
 
     public void MoveGhost(Vector2 position)
@@ -84,10 +84,7 @@ public class Furniture : MonoBehaviour
         }
         else
         {
-            // SetPosition(LastValidPos);
-            // SetRotation(LastValidRotation);
-            SetPosition(LastValidPos);
-            SetRotation(LastValidRotation);
+            ResetToValidLocation();
         }
 
         SetNormalMat();
@@ -132,9 +129,9 @@ public class Furniture : MonoBehaviour
         for(int i = 0; i < ShapeUnits.childCount; i++)
         {
             // raycast at shapeUnit
-            if(Physics.Raycast(ShapeUnits.GetChild(i).position, Vector3.down, out RaycastHit hit, 100f))
+            if(!Physics.Raycast(ShapeUnits.GetChild(i).position, Vector3.down, out RaycastHit hit, 100f) || !hit.collider.CompareTag("Floor"))
             {
-                if(!hit.collider.CompareTag("Floor")) return false;
+                return false;
             }
         }
         return true;

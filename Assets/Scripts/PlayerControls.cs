@@ -1,20 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
 using System.Collections;
-
-// enum RotateDirection
-// {
-//     Left = -1,
-//     Right = 1,
-// }
 
 public class PlayerControls : MonoBehaviour
 {
     [HideInInspector] public Vector3 MousePos;
     // private Vector2 tilePointedAt;
     private Vector3 normalDirection;
-    private GameObject gameObjectPointedAt;
+    // private GameObject gameObjectPointedAt;
     // public Furniture GhostFurniture;
 
     // [SerializeField] private LayerMask placementLayer;
@@ -31,32 +24,37 @@ public class PlayerControls : MonoBehaviour
     [Header("Actions")]
     private InputAction mousePositionAction;
     [SerializeField] private InputActionReference clickAction;
-    [SerializeField] private InputActionReference rightClickAction;
     [SerializeField] private InputActionReference rotateAction;
 
     [Header("References")]
     [SerializeField] private MouseIndicator mouseIndicator;
+
+    private readonly Vector2[] rotationSnapOffset =
+    {
+        new Vector2(-0.5f, -0.5f),
+        new Vector2(-0.5f, 0.5f),
+        new Vector2(0.5f, -0.5f),
+        new Vector2(0.5f, 0.5f)
+    };
+    private int rotateSnapOffsetIndex;
 
     // private WaitForFixedUpdate waitForFixedUpdate = new();
 
     private void Start()
     {
         mousePositionAction = InputSystem.actions.FindAction("Point");
-        RaycastMouse();
-        // CreateFurnitureGhost();
+        rotateSnapOffsetIndex = 0;
     }
 
     private void OnEnable()
     {
         clickAction.action.performed += OnClick;
-        rightClickAction.action.performed += OnRightClick;
         rotateAction.action.performed += OnRotate;
     }
 
     private void OnDisable()
     {
         clickAction.action.performed -= OnClick;
-        rightClickAction.action.performed -= OnRightClick;
         rotateAction.action.performed -= OnRotate;
     }
 
@@ -75,6 +73,7 @@ public class PlayerControls : MonoBehaviour
             if (hit.collider.CompareTag("Furniture") && hit.collider != null)
             {
                 selectedFurniture = hit.collider.transform.parent.GetComponent<Furniture>();
+                rotateSnapOffsetIndex = 0;
                 GridSystem.Instance.ShowGridVisualizer();
                 StartCoroutine(DragUpdate());
             }
@@ -94,14 +93,8 @@ public class PlayerControls : MonoBehaviour
 
         while (clickAction.action.ReadValue<float>() != 0)
         {
-            pos = new(GridSystem.Instance.mouseIndicator.transform.position.x, GridSystem.Instance.mouseIndicator.transform.position.z);
-            Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, GridSystem.Instance.PlacementLayer))
-            {
-                selectedFurniture.MoveGhost(pos);
-            }
+            pos = new Vector2(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
+            selectedFurniture.MoveGhost(pos);
 
             yield return null;
         }
@@ -111,18 +104,53 @@ public class PlayerControls : MonoBehaviour
         selectedFurniture.SetNormalMat();
     }
 
-    private void OnRightClick(InputAction.CallbackContext callbackContext)
-    {
-        Debug.Log("This is not implemented! Also right-click is mapped to rotate.");
-        Debug.Log(gameObjectPointedAt);
-    }
-
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
-        if (selectedFurniture != null)
+        if (selectedFurniture == null)
+            return;
+
+        selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
+        if (clickAction.action.ReadValue<float>() != 0 || (selectedFurniture.Size.x + selectedFurniture.Size.y) % 2 == 0)
         {
-            selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
             mouseIndicator.Rotate();
+        }
+        else
+        {
+            Vector2 currentPosition = selectedFurniture.LastValidPos;
+            bool rotateSuccess = false;
+            foreach (Collider collider in selectedFurniture.Colliders)
+            {
+                collider.enabled = false;
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 testPosition = currentPosition + rotationSnapOffset[
+                    (rotateSnapOffsetIndex + i) % 4
+                ];
+                selectedFurniture.transform.position = new Vector3(
+                    testPosition.x,
+                    selectedFurniture.transform.position.y,
+                    testPosition.y
+                );
+                if (selectedFurniture.CheckValidPos())
+                {
+                    rotateSuccess = true;
+                    rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 1) % 4;
+                    selectedFurniture.SetPosition(testPosition);
+                    mouseIndicator.Rotate();
+                    break;
+                }
+            }
+
+            if (!rotateSuccess)
+            {
+                selectedFurniture.ResetToValidLocation();
+            }
+
+            foreach (Collider collider in selectedFurniture.Colliders)
+            {
+                collider.enabled = true;
+            }
         }
     }
 
@@ -135,12 +163,7 @@ public class PlayerControls : MonoBehaviour
         {
             MousePos = hit.point;
             normalDirection = hit.normal;
-            gameObjectPointedAt = hit.collider.gameObject;
+            // gameObjectPointedAt = hit.collider.gameObject;
         }
-    }
-    
-    public bool NormalIsAlongY()
-    {
-        return normalDirection == Vector3.up || normalDirection == Vector3.down;
     }
 }
