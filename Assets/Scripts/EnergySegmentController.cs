@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using NUnit.Compatibility;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,6 +17,7 @@ public class EnergySegmentController : MonoBehaviour
     void Awake()
     {
         energySegment.maxValue = FSBarController.maxE;
+        
     } 
     public FSEnergyType getEnergyType()
     {
@@ -23,6 +26,24 @@ public class EnergySegmentController : MonoBehaviour
     public void setEnergyType(FSEnergyType sourceType)
     {
         energyType = sourceType;
+        switch (energyType)
+        {
+            case FSEnergyType.Toilet:
+                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.brown;
+            break;
+            case FSEnergyType.Chaos:
+                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.purple;
+            break;
+            case FSEnergyType.Death:
+                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.darkGray;
+            break;
+            case FSEnergyType.Skibbidy:
+                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.orange;
+            break;
+            default:
+            energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.black;
+            break;
+        }
     }
     public bool getPolarity()
     {

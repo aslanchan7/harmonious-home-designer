@@ -18,7 +18,6 @@ public class FSBarController : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Slider _SinsSlider;
     [SerializeField] private UnityEngine.UI.Slider _BonusSlider;
     [SerializeField] private GameObject _ParentCanvas;
-
     //private List<GameObject> GoodEnergySegments = new List<GameObject>();
     private List<GameObject> BadEnergySegments = new List<GameObject>();
     private List<FSEnergy> GoodEnergies = new List<FSEnergy>();
