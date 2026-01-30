@@ -96,13 +96,11 @@ public class Furniture : MonoBehaviour
     public void TryPlace()
     {
         bool isValidPosition = CheckValidPos();
-
         SetColliderEnabled(true);
-        SetLocationAsValid();
-
+        SetNormalMat();
         if (isValidPosition)
         {
-            SetNormalMat();
+            SetLocationAsValid();
         }
         else
         {
