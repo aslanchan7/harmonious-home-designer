@@ -50,7 +50,7 @@ public class Furniture : MonoBehaviour
         transform.eulerAngles = new(transform.eulerAngles.x, LastValidRotation, transform.eulerAngles.z);
 
         // Reset size of furniture
-        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f ? StartingSize : new(StartingSize.y, StartingSize.x); 
+        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f ? StartingSize : new(StartingSize.y, StartingSize.x);
     }
 
     public void MoveGhost(Vector2 position)
@@ -62,7 +62,7 @@ public class Furniture : MonoBehaviour
         Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
         // bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
         bool valid = CheckValidPos();
-        
+
         // Set materials for mesh renderers
         foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
         {
@@ -73,7 +73,7 @@ public class Furniture : MonoBehaviour
     public void TryPlace(Vector2 position)
     {
         Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
-        
+
         // bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
 
         bool valid = CheckValidPos();
@@ -126,10 +126,10 @@ public class Furniture : MonoBehaviour
 
     public bool CheckValidPos()
     {
-        for(int i = 0; i < ShapeUnits.childCount; i++)
+        for (int i = 0; i < ShapeUnits.childCount; i++)
         {
             // raycast at shapeUnit
-            if(!Physics.Raycast(ShapeUnits.GetChild(i).position, Vector3.down, out RaycastHit hit, 100f) || !hit.collider.CompareTag("Floor"))
+            if (!Physics.Raycast(ShapeUnits.GetChild(i).position, Vector3.down, out RaycastHit hit, 100f) || !hit.collider.CompareTag("Floor"))
             {
                 return false;
             }
