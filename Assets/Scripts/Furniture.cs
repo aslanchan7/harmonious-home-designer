@@ -35,6 +35,9 @@ public class Furniture : MonoBehaviour
         // TODO snap y-position based on objects caught in downward raycast
         // ^ grid system subtask, i believe
         LastValidPos = position;
+
+        // TODO: Change the type of sfx played
+        SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
     }
 
     // rotating furniture on the y-axis
