@@ -86,6 +86,8 @@ MonoBehaviour:
   furnitureName: Bed
   Size: {x: 2, y: 3}
   LastValidPos: {x: 0, y: 0}
+  LastValidRotation: 0
+  StartingSize: {x: 0, y: 0}
   MeshRenderers:
   - Item1: {fileID: 7873264289769971497}
     Item2: {fileID: 2100000, guid: d0cc9960633e0524c858c66d78bd8104, type: 2}

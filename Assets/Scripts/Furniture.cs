@@ -90,7 +90,7 @@ public class Furniture : MonoBehaviour
 
         // Check if position is a valid pos for the object to move
         bool valid = CheckValidPos();
-        
+
         // Set materials for mesh renderers
         foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
         {
@@ -131,7 +131,7 @@ public class Furniture : MonoBehaviour
 
     public bool CheckValidPos()
     {
-        for(int i = 0; i < ShapeUnits.childCount; i++)
+        for (int i = 0; i < ShapeUnits.childCount; i++)
         {
             // raycast at shapeUnit
             if(
