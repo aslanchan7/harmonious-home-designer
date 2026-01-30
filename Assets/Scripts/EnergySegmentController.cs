@@ -10,17 +10,17 @@ public class EnergySegmentController : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Slider energySegment;
 
     [SerializeField] private int energyValue = 0;
-    [SerializeField] private string energyType;
+    [SerializeField] private FSEnergyType energyType;
     [SerializeField] private bool polarity = true;
     void Awake()
     {
         energySegment.maxValue = FSBarController.maxE;
-    }
-    public string getEnergyType()
+    } 
+    public FSEnergyType getEnergyType()
     {
         return energyType;
     }
-    public void setEnergyType(string sourceType)
+    public void setEnergyType(FSEnergyType sourceType)
     {
         energyType = sourceType;
     }

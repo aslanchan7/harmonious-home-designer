@@ -2,148 +2,162 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Unity.VisualScripting;
+using UnityEditor.Experimental;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class FSBarController : MonoBehaviour
 {
-    [SerializeField] private GameObject FSBar;
-    [SerializeField] private EnergySegmentController energySegmentPrefab;
-    public UnityEngine.UI.Slider goodSlider;
-    public UnityEngine.UI.Slider badSlider;
-    public int goodLimit = 0;
+    [SerializeField] private GameObject _FSBar;
+    [SerializeField] private GameObject _EnergySegmentPrefab;
+    [SerializeField] private UnityEngine.UI.Slider _ProgressSlider;
+    [SerializeField] private UnityEngine.UI.Slider _SinsSlider;
+    [SerializeField] private UnityEngine.UI.Slider _BonusSlider;
+    [SerializeField] private GameObject _ParentCanvas;
+
+    //private List<GameObject> GoodEnergySegments = new List<GameObject>();
+    private List<GameObject> BadEnergySegments = new List<GameObject>();
+    private List<FSEnergy> GoodEnergies = new List<FSEnergy>();
+    private List<FSEnergy> BadEnergies = new List<FSEnergy>();
+    private bool chopped = false;
     public int totalBadEnergy = 0;
     public int totalGoodEnergy = 0;
     public static int maxE = 100;
-    private List<EnergySegmentController> GoodEnergySegments = new List<EnergySegmentController>();
-    private List<EnergySegmentController> BadEnergySegments = new List<EnergySegmentController>();
-    private List<FSEnergy> GoodEnergies = new List<FSEnergy>();
-    private List<FSEnergy> BadEnergies= new List<FSEnergy>();
+    
     
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        goodLimit = (maxE - totalBadEnergy);
-        goodSlider.maxValue = maxE;
-        badSlider.maxValue = maxE;
-        goodSlider.value = 0;
-        badSlider.value = 0;
-        
-        
+        _ProgressSlider.maxValue = maxE;
+        _SinsSlider.maxValue = maxE;
+        _BonusSlider.maxValue = maxE;
+        _ProgressSlider.value = 0;
+        _SinsSlider.value = 0;
+        _BonusSlider.value = 0;
+       
+
+        // Need to add sometheing here to initialize positions relative to level / rest of UI
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateEnergyLimit();
-        // UpdateEnergySegmentValues();
+        UpdateProgressBar();
+        UpdateBonusBar();
+        
         // UpdateEnergySegmentGraphics();
     }
 
-    // Adds a Feng Shui energy source to its corrosponding list
-    public void AddEnergy(FSEnergy source)
+    // Adds a Feng Shui energy source to its corrosponding list if not already present, otherwise adds amount to an existign energy type
+    public void AddEnergy(FSEnergyType type, int amount, bool polarity)
     {
-        
-        string sourceEnergyType = source.getType();
-        bool sourceEnergyPolarity = source.getPolarity();
-        bool newSource = true;
-        if (sourceEnergyPolarity){
-            int loc = GoodEnergies.IndexOf(source);
-            if (loc != -1) {
-                Debug.Log("GoodEnergy source already exists");
-            }
-            else
+        bool isNewType = true;
+        if (polarity)
+        {
+            for (int i = 0; i < GoodEnergies.Count; i++)
             {
-                for(int i = 0; i < GoodEnergies.Count; i++)
+                if (GoodEnergies[i].getType() == type)
                 {
-                    if(GoodEnergies[i].getType().Equals(sourceEnergyType))
-                    {
-                        newSource = false;
-                    }
+                    isNewType = false;
+                    GoodEnergies[i].setEnergy(GoodEnergies[i].getAmount() + amount);
+                    Debug.Log("Added to existing energy of type: " + GoodEnergies[i].getType());
                 }
-                GoodEnergies.Add(source);
-                Debug.Log("GoodEnergy Source added");
+            }
+            if (isNewType)
+            {
+                FSEnergy newEnergyType = new FSEnergy(polarity, amount, type);
+                GoodEnergies.Add(newEnergyType);
+                Debug.Log("Added new energy of type: " + type);
             }
         }
         else
         {
-            int loc = BadEnergies.IndexOf(source);
-            if (loc != -1) {
-                Debug.Log("BadEnergy source already exists");
+            Debug.Log("attempting to add a sin");
+            for (int i = 0; i < BadEnergies.Count; i++)
+            {
+                if (BadEnergies[i].getType() == type)
+                {
+                    Debug.Log("Added to existing energy of type: " + BadEnergies[i].getType());
+                    isNewType = false;
+                    BadEnergies[i].setEnergy(BadEnergies[i].getAmount() + amount);
+                }
+            }
+            if (isNewType)
+            {
+                FSEnergy newEnergyType = new FSEnergy(polarity, amount, type);
+                BadEnergies.Add(newEnergyType);
+                Debug.Log("Added new energy of type: " + type);
+                createEnergySegment(type, polarity);
+            }
+        }
+        TallyEnergy();
+        UpdateEnergySegmentValues();
+        UpdateEnergySegmentGraphics();
+    }
+
+    // Lowers the amount of a specified energy type
+    public void RemoveEnergy(FSEnergyType type, int amount, bool polarity)
+    {
+        bool exists = false;
+        FSEnergy targetEnergy = null;
+        Debug.Log("Attempting to remove energy of type: " + type);
+        if (polarity)
+        { 
+            for (int i = 0; i < GoodEnergies.Count; i++)
+            {
+                if (GoodEnergies[i].getType() == type)
+                {
+                    exists = true;
+                    targetEnergy = GoodEnergies[i];
+                }
+            }
+            if (exists)
+            {
+                targetEnergy.setEnergy(targetEnergy.getAmount() - amount);
+                Debug.Log("Sremoved from existing energy of type: " + type);
+                if (targetEnergy.getAmount() <= 0)
+                {
+                    GoodEnergies.Remove(targetEnergy);
+                    removeEnergySement(type, polarity);
+                }
             }
             else
             {
-                for(int i = 0; i < BadEnergies.Count; i++)
-                {
-                    if(BadEnergies[i].getType().Equals(sourceEnergyType))
-                    {
-                        newSource = false;
-                    }
-                }
-                BadEnergies.Add(source);
-                Debug.Log("BadEnergy Source added");
-            }
-        }
-        TallyEnergy();
-        if (newSource)
-        {
-            createEnergySegment(sourceEnergyType, sourceEnergyPolarity);
-        }
-    }
-
-    // Removes a Feng Shui energy source from its corrosponding list
-    public void RemoveEnergy(FSEnergy source)
-    {
-        string sourceEnergyType = source.getType();
-        bool sourceEnergyPolarity = source.getPolarity();
-        int totalEnergyOfType = 0;
-        if (sourceEnergyPolarity){
-            int loc = GoodEnergies.IndexOf(source);
-            if (loc == -1) {
-                Debug.Log("GoodEnergy Source not found");
-            }else{
-                Debug.Log("GoodEnergy Source removed");
-                GoodEnergies.Remove(source);
-                for(int i = 0; i < GoodEnergies.Count; i++)
-                {
-                    if (GoodEnergies[i].getType().Equals(sourceEnergyType)){
-                        totalEnergyOfType += GoodEnergies[i].getAmount();
-                    }
-                }
-                if (totalEnergyOfType == 0)
-                {
-                    removeEnergySement(sourceEnergyType, sourceEnergyPolarity);
-                    Debug.Log("removeEnergySegment happenend");
-                }
-                else
-                {
-                    Debug.Log("removeEnergySegment did not happen");
-                }
+                Debug.Log("Energy of type: " + type + " not found");
             }
         }else{
-            int loc = BadEnergies.IndexOf(source);
-            if (loc == -1) {
-                Debug.Log("BadEnergy Source not found");
-            }else{
-                Debug.Log("BadEnergy Source removed");
-                BadEnergies.Remove(source);
-                for(int i = 0; i < BadEnergies.Count; i++)
+            for (int i = 0; i < BadEnergies.Count; i++)
+            {
+                if (BadEnergies[i].getType() == type)
                 {
-                    if (BadEnergies[i].getType().Equals(sourceEnergyType)){
-                        totalEnergyOfType += BadEnergies[i].getAmount();
-                    }
+                    exists = true;
+                    targetEnergy = BadEnergies[i];
                 }
-                if (totalEnergyOfType == 0)
+            }
+            if (exists)
+            {
+                Debug.Log("Sremoved from existing energy of type: " + type);
+                targetEnergy.setEnergy(targetEnergy.getAmount() - amount);
+                if (targetEnergy.getAmount() <= 0)
                 {
-                    removeEnergySement(sourceEnergyType, sourceEnergyPolarity);
+                    BadEnergies.Remove(targetEnergy);
+                    removeEnergySement(type, polarity);
                 }
+            }
+            else
+            {
+                Debug.Log("Energy of type: " + type + " not found");
             }
         }
         TallyEnergy();
-        
+        UpdateEnergySegmentValues();
+        UpdateEnergySegmentGraphics();
     }
 
     // Calculates total good / bad energies, adjusts energy ratio accordingly
@@ -159,170 +173,125 @@ public class FSBarController : MonoBehaviour
         }
         totalBadEnergy = sumBadEnergy;
         totalGoodEnergy = sumGoodEnergy;
-        goodLimit = maxE - sumBadEnergy;
+        if (sumBadEnergy > maxE)
+        {
+            chopped = true;
+        }
+        else
+        {  
+            chopped = false; 
+        }
     }
 
-    // Updates the size of the good / bad sliders based on the total energies 
-    private void UpdateEnergyLimit()
+    // Updates the progress bar slider to visualize  the total amount of sins impeading progress
+    private void UpdateProgressBar()
     {
-        if (goodLimit < 0){
-            goodLimit = 0;
-            badSlider.value = maxE;
-        }  else{
-            goodLimit = maxE - totalBadEnergy;
-            badSlider.value = totalBadEnergy;
-        }
-        goodSlider.value = goodLimit;
-    }
-    
-    // Creates an instance of the energySegment prefab of the desired type
-    private void createEnergySegment(string type, bool polarity)
-    {
-        EnergySegmentController newEnergySegment = Instantiate(energySegmentPrefab);
-        
-        newEnergySegment.setEnergyType(type);
-        newEnergySegment.setPolarity(polarity);
-        if (polarity)
+        if (!chopped)
         {
-            GoodEnergySegments.Add(newEnergySegment);
+            _SinsSlider.value = totalBadEnergy;
+            _ProgressSlider.value = maxE - totalBadEnergy;
+        }    
+    }
+
+    // Updates the  bonus bar slider to visualiz the mount of bonus Feng Shui energy you have accumulated
+    private void UpdateBonusBar()
+    {
+        _BonusSlider.value = totalGoodEnergy;
+    }
+
+
+    // Creates an instance of the energySegment prefab of the desired type
+    private void createEnergySegment(FSEnergyType type, bool polarity)
+    {
+        GameObject newEnergySegment = Instantiate(_EnergySegmentPrefab);
+        newEnergySegment.GetComponent<EnergySegmentController>().setEnergyType(type);
+        newEnergySegment.GetComponent<EnergySegmentController>().setPolarity(polarity);
+        newEnergySegment.transform.SetParent(_ParentCanvas.transform);
+        newEnergySegment.GetComponent<RectTransform>().localPosition = UnityEngine.Vector3.zero;
+        if (!polarity)
+        {
+            BadEnergySegments.Add(newEnergySegment);
         }
         else
         {
-            //BadEnergySegments.Add(newEnergySegment);
+            Debug.Log("Not segmenting good energies at this point in development :/");
         }
 
     }
 
-    // Removes the energy segment of a desired type (only called if amount of desired energy type = 0)
-    private void removeEnergySement(string type, bool polarity)
+    // Removes the sin segment of a desired type (only called if amount of that type of sin = 0)
+    private void removeEnergySement(FSEnergyType type, bool polarity)
     {
-        EnergySegmentController removedSegment;
+        GameObject removedSegment;
         if (polarity)
         {
-           for (int i = 0; i < GoodEnergySegments.Count; i++)
-            {
-                Debug.Log("attempting to remove good energySegment");
-                removedSegment = GoodEnergySegments[i];
-                Debug.Log("removedSegment type: " + removedSegment.getEnergyType());
-                Debug.Log("target type: " + type);
-                Debug.Log("strings are equal: " + removedSegment.getEnergyType().Equals(type));
-                if (removedSegment.getEnergyType().Equals(type))
-                {
-                    Destroy(GoodEnergySegments[i]);
-                    GoodEnergySegments.Remove(removedSegment);
-                    Debug.Log("good energysegment destroyed");
-                }
-            }
+           Debug.Log("Not segmenting good energies at this point in development :/");
         }
         else
         {
             for (int i = 0; i < BadEnergySegments.Count; i++)
             {
                 removedSegment = BadEnergySegments[i];
-                if (removedSegment.getEnergyType().Equals(type))
+                if (removedSegment.GetComponent<EnergySegmentController>().getEnergyType().Equals(type))
                 {
-                    Destroy(GoodEnergySegments[i]);
+                    Destroy(BadEnergySegments[i]);
                     BadEnergySegments.Remove(removedSegment);
+                    Debug.Log("Successfully destroyed segment");
                 }
             } 
         }
         
     }
 
-    // Updates the value for each type of energy segment 
+    // Updates the value for each sin segment 
     private void UpdateEnergySegmentValues()
     {
-        for (int i = 0; i < GoodEnergySegments.Count; i++)
-        {
-            EnergySegmentController currentSegment = GoodEnergySegments[i];
-            string currentEnergyType = currentSegment.getEnergyType();
-            for(int j = 0; j < GoodEnergies.Count; i++)
-            {
-                int currentSourceValue = GoodEnergies[j].getAmount();
-                if (GoodEnergies[j].getType().Equals(currentEnergyType))
-                {
-                    currentSegment.setValue(currentSegment.getValue() + currentSourceValue);
-                }
-            }
-        }
         for (int i = 0; i < BadEnergySegments.Count; i++)
         {
-            EnergySegmentController currentSegment = BadEnergySegments[i];
-            string currentEnergyType = currentSegment.getEnergyType();
-            for(int j = 0; j < BadEnergies.Count; i++)
+            GameObject currentSegment = BadEnergySegments[i];
+            FSEnergyType currentEnergyType = currentSegment.GetComponent<EnergySegmentController>().getEnergyType();
+            for(int j = 0; j < BadEnergies.Count; j++)
             {
                 int currentSourceValue = BadEnergies[j].getAmount();
                 if (BadEnergies[j].getType().Equals(currentEnergyType))
                 {
-                    currentSegment.setValue(currentSegment.getValue() + currentSourceValue);
+                    currentSegment.GetComponent<EnergySegmentController>().setValue(currentSourceValue);
                 }
             }
         }
     }
     
-    /*
-        Updates the sliders for each energy type so that they appear end to end 
-        Sliders will be positioned in order of creation (by order added to Good / Bad EnergySegments)
-        If totalGoodEnergy is more than goodLimit, sliders passing limit will be cut short appropriately
-    */
+    // Updates the position and slider graphic for each sin type
     private void UpdateEnergySegmentGraphics()
     {
-        int energyAllowance = goodLimit;
-        float goodEnergyOffset = 0.0f;
-        float sliderWidth = goodSlider.GetComponent<RectTransform>().sizeDelta.x;
-        float sliderPosX = goodSlider.GetComponent<RectTransform>().position.x;
-        float sliderPosY = goodSlider.GetComponent<RectTransform>().position.y;
-        float sliderPosZ = goodSlider.GetComponent<RectTransform>().position.z;
-        for (int i = 0; i < GoodEnergySegments.Count; i++)
+        float segmentOffset = 0.0f;
+        float sliderPosX = _SinsSlider.GetComponent<RectTransform>().localPosition.x;
+        for (int i = 0; i < BadEnergySegments.Count; i++)
         {
-            EnergySegmentController currentSegment = GoodEnergySegments[i];
-            string currentEnergyType = currentSegment.getEnergyType();
-            for (int j = 0; j < GoodEnergies.Count; j++)
-            {
-                currentSegment.setPos(goodEnergyOffset + sliderPosX, sliderPosY, sliderPosZ);
-                FSEnergy currentSource = GoodEnergies[j];
-                if (currentEnergyType.Equals(currentSource.getType()))
-                {
-                    if ((currentSource.getAmount() + currentSegment.getValue()) > energyAllowance)
-                    {
-                        currentSegment.setValue(currentSegment.getValue() + energyAllowance);
-                    }
-                    else
-                    {
-                        currentSegment.setValue(currentSegment.getValue() + currentSource.getAmount());
-                    }
-                    
-                    goodEnergyOffset += (currentSegment.getValue() / maxE) * sliderWidth;
-                }
-            }
-        }
-        
-        float badEnergyOffset = 0.0f;
-        sliderWidth = badSlider.GetComponent<RectTransform>().sizeDelta.x;
-        sliderPosX = badSlider.GetComponent<RectTransform>().position.x;
-        sliderPosY = badSlider.GetComponent<RectTransform>().position.y;
-        sliderPosZ = badSlider.GetComponent<RectTransform>().position.z;
-        for (int i = 0; i < GoodEnergySegments.Count; i++)
-        {
-            EnergySegmentController currentSegment = GoodEnergySegments[i];
-            string currentEnergyType = currentSegment.getEnergyType();
+            GameObject currentSegment = BadEnergySegments[i];
+            FSEnergyType currentEnergyType = BadEnergySegments[i].GetComponent<EnergySegmentController>().getEnergyType();
+            FSEnergy currentEnergy = null;
+            float sliderWidth = _SinsSlider.GetComponent<RectTransform>().sizeDelta.x;
+            UnityEngine.Vector3 displacement = new UnityEngine.Vector3(sliderPosX - segmentOffset, 0, 0);
             for (int j = 0; j < BadEnergies.Count; j++)
             {
-                currentSegment.setPos(sliderPosX - badEnergyOffset, sliderPosY, sliderPosZ);
-                FSEnergy currentSource = GoodEnergies[j];
-                if (currentEnergyType.Equals(currentSource.getType()))
+                if (currentEnergyType == BadEnergies[j].getType())
                 {
-                    currentSegment.setValue(currentSegment.getValue() + currentSource.getAmount());
-                    badEnergyOffset += (currentSegment.getValue() / maxE) * sliderWidth;
+                   currentEnergy = BadEnergies[j]; 
                 }
             }
+            Debug.Log("current displacement: " + segmentOffset);
+            Debug.Log("slider width: " + sliderWidth);
+            currentSegment.GetComponent<RectTransform>().localPosition = displacement;
+            segmentOffset += currentEnergy.getAmount() * (sliderWidth / maxE);
         }
     }
 
 }
 
 // Class for the energies provided by furniture pieces
-public class FSEnergy{
+public class FSEnergy
+{
     
     // If the energy is good or bad
     private bool isGood;
@@ -331,9 +300,9 @@ public class FSEnergy{
     private int amount;
 
     // The name of the energy type
-    private string type;
+    private FSEnergyType type;
 
-    public FSEnergy(bool isGood, int amount, string type){
+    public FSEnergy(bool isGood, int amount, FSEnergyType type){
         this.isGood = isGood;
         this.amount = amount;
         this.type = type;
@@ -350,7 +319,28 @@ public class FSEnergy{
     }
 
     // Access the type of good / bad energy
-    public string getType(){
+    public FSEnergyType getType(){
         return type;
     }
+    
+    // Set the amount of energy contained in a type of FSEnergy
+    public void setEnergy(int inAmount)
+    {
+        amount = inAmount;
+    }
+}
+
+public enum FSEnergyType
+{
+    // Good energies, when running addEnergy() or removeEnergy() input true for "polarity" field
+    Luck,
+    Wealth,
+    Love,
+    Happiness,
+
+    // Bad energies, when running addEnergy() or removeEnergy() input false for "polarity" field
+    Toilet,
+    Chaos,
+    Death,
+    Skibbidy
 }
