@@ -55,13 +55,18 @@ public class Furniture : MonoBehaviour
         StartingSize = Size;
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
+        GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
+        WinCondition.Instance.UpdateRuleCheck();
     }
 
     // Update lastValidPos and lastValidRotation;
     public void SetLocationAsValid()
     {
+        GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), 0);
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
+        GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
+        WinCondition.Instance.UpdateRuleCheck();
     }
 
     public void ResetToValidLocation()
@@ -144,6 +149,22 @@ public class Furniture : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public BoundingBox GetLastValidBoundingBox()
+    {
+        return BoundingBox.FromCenterAndSize(
+            LastValidPosition,
+            Mathf.Abs(LastValidRotation) < 0.1f
+               || Mathf.Abs(Mathf.Abs(LastValidRotation) - 180f) < 0.1f
+               ? StartingSize
+               : new(StartingSize.y, StartingSize.x)
+        );
+    }
+
+    public Direction GetRotatedFace(Direction face)
+    {
+        return face.Rotate(LastValidRotation);
     }
 }
 
