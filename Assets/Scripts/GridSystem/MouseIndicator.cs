@@ -2,23 +2,51 @@ using UnityEngine;
 
 public class MouseIndicator : MonoBehaviour
 {
+    private Vector2 _position;
+    private Vector2Int _size;
     [Header("Variables")]
-    public Vector2Int Size;
-    public Vector3 Pos;
-
     [Header("References")]
     [SerializeField] PlayerControls playerControls;
     [SerializeField] GridSystem gridSystem;
 
+    public Vector2 Position
+    {
+        get { return _position; }
+        set
+        {
+            Vector2 clamped = Clamp(value);
+            transform.position = new (clamped.x, 0.05f, clamped.y);
+            _position = clamped;
+        }
+    }
+
+    public Vector2Int Size
+    {
+        get { return _size; }
+        set
+        {
+            Vector2 oldSize = _size;
+
+            // Set scale of mouse indicator
+            transform.localScale = new(value.x, value.y, 1);
+            _size = value;
+
+            // Re-set position offset
+            Position += new Vector2(
+                (oldSize.x + value.x) % 2 == 0 ? 0f : 0.5f,
+                (oldSize.y + value.y) % 2 == 0 ? 0f : 0.5f
+            );
+        }
+    }
+
     void Start()
     {
         // Set starting size
-        transform.localScale = new(Size.x, Size.y, 1f);
+        Size = new (1, 1);
 
         // Set starting position based on grid size and mouseIndicator size 
-        Pos.x = (gridSystem.Size.x + this.Size.x) % 2 == 0 ? 0f : 0.5f;
-        Pos.z = (gridSystem.Size.y + this.Size.y) % 2 == 0 ? 0f : 0.5f;
-        Pos.y = 0.05f;
+        Position = new ((gridSystem.Size.x + this.Size.x) % 2 == 0 ? 0f : 0.5f,
+                        (gridSystem.Size.y + this.Size.y) % 2 == 0 ? 0f : 0.5f);
     }
 
     void Update()
@@ -31,52 +59,29 @@ public class MouseIndicator : MonoBehaviour
     {
         // We want to move the mouseIndicator on the x and z axis independently
         // mousePos is the position of the player's cursor in world space
-
-        Pos.x += mousePos.x > Pos.x + (gridSystem.grid.cellSize.x / 2f) ? 1f : 0f;
-        Pos.x -= mousePos.x < Pos.x - (gridSystem.grid.cellSize.x / 2f) ? 1f : 0f;
-        Pos.x = Mathf.Clamp(Pos.x, (-gridSystem.Size.x + this.Size.x) / 2f, (gridSystem.Size.x - this.Size.x) / 2f);
-
-        Pos.z += mousePos.z > Pos.z + (gridSystem.grid.cellSize.z / 2f) ? 1f : 0f;
-        Pos.z -= mousePos.z < Pos.z - (gridSystem.grid.cellSize.z / 2f) ? 1f : 0f;
-        Pos.z = Mathf.Clamp(Pos.z, (-gridSystem.Size.y + this.Size.y) / 2f, (gridSystem.Size.y - this.Size.y) / 2f);
-
-        transform.position = Pos;
-    }
-
-    public void SetSize(int x, int y)
-    {
-        // Re-set position offset
-        Pos.x += (this.Size.x + x) % 2 == 0 ? 0f : 0.5f;
-        Pos.z += (this.Size.y + y) % 2 == 0 ? 0f : 0.5f;
-        Pos.y = 0.05f;
-        transform.position = Pos;
-
-        // Set scale of mouse indicator
-        transform.localScale = new(x, y, 1f);
-        Size = new(x, y);
-
-        // Re-clamp position
-        Pos.x = Mathf.Clamp(Pos.x, (-gridSystem.Size.x + this.Size.x) / 2f, (gridSystem.Size.x - this.Size.x) / 2f);
-        Pos.z = Mathf.Clamp(Pos.z, (-gridSystem.Size.y + this.Size.y) / 2f, (gridSystem.Size.y - this.Size.y) / 2f);
-
+        float cellSizeX = gridSystem.grid.cellSize.x;
+        float cellSizeY = gridSystem.grid.cellSize.z;
+        Vector2 deltaPosition = new (
+            cellSizeX * Mathf.Round((mousePos.x - Position.x) / cellSizeX),
+            cellSizeY * Mathf.Round((mousePos.z - Position.y) / cellSizeY)
+        );
+        if (deltaPosition != Vector2.zero)
+            Position += deltaPosition;
     }
 
     public void Rotate()
     {
         // Swap x and y of Size
-        int prevX = Size.x;
-        int prevY = Size.y;
         Size = new(Size.y, Size.x);
-        transform.localScale = new(Size.x, Size.y, 1f);
+    }
 
-        // Set Offset
-        Pos.x += (this.Size.x + prevX) % 2 == 0 ? 0f : 0.5f;
-        Pos.z += (this.Size.y + prevY) % 2 == 0 ? 0f : 0.5f;
-        Pos.y = 0.05f;
-        transform.position = Pos;
-
-        // Re-clamp Position
-        Pos.x = Mathf.Clamp(Pos.x, (-gridSystem.Size.x + this.Size.x) / 2f, (gridSystem.Size.x - this.Size.x) / 2f);
-        Pos.z = Mathf.Clamp(Pos.z, (-gridSystem.Size.y + this.Size.y) / 2f, (gridSystem.Size.y - this.Size.y) / 2f);
+    private Vector2 Clamp(Vector2 vector2)
+    {
+        float maxX = (gridSystem.Size.x - this.Size.x) / 2f;
+        float maxY = (gridSystem.Size.y - this.Size.y) / 2f;
+        return new (
+            Mathf.Clamp(vector2.x, -maxX, maxX),
+            Mathf.Clamp(vector2.y, -maxY, maxY)
+        );
     }
 }

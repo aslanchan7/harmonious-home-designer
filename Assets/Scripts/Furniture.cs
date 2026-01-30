@@ -3,13 +3,16 @@ using UnityEngine;
 
 public class Furniture : MonoBehaviour
 {
+    private Vector2 _displayPosition;
+    private float _displayRotation;
+
     [Header("Furniture Settings")]
     public string furnitureName;
     public Vector2Int Size;
-    [HideInInspector] public Vector2 LastValidPos;
+    public float height;
+    [HideInInspector] public Vector2 LastValidPosition;
     [HideInInspector] public float LastValidRotation;
     [HideInInspector] public Vector2Int StartingSize;
-    private Vector2 centeringOffset = new(0f, 0f); // This is to center the furniture to the grid based on whether it is even/odd length
 
     [Header("References")]
     public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
@@ -17,50 +20,70 @@ public class Furniture : MonoBehaviour
     public Material NormalMat, GhostMat, InvalidGhostMat;
     public Transform ShapeUnits;
 
+    public Vector2 DisplayPosition
+    {
+        get { return _displayPosition; }
+        set
+        {
+            transform.position = new Vector3(
+                value.x,
+                transform.position.y,
+                value.y
+            );
+            _displayPosition = value;
+        }
+    }
+    public float DisplayRotation
+    {
+        get { return _displayRotation; }
+        set
+        {
+            transform.eulerAngles = new Vector3(
+                transform.eulerAngles.x,
+                value,
+                transform.eulerAngles.z
+            );
+            ResetSize();
+            _displayRotation = value;
+        }
+    }
+
     private void Start()
     {
-        LastValidPos = new(transform.position.x, transform.position.z);
-        LastValidRotation = transform.localRotation.eulerAngles.y;
-
-        centeringOffset.x = Size.x % 2 == 0 ? 0.5f : 0f;
-        centeringOffset.y = Size.y % 2 == 0 ? 0.5f : 0f;
-
+        _displayPosition = new(transform.position.x, transform.position.z);
+        _displayRotation = transform.localRotation.eulerAngles.y;
         StartingSize = Size;
+        LastValidPosition = DisplayPosition;
+        LastValidRotation = DisplayRotation;
     }
 
-    // placing furniture on the xz-plane
-    public void SetPosition(Vector2 position)
+    // Update lastValidPos and lastValidRotation;
+    public void SetLocationAsValid()
     {
-        this.transform.position = new Vector3(position.x, this.transform.position.y, position.y);
-        // TODO snap y-position based on objects caught in downward raycast
-        // ^ grid system subtask, i believe
-        LastValidPos = position;
-    }
-
-    // rotating furniture on the y-axis
-    public void SetRotation(float rotation)
-    {
-        this.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
-        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f ? StartingSize : new(StartingSize.y, StartingSize.x);
+        LastValidPosition = DisplayPosition;
+        LastValidRotation = DisplayRotation;
     }
 
     public void ResetToValidLocation()
     {
-        transform.position = new Vector3(LastValidPos.x, this.transform.position.y, LastValidPos.y);
-        transform.eulerAngles = new(transform.eulerAngles.x, LastValidRotation, transform.eulerAngles.z);
+        DisplayPosition = LastValidPosition;
+        DisplayRotation = LastValidRotation;
+    }
 
-        // Reset size of furniture
-        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f ? StartingSize : new(StartingSize.y, StartingSize.x); 
+    public void ResetSize()
+    {
+        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f
+               || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f
+               ? StartingSize
+               : new(StartingSize.y, StartingSize.x); 
     }
 
     public void MoveGhost(Vector2 position)
     {
         // Visually move ghost furniture
-        transform.position = new Vector3(position.x, transform.position.y, position.y);
+        DisplayPosition = position;
 
         // Check if position is a valid pos for the object to move
-        Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
-        // bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
         bool valid = CheckValidPos();
         
         // Set materials for mesh renderers
@@ -70,36 +93,20 @@ public class Furniture : MonoBehaviour
         }
     }
 
-    public void TryPlace(Vector2 position)
+    public void TryPlace()
     {
-        Vector2Int gridPos = GridSystem.Instance.GetGridPosFromWorldPos(new(position.x, 0, position.y));
-        
-        // bool valid = GridSystem.Instance.ValidPosForFurniture(this, gridPos);
+        bool isValidPosition = CheckValidPos();
 
-        bool valid = CheckValidPos();
-        if (valid)
+        SetColliderEnabled(true);
+        SetLocationAsValid();
+
+        if (isValidPosition)
         {
-            SetPosition(position);
-            LastValidRotation = transform.eulerAngles.y;
+            SetNormalMat();
         }
         else
         {
             ResetToValidLocation();
-        }
-
-        SetNormalMat();
-    }
-
-    public void SetGhostMaterial()
-    {
-        foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
-        {
-            tuple.Item1.material = GhostMat;
-        }
-
-        foreach (Collider collider in Colliders)
-        {
-            collider.enabled = false;
         }
     }
 
@@ -109,18 +116,13 @@ public class Furniture : MonoBehaviour
         {
             tuple.Item1.material = tuple.Item2;
         }
-
-        foreach (Collider collider in Colliders)
-        {
-            collider.enabled = true;
-        }
     }
 
-    public void SetInvalidGhostMat()
+    public void SetColliderEnabled(bool enabled)
     {
-        foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
+        foreach (Collider collider in Colliders)
         {
-            tuple.Item1.material = InvalidGhostMat;
+            collider.enabled = enabled;
         }
     }
 
@@ -129,7 +131,14 @@ public class Furniture : MonoBehaviour
         for(int i = 0; i < ShapeUnits.childCount; i++)
         {
             // raycast at shapeUnit
-            if(!Physics.Raycast(ShapeUnits.GetChild(i).position, Vector3.down, out RaycastHit hit, 100f) || !hit.collider.CompareTag("Floor"))
+            if(
+                !Physics.Raycast(
+                    ShapeUnits.GetChild(i).position,
+                    Vector3.down,
+                    out RaycastHit hit,
+                    100f
+                ) || !hit.collider.CompareTag("Floor")
+            )
             {
                 return false;
             }

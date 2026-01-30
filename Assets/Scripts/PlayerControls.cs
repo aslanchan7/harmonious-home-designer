@@ -5,20 +5,6 @@ using System.Collections;
 public class PlayerControls : MonoBehaviour
 {
     [HideInInspector] public Vector3 MousePos;
-    // private Vector2 tilePointedAt;
-    private Vector3 normalDirection;
-    // private GameObject gameObjectPointedAt;
-    // public Furniture GhostFurniture;
-
-    // [SerializeField] private LayerMask placementLayer;
-
-    // [SerializeField]
-    // private GameObject mouseIndicator;
-
-    // [SerializeField] private Furniture furniturePrefab;
-
-    // [Header("References")]
-    // [SerializeField] private GridSystem gridSystem;
     private Furniture selectedFurniture;
 
     [Header("Actions")]
@@ -33,12 +19,10 @@ public class PlayerControls : MonoBehaviour
     {
         new Vector2(-0.5f, -0.5f),
         new Vector2(-0.5f, 0.5f),
-        new Vector2(0.5f, -0.5f),
-        new Vector2(0.5f, 0.5f)
+        new Vector2(0.5f, 0.5f),
+        new Vector2(0.5f, -0.5f)
     };
     private int rotateSnapOffsetIndex;
-
-    // private WaitForFixedUpdate waitForFixedUpdate = new();
 
     private void Start()
     {
@@ -87,21 +71,20 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator DragUpdate()
     {
-        selectedFurniture.SetGhostMaterial();
-        mouseIndicator.SetSize(selectedFurniture.Size.x, selectedFurniture.Size.y);
-        Vector2 pos = new(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
+        selectedFurniture.SetColliderEnabled(false);
+        mouseIndicator.Size = selectedFurniture.Size;
 
         while (clickAction.action.ReadValue<float>() != 0)
         {
-            pos = new Vector2(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
-            selectedFurniture.MoveGhost(pos);
+            selectedFurniture.MoveGhost(mouseIndicator.Position);
 
             yield return null;
         }
 
-        mouseIndicator.SetSize(1, 1);
-        selectedFurniture.TryPlace(pos);
+        selectedFurniture.TryPlace();
         selectedFurniture.SetNormalMat();
+        selectedFurniture.SetColliderEnabled(true);
+        mouseIndicator.Size = new (1, 1);
     }
 
     private void OnRotate(InputAction.CallbackContext callbackContext)
@@ -109,54 +92,49 @@ public class PlayerControls : MonoBehaviour
         if (selectedFurniture == null)
             return;
 
-        selectedFurniture.SetRotation(selectedFurniture.transform.eulerAngles.y + 90);
+        selectedFurniture.DisplayRotation += 90;
+
         if (clickAction.action.ReadValue<float>() != 0)
         {
             mouseIndicator.Rotate();
-        } else if ((selectedFurniture.Size.x + selectedFurniture.Size.y) % 2 == 0)
+            return;
+        }
+        
+        if ((selectedFurniture.Size.x + selectedFurniture.Size.y) % 2 == 0)
         {
             mouseIndicator.Rotate();
-            selectedFurniture.LastValidRotation = selectedFurniture.transform.eulerAngles.y;
+            selectedFurniture.SetLocationAsValid();
+            return;
         }
-        else
+
+        Vector2 currentPosition = selectedFurniture.LastValidPosition;
+        bool rotateSuccess = false;
+        selectedFurniture.SetColliderEnabled(false);
+        for (int i = 0; i < 4; i++)
         {
-            Vector2 currentPosition = selectedFurniture.LastValidPos;
-            bool rotateSuccess = false;
-            foreach (Collider collider in selectedFurniture.Colliders)
+            Vector2 testPosition = currentPosition + rotationSnapOffset[
+                (rotateSnapOffsetIndex + i) % 4
+            ];
+            selectedFurniture.DisplayPosition = testPosition;
+            if (selectedFurniture.CheckValidPos())
             {
-                collider.enabled = false;
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                Vector2 testPosition = currentPosition + rotationSnapOffset[
-                    (rotateSnapOffsetIndex + i) % 4
-                ];
-                selectedFurniture.transform.position = new Vector3(
-                    testPosition.x,
-                    selectedFurniture.transform.position.y,
-                    testPosition.y
-                );
-                if (selectedFurniture.CheckValidPos())
-                {
-                    rotateSuccess = true;
-                    rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 1) % 4;
-                    selectedFurniture.SetPosition(testPosition);
-                    mouseIndicator.Rotate();
-                    selectedFurniture.LastValidRotation = selectedFurniture.transform.eulerAngles.y;
-                    break;
-                }
-            }
-
-            if (!rotateSuccess)
-            {
-                selectedFurniture.ResetToValidLocation();
-            }
-
-            foreach (Collider collider in selectedFurniture.Colliders)
-            {
-                collider.enabled = true;
+                rotateSuccess = true;
+                // Make sure that if the furniture is rotated consecutively,
+                // it would favor the offset direction opposite to the
+                // current offset
+                rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 2) % 4;
+                mouseIndicator.Rotate();
+                selectedFurniture.SetLocationAsValid();
+                break;
             }
         }
+
+        if (!rotateSuccess)
+        {
+            selectedFurniture.ResetToValidLocation();
+        }
+
+        selectedFurniture.SetColliderEnabled(true);
     }
 
     public void RaycastMouse()
@@ -164,11 +142,14 @@ public class PlayerControls : MonoBehaviour
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, GridSystem.Instance.PlacementLayer))
+        if (Physics.Raycast(
+            ray,
+            out hit,
+            float.PositiveInfinity,
+            GridSystem.Instance.PlacementLayer
+        ))
         {
             MousePos = hit.point;
-            normalDirection = hit.normal;
-            // gameObjectPointedAt = hit.collider.gameObject;
         }
     }
 }
