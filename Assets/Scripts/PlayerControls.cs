@@ -124,6 +124,7 @@ public class PlayerControls : MonoBehaviour
                 // current offset
                 rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 2) % 4;
                 mouseIndicator.Rotate();
+                selectedFurniture.SetColliderEnabled(true);
                 selectedFurniture.SetLocationAsValid();
                 break;
             }
@@ -131,10 +132,9 @@ public class PlayerControls : MonoBehaviour
 
         if (!rotateSuccess)
         {
+            selectedFurniture.SetColliderEnabled(true);
             selectedFurniture.ResetToValidLocation();
         }
-
-        selectedFurniture.SetColliderEnabled(true);
     }
 
     public void RaycastMouse()

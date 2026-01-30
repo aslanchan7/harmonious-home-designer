@@ -40,11 +40,11 @@ public class Furniture : MonoBehaviour
         {
             transform.eulerAngles = new Vector3(
                 transform.eulerAngles.x,
-                value,
+                value % 360,
                 transform.eulerAngles.z
             );
             ResetSize();
-            _displayRotation = value;
+            _displayRotation = value % 360;
         }
     }
 
