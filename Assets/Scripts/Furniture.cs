@@ -65,6 +65,8 @@ public class Furniture : MonoBehaviour
         GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), 0);
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
+        // TODO: Change the type of sfx played
+        SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
         WinCondition.Instance.UpdateRuleCheck();
     }
