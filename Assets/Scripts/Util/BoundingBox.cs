@@ -50,6 +50,11 @@ public class BoundingBox
         get { return position.y + size.y; }
     }
 
+    public Vector2 center
+    {
+        get { return position + (Vector2) size / 2; }
+    }
+
     public static BoundingBox FromCenterAndSize(Vector2 center, Vector2Int size)
     {
         return new BoundingBox(

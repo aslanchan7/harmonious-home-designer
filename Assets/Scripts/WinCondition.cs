@@ -143,54 +143,23 @@ public class WinCondition : MonoBehaviour
 
     public bool CommandPosition()
     {
-        BoundingBox bedHeadBox = Bed
+        Vector2 bedHeadPosition = Bed
                 .GetLastValidBoundingBox()
-                .GetNextToFace(Bed.GetRotatedFace(Direction.UP), -1);
-        bedHeadBox.Normalize();
+                .GetNextToFace(Bed.GetRotatedFace(Direction.UP), -1)
+                .center;
         Vector2 bedFootAngle = Bed.GetRotatedFace(Direction.DOWN).ToVector();
         Vector2 doorFacePosition = MainDoor
                 .boundingBox
-                .GetNextToFace(Direction.UP, 0)
-                .position;
-        Vector3 doorEyeLevel = new (
-            doorFacePosition.x,
-            2,
-            doorFacePosition.y
-        );
+                .GetNextToFace(MainDoor.GetRotatedFace(Direction.UP), 0)
+                .center;
+        Vector3 doorEyeLevel = new (doorFacePosition.x, 2, doorFacePosition.y);
+        Vector2 doorToBedHead = bedHeadPosition - doorFacePosition;
+        float distance = Vector2.Distance(doorFacePosition, bedHeadPosition);
+        Ray ray = new (doorEyeLevel, new (doorToBedHead.x, 0, doorToBedHead.y));
 
-        Bed.SetColliderEnabled(false);
-        bool raycastSuccessful = false;
-        for (int i = 0; i < bedHeadBox.sizeY; i++)
-        {
-            for (int j = 0; j < bedHeadBox.sizeX; j++)
-            {
-                Vector2 currentHeadPosition = bedHeadBox.position
-                        + new Vector2(j + 0.5f, i + 0.5f);
-                Vector2 doorToBedHead = currentHeadPosition - doorFacePosition;
-                float distance = Vector2.Distance(
-                    doorFacePosition,
-                    currentHeadPosition
-                );
-
-                if (Vector2.Angle(-doorToBedHead, bedFootAngle) > 60)
-                    continue;
-
-                Ray ray = new (doorEyeLevel, new (
-                    doorToBedHead.x,
-                    0,
-                    doorToBedHead.y
-                ));
-                if (!Physics.Raycast(ray, out RaycastHit hit, distance)
-                        || !hit.collider.CompareTag("Furniture"))
-                {
-                    raycastSuccessful = true;
-                    break;
-                }
-            }
-        }
-
-        Bed.SetColliderEnabled(true);
-        return raycastSuccessful;
+        return !(Vector2.Angle(-doorToBedHead, bedFootAngle) >= 60
+                || Physics.Raycast(ray, out RaycastHit hit, distance)
+                && hit.collider.CompareTag("Furniture"));
     }
 
     public void TryPathfindFrom(Zone door)
