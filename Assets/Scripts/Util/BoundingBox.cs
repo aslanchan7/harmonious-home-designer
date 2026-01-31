@@ -181,42 +181,60 @@ public class BoundingBox
 
     public bool ToTopOf(BoundingBox other)
     {
-        return ColumnIntersects(other) && y >= other.oppositeY;
+        return y >= other.oppositeY;
     }
 
     public bool ToBottomOf(BoundingBox other)
     {
-        return ColumnIntersects(other) && oppositeY <= other.y;
+        return oppositeY <= other.y;
     }
 
     public bool ToLeftOf(BoundingBox other)
     {
-        return RowIntersects(other) && oppositeX <= other.x;
+        return oppositeX <= other.x;
     }
 
     public bool ToRightOf(BoundingBox other)
     {
-        return RowIntersects(other) && x >= other.oppositeX;
+        return x >= other.oppositeX;
     }
 
     public bool TouchesToTopOf(BoundingBox other)
     {
-        return ColumnIntersects(other) && y == other.oppositeY;
+        return y == other.oppositeY;
     }
 
     public bool TouchesToBottomOf(BoundingBox other)
     {
-        return ColumnIntersects(other) && oppositeY == other.y;
+        return oppositeY == other.y;
     }
 
     public bool TouchesToLeftOf(BoundingBox other)
     {
-        return RowIntersects(other) && oppositeX == other.x;
+        return oppositeX == other.x;
     }
 
     public bool TouchesToRightOf(BoundingBox other)
     {
-        return RowIntersects(other) && x  == other.oppositeX;
+        return x  == other.oppositeX;
+    }
+    
+    public bool InLineWithFaceOf(
+        BoundingBox other,
+        Direction otherDirection
+    )
+    {
+        switch (otherDirection)
+        {
+            case Direction.UP:
+            case Direction.DOWN:
+                return ColumnIntersects(other);
+            case Direction.RIGHT:
+            case Direction.LEFT:
+                return RowIntersects(other);
+            default:
+                return false;
+        }
     }
 
     public bool ToFaceOf(BoundingBox other, Direction otherDirection)

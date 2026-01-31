@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public enum Direction
@@ -18,7 +19,12 @@ public static class DirectionExtension
 
     public static Direction Rotate(this Direction direction, float angle)
     {
-        return (Direction) (int) (((int) direction + angle) % 360);
+        return (Direction) (int) (((int) direction + angle + 360) % 360);
+    }
+
+    public static Direction ToOpposite(this Direction direction)
+    {
+        return (Direction) (((int) direction + 180) % 360);
     }
 
     public static bool IsOppositeTo(this Direction direction, Direction other)
