@@ -483,6 +483,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1666600741654627315, guid: ca1a20138850da94faef3975c3472183, type: 3}
+      propertyPath: height
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2666780204530140077, guid: ca1a20138850da94faef3975c3472183, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
@@ -813,6 +817,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2457032808755273107, guid: 319e4ff46f9ae4546ac6c0da502de93c, type: 3}
+      propertyPath: height
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5896300683249224083, guid: 319e4ff46f9ae4546ac6c0da502de93c, type: 3}
       propertyPath: m_Name
       value: NightStandFurniture
@@ -1437,6 +1445,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 326336685}
   m_CullTransparentMesh: 1
+--- !u!114 &339153721 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8581691483487680860, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
+  m_PrefabInstance: {fileID: 1064682970}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7409d61d93dc343afe3851201d3d0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Furniture
 --- !u!1 &346061841
 GameObject:
   m_ObjectHideFlags: 0
@@ -1835,8 +1854,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6feea81d7b76964448de520c9485937d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouseIndicator
-  Size: {x: 1, y: 1}
-  Pos: {x: 0, y: 0.05, z: 0}
   playerControls: {fileID: 1419079}
   gridSystem: {fileID: 1950910639}
 --- !u!4 &367660839
@@ -4359,6 +4376,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3900454995453526125, guid: b6a810349eb6d2c4e90be12a723c9135, type: 3}
+      propertyPath: height
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4532,6 +4553,10 @@ PrefabInstance:
     - target: {fileID: 6729501886294445747, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581691483487680860, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
+      propertyPath: height
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5210,6 +5235,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 374930265578197847, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
+      propertyPath: height
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2050798650972208330, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
       propertyPath: m_Name
       value: WardrobeFurniture
@@ -6330,6 +6359,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8656897771907570624, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
   m_PrefabInstance: {fileID: 1830206177}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1830206179 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5019680395073244539, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
+  m_PrefabInstance: {fileID: 1830206177}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85404ac0e2875ae43b7e4f7301720b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &1855980710
 GameObject:
   m_ObjectHideFlags: 0
@@ -6827,6 +6867,61 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2029629994}
   m_CullTransparentMesh: 1
+--- !u!1 &2055431770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2055431772}
+  - component: {fileID: 2055431771}
+  m_Layer: 0
+  m_Name: WinCondition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2055431771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055431770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a967683e07194737bdad65ce86062f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WinCondition
+  Bed: {fileID: 339153721}
+  BarController: {fileID: 1830206179}
+  bedIsFacingDoor: 0
+  bedIsAccessible: 0
+  mainDoorIsObstructed: 0
+  bathroomDoorIsObstructed: 0
+  bedHeadIsFacingBathroom: 0
+  bedIsNearBathroom: 0
+  bedIsNearWindow: 0
+  bedIsAgainstSolidWall: 0
+  commandPosition: 0
+--- !u!4 &2055431772
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055431770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.78732, y: 2.1, z: 0.21268}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2060546059
 GameObject:
   m_ObjectHideFlags: 0
@@ -7155,6 +7250,7 @@ SceneRoots:
   - {fileID: 1419080}
   - {fileID: 346061842}
   - {fileID: 522872962}
+  - {fileID: 2055431772}
   - {fileID: 168266892}
   - {fileID: 647229823}
   - {fileID: 143061320}

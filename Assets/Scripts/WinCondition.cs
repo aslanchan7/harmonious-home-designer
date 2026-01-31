@@ -1,6 +1,4 @@
 using System;
-using System.Data;
-using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 
 public class WinCondition : MonoBehaviour
@@ -28,6 +26,7 @@ public class WinCondition : MonoBehaviour
     public bool bedIsNearBathroom;
     public bool bedIsNearWindow;
     public bool bedIsAgainstSolidWall;
+    public bool commandPosition;
 
     public bool DoorIsObstructed(Zone door)
     {
@@ -142,6 +141,58 @@ public class WinCondition : MonoBehaviour
         );
     }
 
+    public bool CommandPosition()
+    {
+        BoundingBox bedHeadBox = Bed
+                .GetLastValidBoundingBox()
+                .GetNextToFace(Bed.GetRotatedFace(Direction.UP), -1);
+        bedHeadBox.Normalize();
+        Vector2 bedFootAngle = Bed.GetRotatedFace(Direction.DOWN).ToVector();
+        Vector2 doorFacePosition = MainDoor
+                .boundingBox
+                .GetNextToFace(Direction.UP, 0)
+                .position;
+        Vector3 doorEyeLevel = new (
+            doorFacePosition.x,
+            2,
+            doorFacePosition.y
+        );
+
+        Bed.SetColliderEnabled(false);
+        bool raycastSuccessful = false;
+        for (int i = 0; i < bedHeadBox.sizeY; i++)
+        {
+            for (int j = 0; j < bedHeadBox.sizeX; j++)
+            {
+                Vector2 currentHeadPosition = bedHeadBox.position
+                        + new Vector2(j + 0.5f, i + 0.5f);
+                Vector2 doorToBedHead = currentHeadPosition - doorFacePosition;
+                float distance = Vector2.Distance(
+                    doorFacePosition,
+                    currentHeadPosition
+                );
+
+                if (Vector2.Angle(-doorToBedHead, bedFootAngle) > 60)
+                    continue;
+
+                Ray ray = new (doorEyeLevel, new (
+                    doorToBedHead.x,
+                    0,
+                    doorToBedHead.y
+                ));
+                if (!Physics.Raycast(ray, out RaycastHit hit, distance)
+                        || !hit.collider.CompareTag("Furniture"))
+                {
+                    raycastSuccessful = true;
+                    break;
+                }
+            }
+        }
+
+        Bed.SetColliderEnabled(true);
+        return raycastSuccessful;
+    }
+
     public void TryPathfindFrom(Zone door)
     {
         if (DoorIsObstructed(door))
@@ -215,7 +266,7 @@ public class WinCondition : MonoBehaviour
         MainDoor = new Zone(
             new (2, -2.5f),
             new (1, 1),
-            -180
+            180
         );
         BathroomDoor = new Zone(
             new (-3, -1.5f),
@@ -271,34 +322,34 @@ public class WinCondition : MonoBehaviour
             mainDoorIsObstructed = AdjustEnergy(
                 mainDoorIsObstructed,
                 DoorIsObstructed(MainDoor),
-                true,
+                false,
                 FSEnergyType.Luck,
                 50,
-                true
+                false
             );
             bathroomDoorIsObstructed = AdjustEnergy(
                 bathroomDoorIsObstructed,
                 DoorIsObstructed(BathroomDoor),
-                true,
+                false,
                 FSEnergyType.Luck,
                 50,
-                true
+                false
             );
             bedIsFacingDoor = AdjustEnergy(
                 bedIsFacingDoor,
                 BedIsFacingDoor(),
-                true,
+                false,
                 FSEnergyType.Luck,
                 10,
-                true
+                false
             );
             bedHeadIsFacingBathroom = AdjustEnergy(
                 bedHeadIsFacingBathroom,
                 BedHeadIsFacingBathroom(),
-                true,
+                false,
                 FSEnergyType.Luck,
                 10,
-                true
+                false
             );
             bedIsNearBathroom = AdjustEnergy(
                 bedIsNearBathroom,
@@ -319,18 +370,26 @@ public class WinCondition : MonoBehaviour
             bedIsAccessible = AdjustEnergy(
                 bedIsAccessible,
                 BedIsAccessible(),
-                false,
+                true,
                 FSEnergyType.Luck,
                 50,
-                true
+                false
             );
             bedIsAgainstSolidWall = AdjustEnergy(
                 bedIsAgainstSolidWall,
-                BedIsAccessible(),
-                false,
+                BedIsAgainstSolidWall(),
+                true,
                 FSEnergyType.Luck,
                 20,
-                true
+                false
+            );
+            commandPosition = AdjustEnergy(
+                commandPosition,
+                CommandPosition(),
+                true,
+                FSEnergyType.Luck,
+                40,
+                false
             );
         } catch (NullReferenceException _)
         {
@@ -343,34 +402,33 @@ public class WinCondition : MonoBehaviour
         try {
             TryPathfindFrom(MainDoor);
             
-
             mainDoorIsObstructed = InitializeEnergy(
                 DoorIsObstructed(MainDoor),
-                true,
+                false,
                 FSEnergyType.Luck,
                 50,
-                true
+                false
             );
             bathroomDoorIsObstructed = InitializeEnergy(
                 DoorIsObstructed(BathroomDoor),
-                true,
+                false,
                 FSEnergyType.Luck,
                 50,
-                true
+                false
             );
             bedIsFacingDoor = InitializeEnergy(
                 BedIsFacingDoor(),
-                true,
+                false,
                 FSEnergyType.Luck,
                 10,
-                true
+                false
             );
             bedHeadIsFacingBathroom = InitializeEnergy(
                 BedHeadIsFacingBathroom(),
-                true,
+                false,
                 FSEnergyType.Luck,
                 10,
-                true
+                false
             );
             bedIsNearBathroom = InitializeEnergy(
                 FurnitureIsInZone(Bed, Bathroom),
@@ -388,17 +446,24 @@ public class WinCondition : MonoBehaviour
             );
             bedIsAccessible = InitializeEnergy(
                 BedIsAccessible(),
-                false,
+                true,
                 FSEnergyType.Luck,
                 50,
-                true
+                false
             );
             bedIsAgainstSolidWall = InitializeEnergy(
-                BedIsAccessible(),
-                false,
+                BedIsAgainstSolidWall(),
+                true,
                 FSEnergyType.Luck,
                 20,
-                true
+                false
+            );
+            commandPosition = InitializeEnergy(
+                CommandPosition(),
+                true,
+                FSEnergyType.Luck,
+                40,
+                false
             );
             doneInitialCheck = true;
         } catch (NullReferenceException _)
