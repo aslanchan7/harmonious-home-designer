@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "harmonious-home-designer.slnx"
+    "dotnet.defaultSolution": "harmonious-home-designer-main.slnx"
 }
