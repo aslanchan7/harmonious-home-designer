@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -44,6 +46,7 @@ public class PlayerControls : MonoBehaviour
     {
         mousePositionAction = InputSystem.actions.FindAction("Point");
         rotateSnapOffsetIndex = 0;
+        UpdateUIText();
     }
 
     private void OnEnable()
@@ -85,24 +88,38 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private IEnumerator DragUpdate()
+private IEnumerator DragUpdate()
+{
+    if (selectedFurniture == null) yield break;
+
+    selectedFurniture.SetGhostMaterial();
+    mouseIndicator.SetSize(selectedFurniture.Size.x, selectedFurniture.Size.y);
+    Vector2 pos = new(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
+
+    while (clickAction.action.ReadValue<float>() != 0)
     {
-        selectedFurniture.SetGhostMaterial();
-        mouseIndicator.SetSize(selectedFurniture.Size.x, selectedFurniture.Size.y);
-        Vector2 pos = new(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
-
-        while (clickAction.action.ReadValue<float>() != 0)
+        if (selectedFurniture == null) 
         {
-            pos = new Vector2(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
-            selectedFurniture.MoveGhost(pos);
-
-            yield return null;
+            GridSystem.Instance.HideGridVisualizer();
+            mouseIndicator.SetSize(1, 1);
+            yield break; 
         }
 
+        pos = new Vector2(mouseIndicator.transform.position.x, mouseIndicator.transform.position.z);
+        selectedFurniture.MoveGhost(pos);
+
+        yield return null;
+    }
+
+    if (selectedFurniture != null)
+    {
         mouseIndicator.SetSize(1, 1);
         selectedFurniture.TryPlace(pos);
         selectedFurniture.SetNormalMat();
     }
+    
+    selectedFurniture = null; 
+}
 
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
@@ -170,5 +187,86 @@ public class PlayerControls : MonoBehaviour
             normalDirection = hit.normal;
             // gameObjectPointedAt = hit.collider.gameObject;
         }
+
+        if (Keyboard.current.deleteKey.wasPressedThisFrame || Keyboard.current.backspaceKey.wasPressedThisFrame)
+    {
+        DeleteSelected();
     }
+    }
+[SerializeField] private TextMeshProUGUI bedText;
+[SerializeField] private TextMeshProUGUI dresserText;
+[SerializeField] private List<FurnitureInventory> inventoryList = new List<FurnitureInventory>();
+private void UpdateUIText()
+    {
+        FurnitureInventory bedItem = inventoryList.Find(x => x.Prefab != null && x.Prefab.name.Contains("Bed"));
+        FurnitureInventory dresserItem = inventoryList.Find(x => x.Prefab != null && x.Prefab.name.Contains("Dresser"));
+
+        if (bedText != null && bedItem != null)
+            bedText.text = $"{bedItem.MaxPlacements - bedItem.CurrentPlacedCount}";
+        
+        if (dresserText != null && dresserItem != null)
+            dresserText.text = $"{dresserItem.MaxPlacements - dresserItem.CurrentPlacedCount}";
+    }
+    public void PlaceFurnitureRandomly(GameObject furniturePrefab)
+    {
+        if (furniturePrefab == null) return;
+
+        FurnitureInventory item = inventoryList.Find(x => x.Prefab == furniturePrefab);
+
+        if (item != null)
+        {
+            if (item.CurrentPlacedCount >= item.MaxPlacements)
+            {
+                Debug.LogWarning($"Limit reached for {furniturePrefab.name}!");
+                return;
+            }
+        }
+
+        GameObject newFurnitureObj = Instantiate(furniturePrefab);
+        Furniture furnScript = newFurnitureObj.GetComponent<Furniture>();
+
+        if (item != null) 
+        {
+            item.CurrentPlacedCount++;
+            UpdateUIText();
+        }
+
+        Vector2Int gridSize = GridSystem.Instance.Size;
+        int halfX = gridSize.x / 2;
+        int halfY = gridSize.y / 2;
+
+        int randomX = UnityEngine.Random.Range(-halfX + 2, halfX - 2);
+        int randomY = UnityEngine.Random.Range(-halfY + 2, halfY - 2);
+
+        float posX = (furnScript.Size.x % 2 == 0) ? randomX : randomX + 0.5f;
+        float posZ = (furnScript.Size.y % 2 == 0) ? randomY : randomY + 0.5f;
+
+        furnScript.TryPlace(new Vector2(posX, posZ));
+    }
+    public void DeleteSelected()
+{
+    if (selectedFurniture == null) return;
+
+    FurnitureInventory item = inventoryList.Find(x => selectedFurniture.name.Contains(x.Prefab.name));
+
+    if (item != null)
+    {
+        item.CurrentPlacedCount--; 
+        UpdateUIText();            
+    }
+
+    Destroy(selectedFurniture.gameObject);
+
+    selectedFurniture = null;
+    GridSystem.Instance.HideGridVisualizer();
+    mouseIndicator.SetSize(1, 1);
 }
+}
+[System.Serializable]
+public class FurnitureInventory
+{
+    public GameObject Prefab;
+    public int MaxPlacements;
+    [HideInInspector] public int CurrentPlacedCount;
+}
+
