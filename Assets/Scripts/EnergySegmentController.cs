@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
+using System.Numerics;
+using System.Xml.Schema;
 using NUnit.Compatibility;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.LowLevelPhysics2D;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -10,14 +13,19 @@ public class EnergySegmentController : MonoBehaviour
 {
     
     [SerializeField] private UnityEngine.UI.Slider energySegment;
-
+    [SerializeField] private UnityEngine.UI.Button hoverDetection;
     [SerializeField] private int energyValue = 0;
     [SerializeField] private FSEnergyType energyType;
     [SerializeField] private bool polarity = true;
+    private Transform segmentFill;
     void Awake()
     {
         energySegment.maxValue = FSBarController.maxE;
-        
+        float sliderWidth = energySegment.GetComponent<RectTransform>().sizeDelta.x;
+        segmentFill = energySegment.transform.Find("Fill Area").Find("Fill");
+        float buttonWidth = sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
+        hoverDetection.GetComponent<RectTransform>().offsetMin = new UnityEngine.Vector2(buttonWidth, 5);
+
     } 
     public FSEnergyType getEnergyType()
     {
@@ -29,26 +37,30 @@ public class EnergySegmentController : MonoBehaviour
         switch (energyType)
         {
             case FSEnergyType.Toilet:
-                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.brown;
+                segmentFill.GetComponent<UnityEngine.UI.Image>().color = Color.brown;
             break;
             case FSEnergyType.Chaos:
-                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.purple;
+                segmentFill.GetComponent<UnityEngine.UI.Image>().color = Color.purple;
             break;
             case FSEnergyType.Death:
-                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.darkGray;
+                segmentFill.GetComponent<UnityEngine.UI.Image>().color = Color.darkGray;
             break;
             case FSEnergyType.Skibbidy:
-                energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.orange;
+                segmentFill.GetComponent<UnityEngine.UI.Image>().color = Color.orange;
             break;
             default:
-            energySegment.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = Color.black;
+                segmentFill.GetComponent<UnityEngine.UI.Image>().color = Color.black;
             break;
         }
     }
-    public bool getPolarity()
+    void Update()
     {
-        return polarity;
+        float sliderWidth = energySegment.GetComponent<RectTransform>().sizeDelta.x;
+        segmentFill = energySegment.transform.Find("Fill Area").Find("Fill");
+        float buttonWidth = sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
+        hoverDetection.GetComponent<RectTransform>().offsetMin = new UnityEngine.Vector2(buttonWidth, 5);
     }
+
     public void setPolarity(bool sourcePolarity)
     {
         polarity = sourcePolarity;
@@ -66,16 +78,10 @@ public class EnergySegmentController : MonoBehaviour
         return energyValue;
     }
 
+// Set the velue of energy in the segment
     public void setValue(int value)
     {
         energyValue = value;
         energySegment.value = energyValue;
     }
-    
-    public void setPos(float xPos, float yPos, float zPos)
-    {
-        Vector3 position = new Vector3(xPos, yPos, zPos);
-        energySegment.transform.position = position;
-    }
-    
 }
