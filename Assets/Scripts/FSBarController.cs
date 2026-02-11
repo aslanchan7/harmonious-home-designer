@@ -329,6 +329,7 @@ public class FSEnergy
     }
 }
 
+// Enumerator class for the types of energies
 public enum FSEnergyType
 {
     // Good energies, when running addEnergy() or removeEnergy() input true for "polarity" field
