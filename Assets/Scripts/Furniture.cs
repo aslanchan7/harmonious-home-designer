@@ -17,7 +17,7 @@ public class Furniture : MonoBehaviour
     [Header("References")]
     public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
     public Collider[] Colliders;
-    public Material NormalMat, GhostMat, InvalidGhostMat;
+    public Material GhostMat, InvalidGhostMat;
     public Transform ShapeUnits;
 
     public Vector2 DisplayPosition

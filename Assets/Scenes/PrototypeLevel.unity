@@ -5444,10 +5444,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 374930265578197847, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
-      propertyPath: height
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 2050798650972208330, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
       propertyPath: m_Name
       value: WardrobeFurniture
@@ -5493,7 +5489,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2980140708786632968, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
@@ -6034,7 +6031,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1674515697
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7561,7 +7558,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2102475449
 Transform:
   m_ObjectHideFlags: 0
@@ -7598,7 +7595,6 @@ MonoBehaviour:
   StartingSize: {x: 0, y: 0}
   MeshRenderers: []
   Colliders: []
-  NormalMat: {fileID: 0}
   GhostMat: {fileID: 0}
   InvalidGhostMat: {fileID: 0}
   ShapeUnits: {fileID: 0}
