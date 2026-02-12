@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Materials/BackgroundPlaneMat.mat.meta
+guid: a0dc19e208ec41142aeab2beb8298b79
+========
+guid: 6b1e6fde531cb4578bc73f6eeac7b932
+>>>>>>>> origin/3d_models:Assets/Art/handleMaterial.mat.meta
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -49,6 +49,8 @@ MonoBehaviour:
   furnitureName: Dresser
   Size: {x: 1, y: 1}
   LastValidPos: {x: 0, y: 0}
+  LastValidRotation: 0
+  StartingSize: {x: 0, y: 0}
   MeshRenderers:
   - Item1: {fileID: 7247952282187104648}
     Item2: {fileID: 2100000, guid: 12b908fef5e6bc2478cea2e7d55a0bf4, type: 2}
@@ -184,7 +186,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dca8bc69d2a234362a77be018e0625fd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dca8bc69d2a234362a77be018e0625fd, type: 3}
       propertyPath: m_LocalRotation.w
