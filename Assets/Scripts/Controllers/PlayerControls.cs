@@ -20,6 +20,9 @@ public class PlayerControls : MonoBehaviour
     [SerializeField]
     private InputActionReference rotateAction;
 
+    [SerializeField]
+    private InputActionReference deleteAction;
+
     [Header("References")]
     [SerializeField]
     private MouseIndicator mouseIndicator;
@@ -61,12 +64,14 @@ public class PlayerControls : MonoBehaviour
     {
         clickAction.action.performed += OnClick;
         rotateAction.action.performed += OnRotate;
+        deleteAction.action.performed += OnDelete;
     }
 
     private void OnDisable()
     {
         clickAction.action.performed -= OnClick;
         rotateAction.action.performed -= OnRotate;
+        deleteAction.action.performed += OnDelete;
     }
 
     private void Update()
@@ -194,6 +199,27 @@ public class PlayerControls : MonoBehaviour
         return null;
     }
 
+    private void OnDelete(InputAction.CallbackContext callbackContext)
+    {
+        Furniture hoverFurniture = RaycastFurniture();
+        if (hoverFurniture == null)
+            return;
+        FurnitureInventory item = inventoryList.Find(x =>
+            hoverFurniture.name.Contains(x.Prefab.name)
+        );
+
+        if (item != null)
+        {
+            item.CurrentPlacedCount--;
+            UpdateUIText();
+        }
+
+        Destroy(hoverFurniture.gameObject);
+        selectedFurniture = null;
+        GridSystem.Instance.HideGridVisualizer();
+        mouseIndicator.Size = new Vector2Int(1, 1);
+    }
+
     private void UpdateUIText()
     {
         FurnitureInventory bedItem = inventoryList.Find(x =>
@@ -253,28 +279,6 @@ public class PlayerControls : MonoBehaviour
         furnScript.TryPlace();
     }
 
-    public void DeleteSelected()
-    {
-        if (selectedFurniture == null)
-            return;
-
-        FurnitureInventory item = inventoryList.Find(x =>
-            selectedFurniture.name.Contains(x.Prefab.name)
-        );
-
-        if (item != null)
-        {
-            item.CurrentPlacedCount--;
-            UpdateUIText();
-        }
-
-        Destroy(selectedFurniture.gameObject);
-
-        selectedFurniture = null;
-        GridSystem.Instance.HideGridVisualizer();
-        mouseIndicator.Size = new Vector2Int(1, 1);
-    }
-
     public void RaycastMouse()
     {
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
@@ -290,14 +294,6 @@ public class PlayerControls : MonoBehaviour
         )
         {
             MousePos = hit.point;
-        }
-
-        if (
-            Keyboard.current.deleteKey.wasPressedThisFrame
-            || Keyboard.current.backspaceKey.wasPressedThisFrame
-        )
-        {
-            DeleteSelected();
         }
     }
 }
