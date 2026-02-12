@@ -30,7 +30,7 @@ public class FSBarController : MonoBehaviour
     
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void Start()
     {
         _ProgressSlider.maxValue = maxE;
         _SinsSlider.maxValue = maxE;
