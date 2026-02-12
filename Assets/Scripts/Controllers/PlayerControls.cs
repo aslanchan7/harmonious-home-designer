@@ -37,6 +37,24 @@ public class PlayerControls : MonoBehaviour
     };
     private int rotateSnapOffsetIndex;
 
+    private void PlayPickupSFX()
+    {
+        if (selectedFurniture == null) return;
+        SFXManager.Instance?.PlayFurnitureSFX(selectedFurniture.sfxCategory, SFXAction.Pickup);
+    }
+
+    private void PlayRotateSFX()
+    {
+        if (selectedFurniture == null) return;
+        SFXManager.Instance?.PlayFurnitureSFX(selectedFurniture.sfxCategory, SFXAction.Rotate);
+    }
+
+    private void PlayInvalidSFX()
+    {
+        if (selectedFurniture == null) return;
+        SFXManager.Instance?.PlayFurnitureSFX(selectedFurniture.sfxCategory, SFXAction.Invalid);
+    }
+
     private void Start()
     {
         mousePositionAction = InputSystem.actions.FindAction("Point");
@@ -73,6 +91,9 @@ public class PlayerControls : MonoBehaviour
                     hit.collider.transform.parent.GetComponent<Furniture>();
                 rotateSnapOffsetIndex = 0;
                 GridSystem.Instance.ShowGridVisualizer();
+
+                PlayPickupSFX();
+
                 StartCoroutine(DragUpdate());
             }
             else
@@ -111,6 +132,9 @@ public class PlayerControls : MonoBehaviour
         if (clickAction.action.ReadValue<float>() != 0)
         {
             mouseIndicator.Rotate();
+
+            PlayRotateSFX();
+
             return;
         }
 
@@ -118,6 +142,9 @@ public class PlayerControls : MonoBehaviour
         {
             mouseIndicator.Rotate();
             selectedFurniture.SetLocationAsValid();
+
+            PlayRotateSFX();
+
             return;
         }
 
@@ -129,6 +156,9 @@ public class PlayerControls : MonoBehaviour
             selectedFurniture.SetColliderEnabled(true);
             mouseIndicator.Rotate();
             selectedFurniture.SetLocationAsValid();
+
+            PlayRotateSFX();
+
             return;
         }
 
@@ -151,12 +181,18 @@ public class PlayerControls : MonoBehaviour
                 mouseIndicator.Rotate();
                 selectedFurniture.SetColliderEnabled(true);
                 selectedFurniture.SetLocationAsValid();
+
+                PlayRotateSFX();
+
                 return;
             }
         }
 
         selectedFurniture.SetColliderEnabled(true);
         selectedFurniture.ResetToValidLocation();
+
+        // "invalid rotate" SFX
+        PlayInvalidSFX();
     }
 
     public void RaycastMouse()

@@ -14,6 +14,10 @@ public class Furniture : MonoBehaviour
     [HideInInspector] public float LastValidRotation;
     [HideInInspector] public Vector2Int StartingSize;
 
+    [Header("Audio")]
+    public FurnitureSFXCategory sfxCategory = FurnitureSFXCategory.Default;
+    // Assign this per prefab in Inspector: Chair / Wardrobe / Plant / etc.
+
     [Header("References")]
     public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
     public Collider[] Colliders;
@@ -66,7 +70,7 @@ public class Furniture : MonoBehaviour
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         // TODO: Change the type of sfx played
-        SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
+        //SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
         WinCondition.Instance.UpdateRuleCheck();
     }
@@ -108,10 +112,16 @@ public class Furniture : MonoBehaviour
         if (isValidPosition)
         {
             SetLocationAsValid();
+
+            if (SFXManager.Instance != null)
+                SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
         }
         else
         {
             ResetToValidLocation();
+
+            if (SFXManager.Instance != null)
+                SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Invalid);
         }
     }
 

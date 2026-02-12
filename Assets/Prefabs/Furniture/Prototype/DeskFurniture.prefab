@@ -86,6 +86,7 @@ MonoBehaviour:
   LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 4
   MeshRenderers:
   - Item1: {fileID: 7512840229557384074}
     Item2: {fileID: 2100000, guid: 38c5066ae54b10b4ba03e9e8dd2bd814, type: 2}
@@ -97,7 +98,6 @@ MonoBehaviour:
     Item2: {fileID: 2100000, guid: 38c5066ae54b10b4ba03e9e8dd2bd814, type: 2}
   Colliders:
   - {fileID: 4454919070434003419}
-  NormalMat: {fileID: 2100000, guid: 38c5066ae54b10b4ba03e9e8dd2bd814, type: 2}
   GhostMat: {fileID: 2100000, guid: b640afd4979980c4c85064f5d6898dd7, type: 2}
   InvalidGhostMat: {fileID: 2100000, guid: 0acb0b4739119964fa2ff5fe3ad79eca, type: 2}
   ShapeUnits: {fileID: 3821800619740185552}

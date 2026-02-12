@@ -1466,7 +1466,6 @@ GameObject:
   m_Component:
   - component: {fileID: 346061842}
   - component: {fileID: 346061843}
-  - component: {fileID: 346061844}
   m_Layer: 0
   m_Name: Music Manager
   m_TagString: Untagged
@@ -1501,104 +1500,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3abc523826c45428e433c80db81ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicManager
-  audioSource: {fileID: 346061844}
---- !u!82 &346061844
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346061841}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 74b62da4dfbb73140b49e38df89f0927, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  library: {fileID: 11400000, guid: 29830489c291a924fb6673072fd4d8c4, type: 2}
+  crossfadeSeconds: 1
+  initialPlayDelaySeconds: 2
 --- !u!1 &356373211
 GameObject:
   m_ObjectHideFlags: 0
@@ -2625,8 +2529,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 522872962}
-  - component: {fileID: 522872963}
   - component: {fileID: 522872964}
+  - component: {fileID: 522872965}
   m_Layer: 0
   m_Name: SFX Manager
   m_TagString: Untagged
@@ -2649,7 +2553,158 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &522872963
+--- !u!114 &522872964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522872961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 032ef61af9b0a404ebc140f5ecf7868b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SFXManager
+  sfxSource: {fileID: 522872965}
+  furnitureSets:
+  - category: 0
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 843056d5ddca2844ea98e8e7db8d42cf, type: 3}
+      volume: 0.429
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.51
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.537
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.578
+      pitchSemitones: 0
+  - category: 2
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 843056d5ddca2844ea98e8e7db8d42cf, type: 3}
+      volume: 0.62
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.544
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.551
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.612
+      pitchSemitones: 0
+  - category: 4
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 843056d5ddca2844ea98e8e7db8d42cf, type: 3}
+      volume: 0.547
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.595
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.719
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.649
+      pitchSemitones: 0
+  - category: 0
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 843056d5ddca2844ea98e8e7db8d42cf, type: 3}
+      volume: 0.599
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.512
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.603
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.508
+      pitchSemitones: 0
+  - category: 6
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 843056d5ddca2844ea98e8e7db8d42cf, type: 3}
+      volume: 0.533
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.558
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.488
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.616
+      pitchSemitones: 0
+  - category: 7
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: a2dd594542d136249a75b08a54e1a811, type: 3}
+      volume: 0.62
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.537
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.471
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.55
+      pitchSemitones: 0
+  globalSfx:
+    uiClick:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+--- !u!82 &522872965
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2662,7 +2717,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.815
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2746,22 +2801,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &522872964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522872961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09184817de046de4d9c5555e3a0baae1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SFXManager
-  audioClips:
-  - Clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
-    sfxType: 0
-  audioSource: {fileID: 522872963}
 --- !u!1 &523982856
 GameObject:
   m_ObjectHideFlags: 0
@@ -7593,6 +7632,7 @@ MonoBehaviour:
   LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 0
   MeshRenderers: []
   Colliders: []
   GhostMat: {fileID: 0}
