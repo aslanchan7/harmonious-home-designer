@@ -217,7 +217,7 @@ public class PlayerControls : MonoBehaviour
         Destroy(hoverFurniture.gameObject);
         selectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
-        mouseIndicator.Size = new Vector2Int(1, 1);
+        mouseIndicator.Size = new(1, 1);
     }
 
     private void UpdateUIText()
@@ -238,45 +238,55 @@ public class PlayerControls : MonoBehaviour
                 $"{dresserItem.MaxPlacements - dresserItem.CurrentPlacedCount}";
     }
 
-    public void PlaceFurnitureRandomly(GameObject furniturePrefab)
+    public void TryPlaceFurniture(GameObject furniturePrefab)
     {
         if (furniturePrefab == null)
             return;
 
-        FurnitureInventory item = inventoryList.Find(x =>
-            x.Prefab == furniturePrefab
-        );
-
-        if (item != null)
-        {
-            if (item.CurrentPlacedCount >= item.MaxPlacements)
-            {
-                Debug.LogWarning($"Limit reached for {furniturePrefab.name}!");
-                return;
-            }
-        }
-
-        GameObject newFurnitureObj = Instantiate(furniturePrefab);
-        Furniture furnScript = newFurnitureObj.GetComponent<Furniture>();
-
-        if (item != null)
-        {
-            item.CurrentPlacedCount++;
-            UpdateUIText();
-        }
+        GameObject newFurnitureGameObject = Instantiate(furniturePrefab);
+        Furniture newFurniture =
+            newFurnitureGameObject.GetComponent<Furniture>();
 
         Vector2Int gridSize = GridSystem.Instance.Size;
-        int halfX = gridSize.x / 2;
-        int halfY = gridSize.y / 2;
+        int numXPositions = gridSize.x - newFurniture.Size.x + 1;
+        int numYPositions = gridSize.y - newFurniture.Size.y + 1;
+        Vector2 testPosition = (Vector2)(newFurniture.Size - gridSize) / 2;
+        Vector2 rowIncrement = new(newFurniture.Size.x - gridSize.x - 1, 1);
 
-        int randomX = UnityEngine.Random.Range(-halfX + 2, halfX - 2);
-        int randomY = UnityEngine.Random.Range(-halfY + 2, halfY - 2);
+        for (int i = 0; i < numYPositions; i++)
+        {
+            for (int j = 0; j < numXPositions; j++)
+            {
+                newFurniture.DisplayPosition = testPosition;
+                if (newFurniture.CheckValidPos())
+                {
+                    newFurniture.SetLocationAsValid();
+                    newFurniture.ResetToValidLocation();
 
-        float posX = (furnScript.Size.x % 2 == 0) ? randomX : randomX + 0.5f;
-        float posY = (furnScript.Size.y % 2 == 0) ? randomY : randomY + 0.5f;
+                    FurnitureInventory item = inventoryList.Find(x =>
+                        x.Prefab == furniturePrefab
+                    );
+                    if (item != null)
+                    {
+                        if (item.CurrentPlacedCount >= item.MaxPlacements)
+                        {
+                            Debug.LogWarning(
+                                $"Limit reached for {furniturePrefab.name}!"
+                            );
+                            return;
+                        }
+                        item.CurrentPlacedCount++;
+                        UpdateUIText();
+                    }
 
-        furnScript.DisplayPosition = new Vector2(posX, posY);
-        furnScript.TryPlace();
+                    return;
+                }
+                testPosition += Vector2.right;
+            }
+            testPosition += rowIncrement;
+        }
+
+        Destroy(newFurnitureGameObject);
     }
 
     public void RaycastMouse()
