@@ -12,7 +12,7 @@ public class Furniture : MonoBehaviour
     public float height;
 
     private Furniture _stackBase;  
-    private Furniture _lastStackCandidate;        
+    private Furniture lastStackCandidate;        
     [HideInInspector] public Vector2 LastValidPosition;
     [HideInInspector] public float LastValidRotation;
     [HideInInspector] public Vector2Int StartingSize;
@@ -115,9 +115,9 @@ public class Furniture : MonoBehaviour
             SetLocationAsValid();
 
             // Only MFurn can attach to WFurn
-            if (CompareTag("MFurn") && _lastStackCandidate != null)
+            if (CompareTag("MFurn") && lastStackCandidate != null)
             {
-                AttachToBase(_lastStackCandidate);
+                AttachToBase(lastStackCandidate);
             }
             else
             {
@@ -164,7 +164,7 @@ public class Furniture : MonoBehaviour
             RaycastHit[] hits = Physics.RaycastAll(origin, Vector3.down, 100f, ~0, QueryTriggerInteraction.Ignore);
             if (hits == null || hits.Length == 0)
             {
-                _lastStackCandidate = null;
+                lastStackCandidate = null;
                 return false;
             }
 
@@ -185,7 +185,7 @@ public class Furniture : MonoBehaviour
 
             if (best == null)
             {
-                _lastStackCandidate = null;
+                lastStackCandidate = null;
                 return false;
             }
 
@@ -198,7 +198,7 @@ public class Furniture : MonoBehaviour
             {
                 if (!isFloor)
                 {
-                    _lastStackCandidate = null;
+                    lastStackCandidate = null;
                     return false;
                 }
             }
@@ -206,7 +206,7 @@ public class Furniture : MonoBehaviour
             {
                 if (!isFloor && !isWFurn)
                 {
-                    _lastStackCandidate = null;
+                    lastStackCandidate = null;
                     return false;
                 }
             }
@@ -232,7 +232,7 @@ public class Furniture : MonoBehaviour
             }
         }
 
-        _lastStackCandidate = canStack ? bestWFurnFurniture : null;
+        lastStackCandidate = canStack ? bestWFurnFurniture : null;
 
         if (canStack && bestWFurnFurniture != null)
         {
