@@ -27,16 +27,6 @@ public class PlayerControls : MonoBehaviour
     [SerializeField]
     private MouseIndicator mouseIndicator;
 
-    [SerializeField]
-    private TextMeshProUGUI bedText;
-
-    [SerializeField]
-    private TextMeshProUGUI dresserText;
-
-    [SerializeField]
-    private List<FurnitureInventory> inventoryList =
-        new List<FurnitureInventory>();
-
     private readonly Vector2[] evenSizeSnapOffset =
     {
         Vector2.down,
@@ -57,7 +47,6 @@ public class PlayerControls : MonoBehaviour
     {
         mousePositionAction = InputSystem.actions.FindAction("Point");
         rotateSnapOffsetIndex = 0;
-        UpdateUIText();
     }
 
     private void OnEnable()
@@ -202,93 +191,26 @@ public class PlayerControls : MonoBehaviour
     private void OnDelete(InputAction.CallbackContext callbackContext)
     {
         Furniture hoverFurniture = RaycastFurniture();
-        if (hoverFurniture == null)
-            return;
-        FurnitureInventory item = inventoryList.Find(x =>
-            hoverFurniture.name.Contains(x.Prefab.name)
+        if (hoverFurniture == null) return;
+        
+        InventoryItem item = InventoryManager.Instance.inventorySO.inventoryList.Find(
+            x => hoverFurniture.furnitureName.Equals(x.Prefab.GetComponent<Furniture>().furnitureName)
         );
 
         if (item != null)
         {
+            if(item.CurrentPlacedCount == item.MaxPlacements)
+            {
+                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(item);
+            }
+
             item.CurrentPlacedCount--;
-            UpdateUIText();
         }
 
         Destroy(hoverFurniture.gameObject);
         selectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);
-    }
-
-    private void UpdateUIText()
-    {
-        FurnitureInventory bedItem = inventoryList.Find(x =>
-            x.Prefab != null && x.Prefab.name.Contains("Bed")
-        );
-        FurnitureInventory dresserItem = inventoryList.Find(x =>
-            x.Prefab != null && x.Prefab.name.Contains("Dresser")
-        );
-
-        if (bedText != null && bedItem != null)
-            bedText.text =
-                $"{bedItem.MaxPlacements - bedItem.CurrentPlacedCount}";
-
-        if (dresserText != null && dresserItem != null)
-            dresserText.text =
-                $"{dresserItem.MaxPlacements - dresserItem.CurrentPlacedCount}";
-    }
-
-    public void TryPlaceFurniture(GameObject furniturePrefab)
-    {
-        if (furniturePrefab == null)
-            return;
-
-        GameObject newFurnitureGameObject = Instantiate(furniturePrefab);
-        Furniture newFurniture =
-            newFurnitureGameObject.GetComponent<Furniture>();
-        newFurniture.InitializeState();
-
-        Vector2Int gridSize = GridSystem.Instance.Size;
-        int numXPositions = gridSize.x - newFurniture.Size.x + 1;
-        int numYPositions = gridSize.y - newFurniture.Size.y + 1;
-        Vector2 testPosition = (Vector2)(newFurniture.Size - gridSize) / 2;
-        Vector2 rowIncrement = new(newFurniture.Size.x - gridSize.x - 1, 1);
-
-        for (int i = 0; i < numYPositions; i++)
-        {
-            for (int j = 0; j < numXPositions; j++)
-            {
-                newFurniture.DisplayPosition = testPosition;
-                if (newFurniture.CheckValidPos())
-                {
-                    newFurniture.SetLocationAsValid();
-                    newFurniture.ResetToValidLocation();
-
-                    FurnitureInventory item = inventoryList.Find(x =>
-                        x.Prefab == furniturePrefab
-                    );
-                    if (item != null)
-                    {
-                        if (item.CurrentPlacedCount >= item.MaxPlacements)
-                        {
-                            Debug.LogWarning(
-                                $"Limit reached for {furniturePrefab.name}!"
-                            );
-                            return;
-                        }
-                        item.CurrentPlacedCount++;
-                        UpdateUIText();
-                    }
-
-                    return;
-                }
-                testPosition += Vector2.right;
-            }
-            testPosition += rowIncrement;
-        }
-
-        // Destroy if no empty space.
-        Destroy(newFurnitureGameObject);
     }
 
     public void RaycastMouse()
@@ -308,14 +230,4 @@ public class PlayerControls : MonoBehaviour
             MousePos = hit.point;
         }
     }
-}
-
-[System.Serializable]
-public class FurnitureInventory
-{
-    public GameObject Prefab;
-    public int MaxPlacements;
-
-    [HideInInspector]
-    public int CurrentPlacedCount;
 }
