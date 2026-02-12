@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +23,16 @@ public class PlayerControls : MonoBehaviour
     [SerializeField]
     private MouseIndicator mouseIndicator;
 
+    [SerializeField]
+    private TextMeshProUGUI bedText;
+
+    [SerializeField]
+    private TextMeshProUGUI dresserText;
+
+    [SerializeField]
+    private List<FurnitureInventory> inventoryList =
+        new List<FurnitureInventory>();
+
     private readonly Vector2[] evenSizeSnapOffset =
     {
         Vector2.down,
@@ -41,6 +53,7 @@ public class PlayerControls : MonoBehaviour
     {
         mousePositionAction = InputSystem.actions.FindAction("Point");
         rotateSnapOffsetIndex = 0;
+        UpdateUIText();
     }
 
     private void OnEnable()
@@ -159,6 +172,87 @@ public class PlayerControls : MonoBehaviour
         selectedFurniture.ResetToValidLocation();
     }
 
+    private void UpdateUIText()
+    {
+        FurnitureInventory bedItem = inventoryList.Find(x =>
+            x.Prefab != null && x.Prefab.name.Contains("Bed")
+        );
+        FurnitureInventory dresserItem = inventoryList.Find(x =>
+            x.Prefab != null && x.Prefab.name.Contains("Dresser")
+        );
+
+        if (bedText != null && bedItem != null)
+            bedText.text =
+                $"{bedItem.MaxPlacements - bedItem.CurrentPlacedCount}";
+
+        if (dresserText != null && dresserItem != null)
+            dresserText.text =
+                $"{dresserItem.MaxPlacements - dresserItem.CurrentPlacedCount}";
+    }
+
+    public void PlaceFurnitureRandomly(GameObject furniturePrefab)
+    {
+        if (furniturePrefab == null)
+            return;
+
+        FurnitureInventory item = inventoryList.Find(x =>
+            x.Prefab == furniturePrefab
+        );
+
+        if (item != null)
+        {
+            if (item.CurrentPlacedCount >= item.MaxPlacements)
+            {
+                Debug.LogWarning($"Limit reached for {furniturePrefab.name}!");
+                return;
+            }
+        }
+
+        GameObject newFurnitureObj = Instantiate(furniturePrefab);
+        Furniture furnScript = newFurnitureObj.GetComponent<Furniture>();
+
+        if (item != null)
+        {
+            item.CurrentPlacedCount++;
+            UpdateUIText();
+        }
+
+        Vector2Int gridSize = GridSystem.Instance.Size;
+        int halfX = gridSize.x / 2;
+        int halfY = gridSize.y / 2;
+
+        int randomX = UnityEngine.Random.Range(-halfX + 2, halfX - 2);
+        int randomY = UnityEngine.Random.Range(-halfY + 2, halfY - 2);
+
+        float posX = (furnScript.Size.x % 2 == 0) ? randomX : randomX + 0.5f;
+        float posY = (furnScript.Size.y % 2 == 0) ? randomY : randomY + 0.5f;
+
+        furnScript.DisplayPosition = new Vector2(posX, posY);
+        furnScript.TryPlace();
+    }
+
+    public void DeleteSelected()
+    {
+        if (selectedFurniture == null)
+            return;
+
+        FurnitureInventory item = inventoryList.Find(x =>
+            selectedFurniture.name.Contains(x.Prefab.name)
+        );
+
+        if (item != null)
+        {
+            item.CurrentPlacedCount--;
+            UpdateUIText();
+        }
+
+        Destroy(selectedFurniture.gameObject);
+
+        selectedFurniture = null;
+        GridSystem.Instance.HideGridVisualizer();
+        mouseIndicator.Size = new Vector2Int(1, 1);
+    }
+
     public void RaycastMouse()
     {
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
@@ -175,6 +269,23 @@ public class PlayerControls : MonoBehaviour
         {
             MousePos = hit.point;
         }
+
+        if (
+            Keyboard.current.deleteKey.wasPressedThisFrame
+            || Keyboard.current.backspaceKey.wasPressedThisFrame
+        )
+        {
+            DeleteSelected();
+        }
     }
 }
 
+[System.Serializable]
+public class FurnitureInventory
+{
+    public GameObject Prefab;
+    public int MaxPlacements;
+
+    [HideInInspector]
+    public int CurrentPlacedCount;
+}
