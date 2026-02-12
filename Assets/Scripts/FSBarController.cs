@@ -265,13 +265,14 @@ public class FSBarController : MonoBehaviour
     {
         float segmentOffset = 0.0f;
         float sliderPosX = _SinsSlider.GetComponent<RectTransform>().localPosition.x;
+        float sliderPosY = _SinsSlider.GetComponent<RectTransform>().localPosition.y;
         for (int i = 0; i < BadEnergySegments.Count; i++)
         {
             GameObject currentSegment = BadEnergySegments[i];
             FSEnergyType currentEnergyType = BadEnergySegments[i].GetComponent<EnergySegmentController>().getEnergyType();
             FSEnergy currentEnergy = null;
             float sliderWidth = _SinsSlider.GetComponent<RectTransform>().sizeDelta.x;
-            UnityEngine.Vector3 displacement = new UnityEngine.Vector3(sliderPosX - segmentOffset, 0, 0);
+            UnityEngine.Vector3 displacement = new UnityEngine.Vector3(sliderPosX - segmentOffset, sliderPosY, 0);
             for (int j = 0; j < BadEnergies.Count; j++)
             {
                 if (currentEnergyType == BadEnergies[j].getType())
