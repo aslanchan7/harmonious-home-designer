@@ -51,13 +51,23 @@ public class PlayerControls : MonoBehaviour
     {
         Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.collider.CompareTag("Furniture") && hit.collider != null)
+            if (hit.collider != null &&
+                (hit.collider.CompareTag("Furniture") ||
+                hit.collider.CompareTag("MFurn") ||
+                hit.collider.CompareTag("WFurn")))
             {
-                selectedFurniture = hit.collider.transform.parent.GetComponent<Furniture>();
+                selectedFurniture = hit.collider.GetComponentInParent<Furniture>();
                 rotateSnapOffsetIndex = 0;
+
+                // If we grabbed an MFurn, detach it immediately so it can move independently
+                if (selectedFurniture != null && selectedFurniture.CompareTag("MFurn"))
+                {
+                    selectedFurniture.transform.SetParent(null, true);
+                }
+
                 GridSystem.Instance.ShowGridVisualizer();
                 StartCoroutine(DragUpdate());
             }
@@ -68,6 +78,7 @@ public class PlayerControls : MonoBehaviour
             }
         }
     }
+
 
     private IEnumerator DragUpdate()
     {

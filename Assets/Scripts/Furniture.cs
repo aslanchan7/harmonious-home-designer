@@ -10,6 +10,9 @@ public class Furniture : MonoBehaviour
     public string furnitureName;
     public Vector2Int Size;
     public float height;
+
+    private Furniture _stackBase;  
+    private Furniture _lastStackCandidate;        
     [HideInInspector] public Vector2 LastValidPosition;
     [HideInInspector] public float LastValidRotation;
     [HideInInspector] public Vector2Int StartingSize;
@@ -103,17 +106,30 @@ public class Furniture : MonoBehaviour
     public void TryPlace()
     {
         bool isValidPosition = CheckValidPos();
+
         SetColliderEnabled(true);
         SetNormalMat();
+
         if (isValidPosition)
         {
             SetLocationAsValid();
+
+            // Only MFurn can attach to WFurn
+            if (CompareTag("MFurn") && _lastStackCandidate != null)
+            {
+                AttachToBase(_lastStackCandidate);
+            }
+            else
+            {
+                DetachFromBase();
+            }
         }
         else
         {
             ResetToValidLocation();
         }
     }
+
 
     public void SetNormalMat()
     {
@@ -133,23 +149,106 @@ public class Furniture : MonoBehaviour
 
     public bool CheckValidPos()
     {
+        bool canStack = CompareTag("MFurn");
+
+        Furniture bestWFurnFurniture = null;
+        float bestWFurnTopY = float.NegativeInfinity;
+
+        bool sawFloor = false;
+        float bestFloorY = float.NegativeInfinity;
+
         for (int i = 0; i < ShapeUnits.childCount; i++)
         {
-            // raycast at shapeUnit
-            if(
-                !Physics.Raycast(
-                    ShapeUnits.GetChild(i).position,
-                    Vector3.down,
-                    out RaycastHit hit,
-                    100f
-                ) || !hit.collider.CompareTag("Floor")
-            )
+            Vector3 origin = ShapeUnits.GetChild(i).position;
+
+            RaycastHit[] hits = Physics.RaycastAll(origin, Vector3.down, 100f, ~0, QueryTriggerInteraction.Ignore);
+            if (hits == null || hits.Length == 0)
             {
+                _lastStackCandidate = null;
                 return false;
             }
+
+            RaycastHit? best = null;
+            float bestDist = float.PositiveInfinity;
+
+            foreach (var h in hits)
+            {
+                if (h.collider == null) continue;
+                if (h.collider.transform.IsChildOf(transform)) continue;
+
+                if (h.distance < bestDist)
+                {
+                    bestDist = h.distance;
+                    best = h;
+                }
+            }
+
+            if (best == null)
+            {
+                _lastStackCandidate = null;
+                return false;
+            }
+
+            RaycastHit hit = best.Value;
+
+            bool isFloor = hit.collider.CompareTag("Floor");
+            bool isWFurn = hit.collider.CompareTag("WFurn");
+
+            if (!canStack)
+            {
+                if (!isFloor)
+                {
+                    _lastStackCandidate = null;
+                    return false;
+                }
+            }
+            else
+            {
+                if (!isFloor && !isWFurn)
+                {
+                    _lastStackCandidate = null;
+                    return false;
+                }
+            }
+
+            if (isFloor)
+            {
+                sawFloor = true;
+                bestFloorY = Mathf.Max(bestFloorY, hit.point.y);
+            }
+
+            if (canStack && isWFurn)
+            {
+                Furniture furn = hit.collider.GetComponentInParent<Furniture>();
+                if (furn != null)
+                {
+                    float topY = hit.collider.bounds.max.y;
+                    if (topY > bestWFurnTopY)
+                    {
+                        bestWFurnTopY = topY;
+                        bestWFurnFurniture = furn;
+                    }
+                }
+            }
         }
+
+        _lastStackCandidate = canStack ? bestWFurnFurniture : null;
+
+        if (canStack && bestWFurnFurniture != null)
+        {
+            transform.position = new Vector3(transform.position.x, bestWFurnTopY, transform.position.z);
+        }
+        else if (sawFloor)
+        {
+            transform.position = new Vector3(transform.position.x, bestFloorY, transform.position.z);
+        }
+
         return true;
     }
+
+
+
+
 
     public BoundingBox GetLastValidBoundingBox()
     {
@@ -166,6 +265,56 @@ public class Furniture : MonoBehaviour
     {
         return face.Rotate(LastValidRotation);
     }
+
+    private void SnapVerticalToSurface(RaycastHit hit)
+    {
+        float newY = transform.position.y;
+
+        if (hit.collider.CompareTag("Floor"))
+        {
+            return;
+        }
+
+        if (hit.collider.CompareTag("WFurn"))
+        {
+            float topY = hit.collider.bounds.max.y;
+
+            float myBottomOffset = GetMyBottomOffset();
+            newY = topY + myBottomOffset;
+        }
+
+        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+    }
+
+    private float GetMyBottomOffset()
+    {
+        if (Colliders != null && Colliders.Length > 0 && Colliders[0] != null)
+        {
+            return 0f; 
+        }
+        return 0f;
+    }
+
+    private void AttachToBase(Furniture baseFurniture)
+{
+    if (baseFurniture == null) return;
+    if (_stackBase == baseFurniture) return;
+
+    // Keep world position/rotation when parenting
+    Transform oldParent = transform.parent;
+    transform.SetParent(baseFurniture.transform, true);
+
+    _stackBase = baseFurniture;
+}
+
+    private void DetachFromBase()
+    {
+        if (_stackBase == null) return;
+
+        transform.SetParent(null, true);
+        _stackBase = null;
+    }
+
 }
 
 /*
