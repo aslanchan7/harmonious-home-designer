@@ -7,6 +7,7 @@ public class PlayerControls : MonoBehaviour
     [HideInInspector]
     public Vector3 MousePos;
     private Furniture selectedFurniture;
+    private Furniture lastRotatedFurniture;
 
     [Header("Actions")]
     private InputAction mousePositionAction;
@@ -62,24 +63,17 @@ public class PlayerControls : MonoBehaviour
 
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
-        Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        Furniture raycastFurniture = RaycastFurniture();
+        if (raycastFurniture != null)
         {
-            if (hit.collider.CompareTag("Furniture") && hit.collider != null)
-            {
-                selectedFurniture =
-                    hit.collider.transform.parent.GetComponent<Furniture>();
-                rotateSnapOffsetIndex = 0;
-                GridSystem.Instance.ShowGridVisualizer();
-                StartCoroutine(DragUpdate());
-            }
-            else
-            {
-                selectedFurniture = null;
-                GridSystem.Instance.HideGridVisualizer();
-            }
+            selectedFurniture = raycastFurniture;
+            GridSystem.Instance.ShowGridVisualizer();
+            StartCoroutine(DragUpdate());
+        }
+        else
+        {
+            selectedFurniture = null;
+            GridSystem.Instance.HideGridVisualizer();
         }
     }
 
@@ -98,65 +92,93 @@ public class PlayerControls : MonoBehaviour
         selectedFurniture.TryPlace();
         selectedFurniture.SetNormalMat();
         selectedFurniture.SetColliderEnabled(true);
+        selectedFurniture = null;
+        GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);
     }
 
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
-        if (selectedFurniture == null)
-            return;
-
-        selectedFurniture.DisplayRotation += 90;
-
-        if (clickAction.action.ReadValue<float>() != 0)
+        // Is dragging
+        if (selectedFurniture != null)
         {
+            selectedFurniture.DisplayRotation += 90;
             mouseIndicator.Rotate();
             return;
         }
 
-        if (selectedFurniture.Size.x == selectedFurniture.Size.y)
+        Furniture hoverFurniture = RaycastFurniture();
+        if (hoverFurniture == null)
+            return;
+        hoverFurniture.DisplayRotation += 90;
+
+        if (hoverFurniture.Size.x == hoverFurniture.Size.y)
         {
             mouseIndicator.Rotate();
-            selectedFurniture.SetLocationAsValid();
+            hoverFurniture.SetLocationAsValid();
             return;
         }
 
         bool sizeIsEven =
-            (selectedFurniture.Size.x + selectedFurniture.Size.y) % 2 == 0;
-        selectedFurniture.SetColliderEnabled(false);
-        if (sizeIsEven && selectedFurniture.CheckValidPos())
+            (hoverFurniture.Size.x + hoverFurniture.Size.y) % 2 == 0;
+        hoverFurniture.SetColliderEnabled(false);
+        if (sizeIsEven && hoverFurniture.CheckValidPos())
         {
-            selectedFurniture.SetColliderEnabled(true);
+            hoverFurniture.SetColliderEnabled(true);
             mouseIndicator.Rotate();
-            selectedFurniture.SetLocationAsValid();
+            hoverFurniture.SetLocationAsValid();
             return;
         }
 
-        Vector2 currentPosition = selectedFurniture.LastValidPosition;
+        Vector2 currentPosition = hoverFurniture.LastValidPosition;
         Vector2[] offsetsToCheck = sizeIsEven
             ? evenSizeSnapOffset
             : oddSizeSnapOffset;
+        if (
+            lastRotatedFurniture == null
+            || hoverFurniture != lastRotatedFurniture
+        )
+        {
+            rotateSnapOffsetIndex = 0;
+            lastRotatedFurniture = hoverFurniture;
+        }
+
         for (int i = 0; i < 4; i++)
         {
             Vector2 testPosition =
                 currentPosition
                 + offsetsToCheck[(rotateSnapOffsetIndex + i) % 4];
-            selectedFurniture.DisplayPosition = testPosition;
-            if (selectedFurniture.CheckValidPos())
+            hoverFurniture.DisplayPosition = testPosition;
+            if (hoverFurniture.CheckValidPos())
             {
                 // Make sure that if the furniture is rotated consecutively,
                 // it would favor the offset direction opposite to the
                 // current offset
                 rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 2) % 4;
                 mouseIndicator.Rotate();
-                selectedFurniture.SetColliderEnabled(true);
-                selectedFurniture.SetLocationAsValid();
+                hoverFurniture.SetColliderEnabled(true);
+                hoverFurniture.SetLocationAsValid();
                 return;
             }
         }
 
-        selectedFurniture.SetColliderEnabled(true);
-        selectedFurniture.ResetToValidLocation();
+        hoverFurniture.SetColliderEnabled(true);
+        hoverFurniture.ResetToValidLocation();
+    }
+
+    public Furniture RaycastFurniture()
+    {
+        Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if (
+            Physics.Raycast(ray, out hit)
+            && hit.collider.CompareTag("Furniture")
+        )
+        {
+            return hit.collider.transform.parent.GetComponent<Furniture>();
+        }
+        return null;
     }
 
     public void RaycastMouse()
@@ -177,4 +199,3 @@ public class PlayerControls : MonoBehaviour
         }
     }
 }
-
