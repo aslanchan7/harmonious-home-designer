@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Furniture
   furnitureName: Dresser
   Size: {x: 1, y: 1}
-  height: 0
+  height: 1
   LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}

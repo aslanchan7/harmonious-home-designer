@@ -246,6 +246,7 @@ public class PlayerControls : MonoBehaviour
         GameObject newFurnitureGameObject = Instantiate(furniturePrefab);
         Furniture newFurniture =
             newFurnitureGameObject.GetComponent<Furniture>();
+        newFurniture.InitializeState();
 
         Vector2Int gridSize = GridSystem.Instance.Size;
         int numXPositions = gridSize.x - newFurniture.Size.x + 1;
@@ -286,6 +287,7 @@ public class PlayerControls : MonoBehaviour
             testPosition += rowIncrement;
         }
 
+        // Destroy if no empty space.
         Destroy(newFurnitureGameObject);
     }
 

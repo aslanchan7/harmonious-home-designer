@@ -48,7 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Furniture
   furnitureName: NightStand
   Size: {x: 1, y: 1}
-  LastValidPos: {x: 0, y: 0}
+  height: 1
+  LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
   MeshRenderers:
@@ -58,7 +59,6 @@ MonoBehaviour:
     Item2: {fileID: 2100000, guid: 890c5646eed4dda4d80c342bb6e3f52f, type: 2}
   Colliders:
   - {fileID: 2456306365139740595}
-  NormalMat: {fileID: 2100000, guid: 890c5646eed4dda4d80c342bb6e3f52f, type: 2}
   GhostMat: {fileID: 2100000, guid: b640afd4979980c4c85064f5d6898dd7, type: 2}
   InvalidGhostMat: {fileID: 2100000, guid: 0acb0b4739119964fa2ff5fe3ad79eca, type: 2}
   ShapeUnits: {fileID: 4867949459925563411}

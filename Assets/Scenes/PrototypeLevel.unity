@@ -151,6 +151,7 @@ MonoBehaviour:
   MousePos: {x: 0, y: 0, z: 0}
   clickAction: {fileID: 86437814}
   rotateAction: {fileID: 949383598}
+  deleteAction: {fileID: 571315925}
   mouseIndicator: {fileID: 367660838}
   bedText: {fileID: 275016536}
   dresserText: {fileID: 739841432}
@@ -3053,6 +3054,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 546194998}
   m_CullTransparentMesh: 1
+--- !u!114 &571315925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UI/Delete
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 6cbfee65-f5d7-4e00-aef9-e593590efecf
 --- !u!1 &574950497
 GameObject:
   m_ObjectHideFlags: 0
@@ -4259,7 +4274,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1419079}
         m_TargetAssemblyTypeName: PlayerControls, Assembly-CSharp
-        m_MethodName: PlaceFurnitureRandomly
+        m_MethodName: TryPlaceFurniture
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 2476502737128270008, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
@@ -7403,9 +7418,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1419079}
         m_TargetAssemblyTypeName: PlayerControls, Assembly-CSharp
-        m_MethodName: PlaceFurnitureRandomly
+        m_MethodName: TryPlaceFurniture
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 707164867603984169, guid: b6a810349eb6d2c4e90be12a723c9135, type: 3}

@@ -10,14 +10,21 @@ public class Furniture : MonoBehaviour
     public string furnitureName;
     public Vector2Int Size;
     public float height;
-    [HideInInspector] public Vector2 LastValidPosition;
-    [HideInInspector] public float LastValidRotation;
-    [HideInInspector] public Vector2Int StartingSize;
+
+    [HideInInspector]
+    public Vector2 LastValidPosition;
+
+    [HideInInspector]
+    public float LastValidRotation;
+
+    [HideInInspector]
+    public Vector2Int StartingSize;
 
     [Header("References")]
     public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
     public Collider[] Colliders;
-    public Material GhostMat, InvalidGhostMat;
+    public Material GhostMat,
+        InvalidGhostMat;
     public Transform ShapeUnits;
 
     public Vector2 DisplayPosition
@@ -50,6 +57,11 @@ public class Furniture : MonoBehaviour
 
     private void Start()
     {
+        InitializeState();
+    }
+
+    public void InitializeState()
+    {
         _displayPosition = new(transform.position.x, transform.position.z);
         _displayRotation = transform.localRotation.eulerAngles.y;
         StartingSize = Size;
@@ -79,10 +91,11 @@ public class Furniture : MonoBehaviour
 
     public void ResetSize()
     {
-        Size = Mathf.Abs(transform.eulerAngles.y) < 0.1f
-               || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f
-               ? StartingSize
-               : new(StartingSize.y, StartingSize.x); 
+        Size =
+            Mathf.Abs(transform.eulerAngles.y) < 0.1f
+            || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x);
     }
 
     public void MoveGhost(Vector2 position)
@@ -94,7 +107,9 @@ public class Furniture : MonoBehaviour
         bool valid = CheckValidPos();
 
         // Set materials for mesh renderers
-        foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
+        foreach (
+            SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
+        )
         {
             tuple.Item1.material = valid ? GhostMat : InvalidGhostMat;
         }
@@ -117,7 +132,9 @@ public class Furniture : MonoBehaviour
 
     public void SetNormalMat()
     {
-        foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
+        foreach (
+            SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
+        )
         {
             tuple.Item1.material = tuple.Item2;
         }
@@ -136,7 +153,7 @@ public class Furniture : MonoBehaviour
         for (int i = 0; i < ShapeUnits.childCount; i++)
         {
             // raycast at shapeUnit
-            if(
+            if (
                 !Physics.Raycast(
                     ShapeUnits.GetChild(i).position,
                     Vector3.down,
@@ -156,9 +173,9 @@ public class Furniture : MonoBehaviour
         return BoundingBox.FromCenterAndSize(
             LastValidPosition,
             Mathf.Abs(LastValidRotation) < 0.1f
-               || Mathf.Abs(Mathf.Abs(LastValidRotation) - 180f) < 0.1f
-               ? StartingSize
-               : new(StartingSize.y, StartingSize.x)
+            || Mathf.Abs(Mathf.Abs(LastValidRotation) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x)
         );
     }
 
@@ -187,5 +204,5 @@ public class SerializableTuple<T1, T2>
     {
         return $"({Item1}, {Item2})";
     }
-
 }
+
