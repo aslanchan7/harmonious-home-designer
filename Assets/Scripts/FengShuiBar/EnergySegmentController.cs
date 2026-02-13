@@ -4,8 +4,8 @@ using UnityEngine.UI;
 public class EnergySegmentController : MonoBehaviour
 {
     [Header("References")]
+    public Slider energySegment;
     [SerializeField] private Transform segmentFill;
-    [SerializeField] private Slider energySegment;
     [SerializeField] private Button hoverDetection;
 
     [Header("Settings")]
@@ -55,7 +55,7 @@ public class EnergySegmentController : MonoBehaviour
         hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(buttonWidth, 5);
     }
 
-    public void setPolarity(bool sourcePolarity)
+    public void SetPolarity(bool sourcePolarity)
     {
         polarity = sourcePolarity;
         if (polarity)
@@ -67,15 +67,21 @@ public class EnergySegmentController : MonoBehaviour
             energySegment.direction = Slider.Direction.RightToLeft;
         }
     }
-    public int getValue()
+
+    public int GetValue()
     {
         return energyValue;
     }
 
     // Set the velue of energy in the segment
-    public void setValue(int value)
+    public void SetValue(int value)
     {
         energyValue = value;
         energySegment.value = energyValue;
+    }
+
+    public void SetSize(Vector2 size)
+    {
+        energySegment.GetComponent<RectTransform>().sizeDelta = size;
     }
 }

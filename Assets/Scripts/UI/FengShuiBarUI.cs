@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FengShuiBarUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject _EnergySegmentPrefab;
+    public Slider sinSlider;
 
     [Header("Data")]
     private List<GameObject> BadEnergySegments = new();
@@ -13,9 +15,10 @@ public class FengShuiBarUI : MonoBehaviour
     // Creates an instance of the energySegment prefab of the desired type
     public void CreateEnergySegment(FSEnergyType type, bool polarity)
     {
-        GameObject newEnergySegment = Instantiate(_EnergySegmentPrefab, transform);
+        GameObject newEnergySegment = Instantiate(_EnergySegmentPrefab, sinSlider.transform);
         newEnergySegment.GetComponent<EnergySegmentController>().SetEnergyType(type);
-        newEnergySegment.GetComponent<EnergySegmentController>().setPolarity(polarity);
+        newEnergySegment.GetComponent<EnergySegmentController>().SetPolarity(polarity);
+        newEnergySegment.GetComponent<EnergySegmentController>().SetSize(sinSlider.GetComponent<RectTransform>().sizeDelta);
         newEnergySegment.GetComponent<RectTransform>().localPosition = Vector3.zero;
         if (!polarity)
         {
@@ -64,7 +67,7 @@ public class FengShuiBarUI : MonoBehaviour
                 int currentSourceValue = badEnergies[j].getAmount();
                 if (badEnergies[j].getType().Equals(currentEnergyType))
                 {
-                    currentSegment.GetComponent<EnergySegmentController>().setValue(currentSourceValue);
+                    currentSegment.GetComponent<EnergySegmentController>().SetValue(currentSourceValue);
                 }
             }
         }
@@ -76,14 +79,13 @@ public class FengShuiBarUI : MonoBehaviour
     {
         float segmentOffset = 0.0f;
         float sliderPosX = sinsSlider.localPosition.x;
-        float sliderPosY = sinsSlider.localPosition.y;
         for (int i = 0; i < BadEnergySegments.Count; i++)
         {
             GameObject currentSegment = BadEnergySegments[i];
             FSEnergyType currentEnergyType = BadEnergySegments[i].GetComponent<EnergySegmentController>().GetEnergyType();
             FSEnergy currentEnergy = null;
             float sliderWidth = sinsSlider.sizeDelta.x;
-            Vector3 displacement = new(sliderPosX - segmentOffset, sliderPosY, 0);
+            Vector3 displacement = new(sliderPosX - segmentOffset, 0, 0);
             for (int j = 0; j < badEnergies.Count; j++)
             {
                 if (currentEnergyType == badEnergies[j].getType())
