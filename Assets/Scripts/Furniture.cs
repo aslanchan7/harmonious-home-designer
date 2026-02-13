@@ -96,6 +96,7 @@ public class Furniture : MonoBehaviour
     {
         DisplayPosition = LastValidPosition;
         DisplayRotation = LastValidRotation;
+        ColliderOn();
     }
 
     public void ColliderOff()
