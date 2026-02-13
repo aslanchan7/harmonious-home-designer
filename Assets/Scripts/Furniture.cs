@@ -10,9 +10,12 @@ public class Furniture : MonoBehaviour
     public string furnitureName;
     public Vector2Int Size;
     public float height;
+    public bool canBeStackedOn; // If true, other furniture items can stack on top of this one
+    public bool canStackOnOthers; // If ture, this furniture item can stack on top of others (naming variables is very hard...)
 
-    private Furniture _stackBase;  
-    private Furniture lastStackCandidate;        
+    private Furniture _stackBase;
+    private Furniture lastStackCandidate;
+
     [HideInInspector] public Vector2 LastValidPosition;
     [HideInInspector] public float LastValidRotation;
     [HideInInspector] public Vector2Int StartingSize;
@@ -20,8 +23,7 @@ public class Furniture : MonoBehaviour
     [Header("References")]
     public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
     public Collider[] Colliders;
-    public Material GhostMat,
-        InvalidGhostMat;
+    public Material GhostMat, InvalidGhostMat;
     public Transform ShapeUnits;
 
     public Vector2 DisplayPosition
@@ -104,9 +106,7 @@ public class Furniture : MonoBehaviour
         bool valid = CheckValidPos();
 
         // Set materials for mesh renderers
-        foreach (
-            SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
-        )
+        foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
         {
             tuple.Item1.material = valid ? GhostMat : InvalidGhostMat;
         }
@@ -124,7 +124,7 @@ public class Furniture : MonoBehaviour
             SetLocationAsValid();
 
             // Only MFurn can attach to WFurn
-            if (CompareTag("MFurn") && lastStackCandidate != null)
+            if (canStackOnOthers && lastStackCandidate != null)
             {
                 AttachToBase(lastStackCandidate);
             }
@@ -142,9 +142,7 @@ public class Furniture : MonoBehaviour
 
     public void SetNormalMat()
     {
-        foreach (
-            SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
-        )
+        foreach (SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers)
         {
             tuple.Item1.material = tuple.Item2;
         }
@@ -160,7 +158,7 @@ public class Furniture : MonoBehaviour
 
     public bool CheckValidPos()
     {
-        bool canStack = CompareTag("MFurn");
+        // bool canStack = CompareTag("MFurn");
 
         Furniture bestWFurnFurniture = null;
         float bestWFurnTopY = float.NegativeInfinity;
@@ -212,9 +210,16 @@ public class Furniture : MonoBehaviour
             RaycastHit hit = best.Value;
 
             bool isFloor = hit.collider.CompareTag("Floor");
-            bool isWFurn = hit.collider.CompareTag("WFurn");
+            bool hitCanBeStackedOn = false;
+            Furniture hitFurnitureComponent = null;
+            if(hit.collider.transform.parent != null)
+            {
+                if(hit.collider.transform.parent.TryGetComponent(out hitFurnitureComponent)) {
+                    hitCanBeStackedOn = hitFurnitureComponent.canBeStackedOn;
+                }
+            } 
 
-            if (!canStack)
+            if (!canStackOnOthers)
             {
                 if (!isFloor)
                 {
@@ -224,7 +229,7 @@ public class Furniture : MonoBehaviour
             }
             else
             {
-                if (!isFloor && !isWFurn)
+                if (!isFloor && !hitCanBeStackedOn)
                 {
                     lastStackCandidate = null;
                     return false;
@@ -237,24 +242,23 @@ public class Furniture : MonoBehaviour
                 bestFloorY = Mathf.Max(bestFloorY, hit.point.y);
             }
 
-            if (canStack && isWFurn)
+            if (canStackOnOthers && hitCanBeStackedOn)
             {
-                Furniture furn = hit.collider.GetComponentInParent<Furniture>();
-                if (furn != null)
+                if (hitFurnitureComponent != null)
                 {
                     float topY = hit.collider.bounds.max.y;
                     if (topY > bestWFurnTopY)
                     {
                         bestWFurnTopY = topY;
-                        bestWFurnFurniture = furn;
+                        bestWFurnFurniture = hitFurnitureComponent;
                     }
                 }
             }
         }
 
-        lastStackCandidate = canStack ? bestWFurnFurniture : null;
+        lastStackCandidate = canStackOnOthers ? bestWFurnFurniture : null;
 
-        if (canStack && bestWFurnFurniture != null)
+        if (canStackOnOthers && bestWFurnFurniture != null)
         {
             transform.position = new Vector3(transform.position.x, bestWFurnTopY, transform.position.z);
         }
@@ -316,16 +320,16 @@ public class Furniture : MonoBehaviour
     }
 
     private void AttachToBase(Furniture baseFurniture)
-{
-    if (baseFurniture == null) return;
-    if (_stackBase == baseFurniture) return;
+    {
+        if (baseFurniture == null) return;
+        if (_stackBase == baseFurniture) return;
 
-    // Keep world position/rotation when parenting
-    Transform oldParent = transform.parent;
-    transform.SetParent(baseFurniture.transform, true);
+        // Keep world position/rotation when parenting
+        Transform oldParent = transform.parent;
+        transform.SetParent(baseFurniture.transform, true);
 
-    _stackBase = baseFurniture;
-}
+        _stackBase = baseFurniture;
+    }
 
     private void DetachFromBase()
     {

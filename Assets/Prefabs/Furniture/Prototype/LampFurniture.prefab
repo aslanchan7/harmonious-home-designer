@@ -49,6 +49,8 @@ MonoBehaviour:
   furnitureName: Lamp
   Size: {x: 1, y: 1}
   height: 1
+  canBeStackedOn: 0
+  canStackOnOthers: 1
   LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
@@ -75,7 +77,6 @@ MonoBehaviour:
     Item2: {fileID: 2100000, guid: 9f1a9d60921654346adc80ec3f514fb0, type: 2}
   Colliders:
   - {fileID: 4514667299672722021}
-  NormalMat: {fileID: 2100000, guid: c8939e834ee914636ac34c80049f7775, type: 2}
   GhostMat: {fileID: 2100000, guid: b640afd4979980c4c85064f5d6898dd7, type: 2}
   InvalidGhostMat: {fileID: 2100000, guid: 0acb0b4739119964fa2ff5fe3ad79eca, type: 2}
   ShapeUnits: {fileID: 2757496635643795403}

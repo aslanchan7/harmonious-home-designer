@@ -102,6 +102,12 @@ public class PlayerControls : MonoBehaviour
         if (raycastFurniture != null)
         {
             selectedFurniture = raycastFurniture;
+
+            if(selectedFurniture.canBeStackedOn)
+            {
+                selectedFurniture.transform.SetParent(null, true);
+            }
+
             GridSystem.Instance.ShowGridVisualizer();
             StartCoroutine(DragUpdate());
         }
