@@ -260,5 +260,6 @@ public enum FSEnergyType
     Toilet,
     Chaos,
     Death,
-    Skibbidy
+    Skibbidy,
+    Functional
 }
