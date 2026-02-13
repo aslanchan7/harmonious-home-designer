@@ -4,54 +4,52 @@ using UnityEngine.UI;
 
 public class JournalUI : MonoBehaviour
 {
-    [SerializeField] GameObject notesContainer;
-    [SerializeField] Button openNoteButton;
-    [SerializeField] GameObject background;
-    [SerializeField] GameObject closeNoteButton, prevNoteButton, nextNoteButton;
+    [SerializeField] GameObject pagesContainer;
+    [SerializeField] GameObject background, journalBG;
+    [SerializeField] GameObject closeNoteButton;
+    [SerializeField] GameObject MenuButtonsUI;
     private int noteIdx = 0;
-    private List<GameObject> notes = new();
+    private List<GameObject> pages = new();
+
+    [Header("Animation Settings")]
+    [SerializeField] float fadeOutAnimTime = 0.5f;
 
     void Start()
     {
-        for (int i = 0; i < notesContainer.transform.childCount; i++)
+        for (int i = 0; i < pagesContainer.transform.childCount; i++)
         {
-            notes.Add(notesContainer.transform.GetChild(i).gameObject);
+            pages.Add(pagesContainer.transform.GetChild(i).gameObject);
+            pagesContainer.transform.GetChild(i).gameObject.SetActive(false);
         }
-        
-        CloseNotes();
+
+        // This ensures the first page is always the first one to open
+        pages[0].SetActive(true);
     }
 
-    public void OpenNotes()
+    public void CloseJournalUI()
     {
-        notesContainer.SetActive(true);
-        background.SetActive(true);
+        // fade out journal ui
+        gameObject.GetComponent<CanvasGroup>().LeanAlpha(0f, fadeOutAnimTime).setOnComplete(() =>
+        {
+            gameObject.SetActive(false);
+        });
 
-        closeNoteButton.SetActive(true);
-        prevNoteButton.SetActive(true);
-        nextNoteButton.SetActive(true);
+        // fade in menu buttons
+        MenuButtonsUI.SetActive(true);
+        MenuButtonsUI.GetComponent<CanvasGroup>().LeanAlpha(1f, fadeOutAnimTime);
     }
 
-    public void CloseNotes()
+    public void ShowNextPage()
     {
-        notesContainer.SetActive(false);
-        background.SetActive(false);
-
-        closeNoteButton.SetActive(false);
-        prevNoteButton.SetActive(false);
-        nextNoteButton.SetActive(false);
+        pages[noteIdx].SetActive(false);
+        noteIdx++;
+        pages[noteIdx].SetActive(true);
     }
 
-    public void ShowNextNote()
+    public void ShowPrevPage()
     {
-        notes[noteIdx].SetActive(false);
-        noteIdx = (noteIdx + 1) % notes.Count;
-        notes[noteIdx].SetActive(true);
-    }
-
-    public void ShowPrevNote()
-    {
-        notes[noteIdx].SetActive(false);
-        noteIdx = (noteIdx - 1) % notes.Count;
-        notes[noteIdx].SetActive(true);
+        pages[noteIdx].SetActive(false);
+        noteIdx--;
+        pages[noteIdx].SetActive(true);
     }
 }

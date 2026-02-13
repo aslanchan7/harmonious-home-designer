@@ -6,23 +6,10 @@ public class InventoryUI : MonoBehaviour
     [Header("References")]
     [SerializeField] GameObject inventoryPanel;
     [SerializeField] private GameObject inventoryFurnitureButtonPrefab;
+    [SerializeField] GameObject MenuButtonsUI;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown("tab"))
-        {
-            if (inventoryPanel != null)
-            {
-                bool currentState = inventoryPanel.activeSelf;
-                inventoryPanel.SetActive(!currentState);
-            }
-        }
-    }
+    [Header("Animation Settings")]
+    [SerializeField] float fadeOutAnimTime = 0.5f;
 
     public void InstantiateInventoryButton(InventoryItem item)
     {
@@ -45,5 +32,21 @@ public class InventoryUI : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void CloseInventoryUI()
+    {
+        // fade out inventory
+        gameObject.GetComponent<CanvasGroup>().LeanAlpha(0f, fadeOutAnimTime).setOnComplete(() =>
+        {
+            gameObject.SetActive(false);
+        });
+
+        // simultaneously zoom in camera
+        Camera.main.transform.LeanMoveLocalY(Camera.main.transform.position.y - 2f, fadeOutAnimTime);
+
+        // simultaneously fade in MenuButtonsUI
+        MenuButtonsUI.SetActive(true);
+        MenuButtonsUI.GetComponent<CanvasGroup>().LeanAlpha(1f, fadeOutAnimTime);
     }
 }

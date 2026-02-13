@@ -70,10 +70,44 @@ public class PlayerControls : MonoBehaviour
 
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
+        // Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
+        // Ray ray = Camera.main.ScreenPointToRay(mousePos);
+
+        // if (Physics.Raycast(ray, out RaycastHit hit))
+        // {
+        //     if (hit.collider != null &&
+        //         (hit.collider.CompareTag("Furniture") ||
+        //         hit.collider.CompareTag("MFurn") ||
+        //         hit.collider.CompareTag("WFurn")))
+        //     {
+        //         selectedFurniture = hit.collider.GetComponentInParent<Furniture>();
+        //         rotateSnapOffsetIndex = 0;
+
+        //         // If we grabbed an MFurn, detach it immediately so it can move independently
+        //         if (selectedFurniture != null && selectedFurniture.CompareTag("MFurn"))
+        //         {
+        //             selectedFurniture.transform.SetParent(null, true);
+        //         }
+
+        //         GridSystem.Instance.ShowGridVisualizer();
+        //         StartCoroutine(DragUpdate());
+        //     }
+        //     else
+        //     {
+        //         selectedFurniture = null;
+        //         GridSystem.Instance.HideGridVisualizer();
+        //     }
+        // }
         Furniture raycastFurniture = RaycastFurniture();
         if (raycastFurniture != null)
         {
             selectedFurniture = raycastFurniture;
+
+            if(selectedFurniture.canBeStackedOn)
+            {
+                selectedFurniture.transform.SetParent(null, true);
+            }
+
             GridSystem.Instance.ShowGridVisualizer();
             StartCoroutine(DragUpdate());
         }
@@ -83,6 +117,7 @@ public class PlayerControls : MonoBehaviour
             GridSystem.Instance.HideGridVisualizer();
         }
     }
+
 
     private IEnumerator DragUpdate()
     {
