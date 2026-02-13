@@ -6,11 +6,7 @@ public class InventoryUI : MonoBehaviour
     [Header("References")]
     [SerializeField] GameObject inventoryPanel;
     [SerializeField] private GameObject inventoryFurnitureButtonPrefab;
-
-    void Start()
-    {
-        
-    }
+    [SerializeField] GameObject MenuButtonsUI;
 
     void Update()
     {
@@ -45,5 +41,15 @@ public class InventoryUI : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void CloseInventoryUI()
+    {
+        gameObject.SetActive(false);
+        MenuButtonsUI.SetActive(true);
+
+        // TODO: Animate this to be a smooth transition (tweening)
+        Vector3 newCamPos = new(Camera.main.transform.position.x, Camera.main.transform.position.y - 2f, Camera.main.transform.position.z);
+        Camera.main.transform.position = newCamPos;
     }
 }

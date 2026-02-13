@@ -4,54 +4,53 @@ using UnityEngine.UI;
 
 public class JournalUI : MonoBehaviour
 {
-    [SerializeField] GameObject notesContainer;
-    [SerializeField] Button openNoteButton;
-    [SerializeField] GameObject background;
-    [SerializeField] GameObject closeNoteButton, prevNoteButton, nextNoteButton;
+    [SerializeField] GameObject pagesContainer;
+    [SerializeField] GameObject background, journalBG;
+    [SerializeField] GameObject closeNoteButton;
+    [SerializeField] GameObject MenuButtonsUI;
     private int noteIdx = 0;
-    private List<GameObject> notes = new();
+    private List<GameObject> pages = new();
 
     void Start()
     {
-        for (int i = 0; i < notesContainer.transform.childCount; i++)
+        for (int i = 0; i < pagesContainer.transform.childCount; i++)
         {
-            notes.Add(notesContainer.transform.GetChild(i).gameObject);
+            pages.Add(pagesContainer.transform.GetChild(i).gameObject);
+            pagesContainer.transform.GetChild(i).gameObject.SetActive(false);
         }
+
+        // This ensures the first page is always the first one to open
+        pages[0].SetActive(true);
         
-        CloseNotes();
+        // CloseJournalUI();
     }
 
-    public void OpenNotes()
+    public void OpenJournalUI()
     {
-        notesContainer.SetActive(true);
+        pagesContainer.SetActive(true);
         background.SetActive(true);
 
         closeNoteButton.SetActive(true);
-        prevNoteButton.SetActive(true);
-        nextNoteButton.SetActive(true);
+        journalBG.SetActive(true);
     }
 
-    public void CloseNotes()
+    public void CloseJournalUI()
     {
-        notesContainer.SetActive(false);
-        background.SetActive(false);
-
-        closeNoteButton.SetActive(false);
-        prevNoteButton.SetActive(false);
-        nextNoteButton.SetActive(false);
+        gameObject.SetActive(false);
+        MenuButtonsUI.SetActive(true);
     }
 
-    public void ShowNextNote()
+    public void ShowNextPage()
     {
-        notes[noteIdx].SetActive(false);
-        noteIdx = (noteIdx + 1) % notes.Count;
-        notes[noteIdx].SetActive(true);
+        pages[noteIdx].SetActive(false);
+        noteIdx++;
+        pages[noteIdx].SetActive(true);
     }
 
-    public void ShowPrevNote()
+    public void ShowPrevPage()
     {
-        notes[noteIdx].SetActive(false);
-        noteIdx = (noteIdx - 1) % notes.Count;
-        notes[noteIdx].SetActive(true);
+        pages[noteIdx].SetActive(false);
+        noteIdx--;
+        pages[noteIdx].SetActive(true);
     }
 }
