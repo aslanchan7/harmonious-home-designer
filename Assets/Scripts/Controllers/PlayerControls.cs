@@ -121,7 +121,7 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator DragUpdate()
     {
-        selectedFurniture.SetColliderEnabled(false);
+        selectedFurniture.ColliderOff();
         mouseIndicator.Size = selectedFurniture.Size;
 
         while (clickAction.action.ReadValue<float>() != 0)
@@ -132,8 +132,6 @@ public class PlayerControls : MonoBehaviour
         }
 
         selectedFurniture.TryPlace();
-        selectedFurniture.SetNormalMat();
-        selectedFurniture.SetColliderEnabled(true);
         selectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);
@@ -157,16 +155,16 @@ public class PlayerControls : MonoBehaviour
         if (hoverFurniture.Size.x == hoverFurniture.Size.y)
         {
             mouseIndicator.Rotate();
+            hoverFurniture.ColliderOff();
             hoverFurniture.SetLocationAsValid();
             return;
         }
 
         bool sizeIsEven =
             (hoverFurniture.Size.x + hoverFurniture.Size.y) % 2 == 0;
-        hoverFurniture.SetColliderEnabled(false);
+        hoverFurniture.ColliderOff();
         if (sizeIsEven && hoverFurniture.CheckValidPos())
         {
-            hoverFurniture.SetColliderEnabled(true);
             mouseIndicator.Rotate();
             hoverFurniture.SetLocationAsValid();
             return;
@@ -198,13 +196,11 @@ public class PlayerControls : MonoBehaviour
                 // current offset
                 rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 2) % 4;
                 mouseIndicator.Rotate();
-                hoverFurniture.SetColliderEnabled(true);
                 hoverFurniture.SetLocationAsValid();
                 return;
             }
         }
 
-        hoverFurniture.SetColliderEnabled(true);
         hoverFurniture.ResetToValidLocation();
     }
 
@@ -226,23 +222,29 @@ public class PlayerControls : MonoBehaviour
     private void OnDelete(InputAction.CallbackContext callbackContext)
     {
         Furniture hoverFurniture = RaycastFurniture();
-        if (hoverFurniture == null) return;
-        
-        InventoryItem item = InventoryManager.Instance.inventorySO.inventoryList.Find(
-            x => hoverFurniture.furnitureName.Equals(x.Prefab.GetComponent<Furniture>().furnitureName)
-        );
+        if (hoverFurniture == null)
+            return;
+
+        InventoryItem item =
+            InventoryManager.Instance.inventorySO.inventoryList.Find(x =>
+                hoverFurniture.furnitureName.Equals(
+                    x.Prefab.GetComponent<Furniture>().furnitureName
+                )
+            );
 
         if (item != null)
         {
-            if(item.CurrentPlacedCount == item.MaxPlacements)
+            if (item.CurrentPlacedCount == item.MaxPlacements)
             {
-                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(item);
+                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(
+                    item
+                );
             }
 
             item.CurrentPlacedCount--;
         }
 
-        Destroy(hoverFurniture.gameObject);
+        hoverFurniture.DestroyPrefab();
         selectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);

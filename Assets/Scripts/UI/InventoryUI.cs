@@ -13,12 +13,23 @@ public class InventoryUI : MonoBehaviour
 
     public void InstantiateInventoryButton(InventoryItem item)
     {
-        GameObject instantiated = Instantiate(inventoryFurnitureButtonPrefab, inventoryPanel.transform);
+        GameObject instantiated = Instantiate(
+            inventoryFurnitureButtonPrefab,
+            inventoryPanel.transform
+        );
         // TODO: Edit the sprite of the button to include an image of the furniture item
-        instantiated.GetComponent<InventoryFurnitureButton>().inventoryItem = item;
-        
+        instantiated.GetComponent<InventoryFurnitureButton>().inventoryItem =
+            item;
+
         // Change the onClick functionality of the button to actually instantiate the correct furniture item when clicked
-        instantiated.GetComponent<Button>().onClick.AddListener(delegate() { InventoryManager.Instance.TryPlaceFurniture(item.Prefab); } );
+        instantiated
+            .GetComponent<Button>()
+            .onClick.AddListener(
+                delegate()
+                {
+                    InventoryManager.Instance.TryPlaceFurniture(item.Prefab);
+                }
+            );
     }
 
     public void SetFurnitureButtonActive(InventoryItem item)
@@ -26,7 +37,10 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < inventoryPanel.transform.childCount; i++)
         {
             GameObject obj = inventoryPanel.transform.GetChild(i).gameObject;
-            if (obj.GetComponent<InventoryFurnitureButton>().inventoryItem == item)
+            if (
+                obj.GetComponent<InventoryFurnitureButton>().inventoryItem
+                == item
+            )
             {
                 obj.SetActive(true);
                 return;
