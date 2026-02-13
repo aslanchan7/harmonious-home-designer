@@ -1,10 +1,9 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
+
 public class EnergyTestButton : MonoBehaviour
 {
-    public UnityEngine.UIElements.Button button;
+    public Button button;
     public FSBarController FSBar;
     public bool isGood = false;
     public FSEnergyType type = FSEnergyType.Chaos;

@@ -1,35 +1,23 @@
 using UnityEngine;
-using UnityEngine.LowLevelPhysics2D;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
+
 public class TooltipDetection : MonoBehaviour
 {
-    [SerializeField] private UnityEngine.UI.Button hoverDetection;
-    [SerializeField] private UnityEngine.UI.Image segmentToolTip;
+    [SerializeField] private Button hoverDetection;
+    [SerializeField] private Image segmentToolTip;
     private Color modifier;
-    private UnityEngine.Vector3 curtain;
+    private Vector3 curtain;
 
-// Displays tooltip / description of energy when hovering over appropriate bar
-    public void displayTooltip()
+    // Displays tooltip / description of energy when hovering over appropriate bar
+    public void DisplayTooltip()
     {
-        Debug.Log("mouse entered button");
-        modifier = segmentToolTip.color;
-        modifier.a = 1;
-        curtain = segmentToolTip.GetComponent<RectTransform>().position;
-        curtain.y = curtain.y - 500;
-        segmentToolTip.color = modifier;
-        segmentToolTip.GetComponent<RectTransform>().position = curtain;
+        segmentToolTip.GetComponent<RectTransform>().localPosition = new(0f, segmentToolTip.GetComponent<RectTransform>().sizeDelta.y + 15);
+        segmentToolTip.gameObject.SetActive(true);
     }
 
-// Hides tooltip / description of energy when no longer hovering over appropriate bar
-    public void hideTooltip()
+    // Hides tooltip / description of energy when no longer hovering over appropriate bar
+    public void HideTooltip()
     {
-        Debug.Log("mouse exited button");
-        modifier = segmentToolTip.color;
-        modifier.a = 0;
-        curtain = segmentToolTip.GetComponent<RectTransform>().position;
-        curtain.y = curtain.y + 500;
-        segmentToolTip.color = modifier;
-        segmentToolTip.GetComponent<RectTransform>().position = curtain;
+        segmentToolTip.gameObject.SetActive(false);
     }
 }
