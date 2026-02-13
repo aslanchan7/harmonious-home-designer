@@ -13,54 +13,47 @@ public class BoundingBox
 
     public Vector2 opposite
     {
-        get { return position + size; }
+        get => position + size;
     }
 
     public float x
     {
-        get { return position.x; }
-        set { position.x = value; }
+        get => position.x;
     }
 
     public float y
     {
-        get { return position.y; }
-        set { position.y = value; }
+        get => position.y;
     }
 
     public int sizeX
     {
-        get { return size.x; }
-        set { size.x = value; }
+        get => size.x;
     }
 
     public int sizeY
     {
-        get { return size.y; }
-        set { size.y = value; }
+        get => size.y;
     }
 
     public float oppositeX
     {
-        get { return position.x + size.x; }
+        get => position.x + size.x;
     }
 
     public float oppositeY
     {
-        get { return position.y + size.y; }
+        get => position.y + size.y;
     }
 
     public Vector2 center
     {
-        get { return position + (Vector2) size / 2; }
+        get => position + (Vector2)size / 2;
     }
 
     public static BoundingBox FromCenterAndSize(Vector2 center, Vector2Int size)
     {
-        return new BoundingBox(
-          center - (Vector2) size / 2,
-          size
-        );
+        return new BoundingBox(center - (Vector2)size / 2, size);
     }
 
     public BoundingBox GetNextToFace(Direction direction, int width)
@@ -68,64 +61,62 @@ public class BoundingBox
         switch (direction)
         {
             case Direction.UP:
-                return new BoundingBox(
-                    new (x, oppositeY), 
-                    new (sizeX, width)
-                );
+                return new BoundingBox(new(x, oppositeY), new(sizeX, width));
             case Direction.RIGHT:
-                return new BoundingBox(
-                    new (oppositeX, y),
-                    new (width, sizeY)
-                );
+                return new BoundingBox(new(oppositeX, y), new(width, sizeY));
             case Direction.DOWN:
-                return new BoundingBox(
-                    new (x, y - width), 
-                    new (sizeX, width)
-                );
+                return new BoundingBox(new(x, y - width), new(sizeX, width));
             default:
-                return new BoundingBox(
-                    new (x - width, y), 
-                    new (width, sizeY)
-                );
+                return new BoundingBox(new(x - width, y), new(width, sizeY));
         }
     }
 
-    public void Normalize()
+    public BoundingBox Normalize()
     {
+        float newX = x;
+        float newY = y;
+        int newSizeX = sizeX;
+        int newSizeY = sizeY;
         if (sizeX < 0)
         {
-            x = oppositeX;
-            sizeX = -sizeX;
+            newX = oppositeX;
+            newSizeX = -sizeX;
         }
         if (sizeY < 0)
         {
-            y = oppositeY;
-            sizeY = -sizeY;
+            newY = oppositeY;
+            newSizeY = -sizeY;
         }
+        return new(new(newX, newY), new(newSizeX, newSizeY));
     }
 
-    public void Clamp()
+    public BoundingBox Clamp()
     {
         float maxX = GridSystem.Instance.Size.x / 2.0f;
         float maxY = GridSystem.Instance.Size.y / 2.0f;
-        if (x < -maxX)
+        float newX = x;
+        float newY = y;
+        int newSizeX = sizeX;
+        int newSizeY = sizeY;
+        if (newX < -maxX)
         {
-            sizeX -= (int) (-maxX - x);
-            x = -maxX;
+            newSizeX -= (int)(-maxX - newX);
+            newX = -maxX;
         }
-        if (oppositeX > maxX)
+        if (newX + newSizeX > maxX)
         {
-            sizeX -= (int) (oppositeX - maxX);
+            newSizeX -= (int)(newX + newSizeX - maxX);
         }
-        if (y < -maxY)
+        if (newY < -maxY)
         {
-            sizeY -= (int) (-maxY - y);
-            y = -maxY;
+            newSizeY -= (int)(-maxY - newY);
+            newY = -maxY;
         }
-        if (oppositeY > maxY)
+        if (newY + newSizeY > maxY)
         {
-            sizeY -= (int) (oppositeY - maxY);
+            newSizeY -= (int)(newY + newSizeY - maxY);
         }
+        return new(new(newX, newY), new(newSizeX, newSizeY));
     }
 
     public bool ColumnConstains(BoundingBox other)
@@ -220,13 +211,10 @@ public class BoundingBox
 
     public bool TouchesToRightOf(BoundingBox other)
     {
-        return x  == other.oppositeX;
+        return x == other.oppositeX;
     }
-    
-    public bool InLineWithFaceOf(
-        BoundingBox other,
-        Direction otherDirection
-    )
+
+    public bool InLineWithFaceOf(BoundingBox other, Direction otherDirection)
     {
         switch (otherDirection)
         {
@@ -274,7 +262,7 @@ public class BoundingBox
                 return false;
         }
     }
-    
+
     public bool IsZero()
     {
         return sizeX == 0 && sizeY == 0;

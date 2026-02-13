@@ -333,12 +333,14 @@ public class FSEnergy
 public enum FSEnergyType
 {
     // Good energies, when running addEnergy() or removeEnergy() input true for "polarity" field
+    Functional,
     Luck,
     Wealth,
     Love,
     Happiness,
 
     // Bad energies, when running addEnergy() or removeEnergy() input false for "polarity" field
+    Disfunctional,
     Toilet,
     Chaos,
     Death,

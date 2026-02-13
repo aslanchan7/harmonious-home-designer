@@ -55,31 +55,52 @@ public class Furniture : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        InitializeState();
-    }
+    // private void Start()
+    // {
+    //     InitializeState();
+    // }
 
     public void InitializeState()
     {
         _displayPosition = new(transform.position.x, transform.position.z);
         _displayRotation = transform.localRotation.eulerAngles.y;
         StartingSize = Size;
+        height = Colliders[0].bounds.max.y;
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
-        GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
+        WinCondition.Instance.AddFurnitureIfRequired(this);
+        GridSystem.Instance.heightGrid.Set(GetBoundingBox(), height);
+        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
         WinCondition.Instance.UpdateRuleCheck();
+    }
+
+    public Furniture InstantiatePrefab()
+    {
+        GameObject newGameObject = Instantiate(gameObject);
+        Furniture newFurniture = newGameObject.GetComponent<Furniture>();
+        newFurniture.InitializeState();
+        return newFurniture;
+    }
+
+    public void DestroyPrefab()
+    {
+        WinCondition.Instance.RemoveFurnitureIfRegistered(this);
+        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), null);
+        WinCondition.Instance.UpdateRuleCheck();
+        Destroy(gameObject);
     }
 
     // Update lastValidPos and lastValidRotation;
     public void SetLocationAsValid()
     {
-        GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), 0);
+        GridSystem.Instance.heightGrid.Set(GetBoundingBox(), 0);
+        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), null);
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         // TODO: Change the type of sfx played
         SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
-        GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
+        GridSystem.Instance.heightGrid.Set(GetBoundingBox(), height);
+        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
         WinCondition.Instance.UpdateRuleCheck();
     }
 
@@ -168,7 +189,7 @@ public class Furniture : MonoBehaviour
         return true;
     }
 
-    public BoundingBox GetLastValidBoundingBox()
+    public BoundingBox GetBoundingBox()
     {
         return BoundingBox.FromCenterAndSize(
             LastValidPosition,
@@ -179,9 +200,14 @@ public class Furniture : MonoBehaviour
         );
     }
 
-    public Direction GetRotatedFace(Direction face)
+    public Direction GetFace(Direction face)
     {
         return face.Rotate(LastValidRotation);
+    }
+
+    public BoundingBox GetNextToFace(Direction face, int width)
+    {
+        return GetBoundingBox().GetNextToFace(GetFace(face), width);
     }
 }
 
@@ -205,4 +231,3 @@ public class SerializableTuple<T1, T2>
         return $"({Item1}, {Item2})";
     }
 }
-

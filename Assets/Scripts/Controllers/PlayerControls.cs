@@ -191,23 +191,29 @@ public class PlayerControls : MonoBehaviour
     private void OnDelete(InputAction.CallbackContext callbackContext)
     {
         Furniture hoverFurniture = RaycastFurniture();
-        if (hoverFurniture == null) return;
-        
-        InventoryItem item = InventoryManager.Instance.inventorySO.inventoryList.Find(
-            x => hoverFurniture.furnitureName.Equals(x.Prefab.GetComponent<Furniture>().furnitureName)
-        );
+        if (hoverFurniture == null)
+            return;
+
+        InventoryItem item =
+            InventoryManager.Instance.inventorySO.inventoryList.Find(x =>
+                hoverFurniture.furnitureName.Equals(
+                    x.Prefab.GetComponent<Furniture>().furnitureName
+                )
+            );
 
         if (item != null)
         {
-            if(item.CurrentPlacedCount == item.MaxPlacements)
+            if (item.CurrentPlacedCount == item.MaxPlacements)
             {
-                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(item);
+                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(
+                    item
+                );
             }
 
             item.CurrentPlacedCount--;
         }
 
-        Destroy(hoverFurniture.gameObject);
+        hoverFurniture.DestroyPrefab();
         selectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);

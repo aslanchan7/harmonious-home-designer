@@ -3223,7 +3223,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &647229820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6648,15 +6648,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739093992157119025, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739093992157119025, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739093992157119025, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5019680395073244539, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
       propertyPath: _ParentCanvas
@@ -6672,7 +6672,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6098511371349325045, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6627952279103924789, guid: a841fa4c0051e6a409ab191591344eaa, type: 3}
       propertyPath: m_Name
@@ -7510,13 +7510,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WinCondition
   Bed: {fileID: 339153721}
   BarController: {fileID: 1830206179}
-  bedIsFacingDoor: 0
+  bedNotFacingDoor: 0
   bedIsAccessible: 0
-  mainDoorIsObstructed: 0
-  bathroomDoorIsObstructed: 0
-  bedHeadIsFacingBathroom: 0
-  bedIsNearBathroom: 0
-  bedIsNearWindow: 0
+  mainDoorNotObstructed: 0
+  bathroomDoorNotObstructed: 0
+  bedHeadNotFacingBathroom: 0
+  bedNotNearBathroom: 0
+  bedNotNearWindow: 0
   bedIsAgainstSolidWall: 0
   commandPosition: 0
 --- !u!4 &2055431772
