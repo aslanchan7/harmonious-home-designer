@@ -27,7 +27,6 @@ public class GridSystem : MonoBehaviour
     private GameObject testFurniturePrefab;
 
     private Vector3 centerCellOffset = new(0.5f, 0.0f, 0.5f);
-    public HeightGrid heightGrid;
     public PlacedFurnitures placedFurnitures;
 
     private void Awake()
@@ -38,7 +37,6 @@ public class GridSystem : MonoBehaviour
         }
 
         Instance = this;
-        heightGrid = new HeightGrid(Size);
         placedFurnitures = new PlacedFurnitures(Size);
     }
 
