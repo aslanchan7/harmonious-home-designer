@@ -69,7 +69,6 @@ public class Furniture : MonoBehaviour
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         WinCondition.Instance.AddFurnitureIfRequired(this);
-        GridSystem.Instance.heightGrid.Set(GetBoundingBox(), height);
         GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
         WinCondition.Instance.UpdateRuleCheck();
     }
@@ -93,13 +92,11 @@ public class Furniture : MonoBehaviour
     // Update lastValidPos and lastValidRotation;
     public void SetLocationAsValid()
     {
-        GridSystem.Instance.heightGrid.Set(GetBoundingBox(), 0);
         GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), null);
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         // TODO: Change the type of sfx played
         SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
-        GridSystem.Instance.heightGrid.Set(GetBoundingBox(), height);
         GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
         WinCondition.Instance.UpdateRuleCheck();
     }
