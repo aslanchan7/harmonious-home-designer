@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 4422740357805839616}
   - component: {fileID: 8021354772888354389}
   m_Layer: 5
-  m_Name: Energy Segment
+  m_Name: '[outdated]Energy Segment'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -339,6 +339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnergySegmentController
   energySegment: {fileID: 0}
+  hoverDetection: {fileID: 0}
   energyValue: 0
   energyType: 0
   polarity: 1
