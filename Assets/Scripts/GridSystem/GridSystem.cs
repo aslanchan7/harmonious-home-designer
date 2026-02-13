@@ -5,10 +5,15 @@ public class GridSystem : MonoBehaviour
     public static GridSystem Instance;
 
     [Header("References")]
-    [HideInInspector] public Grid grid;
-    [SerializeField] private GameObject gridVisualizer;
+    [HideInInspector]
+    public Grid grid;
+
+    [SerializeField]
+    private GameObject gridVisualizer;
     public Transform mouseIndicator;
-    [SerializeField] private PlayerControls playerControls;
+
+    [SerializeField]
+    private PlayerControls playerControls;
 
     [Header("Layer Mask")]
     public LayerMask PlacementLayer;
@@ -18,10 +23,11 @@ public class GridSystem : MonoBehaviour
     public Vector2Int Size;
 
     // Temporary
-    [SerializeField] private GameObject testFurniturePrefab;
+    [SerializeField]
+    private GameObject testFurniturePrefab;
 
     private Vector3 centerCellOffset = new(0.5f, 0.0f, 0.5f);
-    public HeightGrid heightGrid;
+    public PlacedFurnitures placedFurnitures;
 
     private void Awake()
     {
@@ -31,13 +37,17 @@ public class GridSystem : MonoBehaviour
         }
 
         Instance = this;
-        heightGrid = new HeightGrid(Size);
+        placedFurnitures = new PlacedFurnitures(Size);
     }
 
     private void Start()
     {
         // Check Size is consistent with gridVisualizer
-        if (Mathf.Abs(Size.x - gridVisualizer.transform.localScale.x * 10) > 0.1 || Mathf.Abs(Size.y - gridVisualizer.transform.localScale.z * 10) > 0.1)
+        if (
+            Mathf.Abs(Size.x - gridVisualizer.transform.localScale.x * 10) > 0.1
+            || Mathf.Abs(Size.y - gridVisualizer.transform.localScale.z * 10)
+                > 0.1
+        )
         {
             Debug.LogError("GridSystem \"Size\" does match GridVisualizer");
         }
@@ -102,7 +112,6 @@ public class GridSystem : MonoBehaviour
     {
         gridVisualizer.SetActive(true);
     }
-
 
     // Tester function
     public void CreateTestFurniture()

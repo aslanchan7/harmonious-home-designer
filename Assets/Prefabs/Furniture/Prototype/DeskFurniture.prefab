@@ -83,6 +83,8 @@ MonoBehaviour:
   furnitureName: Desk
   Size: {x: 1, y: 3}
   height: 1
+  canBeStackedOn: 1
+  canStackOnOthers: 0
   LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
