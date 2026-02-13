@@ -14,3 +14,4 @@ public class InventoryItem
     public int MaxPlacements;
     public int CurrentPlacedCount = 0;
 }
+

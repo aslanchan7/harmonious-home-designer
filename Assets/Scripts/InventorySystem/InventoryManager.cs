@@ -13,10 +13,11 @@ public class InventoryManager : MonoBehaviour
 
     void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this);
-        } else
+        }
+        else
         {
             Instance = this;
         }
@@ -30,17 +31,19 @@ public class InventoryManager : MonoBehaviour
             inventoryUI.InstantiateInventoryButton(furniture);
             furniture.CurrentPlacedCount = 0;
         }
-
     }
 
     public void TryPlaceFurniture(GameObject furniturePrefab)
     {
-        if (furniturePrefab == null) return;
+        if (furniturePrefab == null)
+            return;
 
-        GameObject newFurnitureGameObject = Instantiate(furniturePrefab);
-        Furniture newFurniture = newFurnitureGameObject.GetComponent<Furniture>();
+        // GameObject newGameObject = Instantiate(furniturePrefab);
+        Furniture newFurniture = furniturePrefab
+            .GetComponent<Furniture>()
+            .InstantiatePrefab();
 
-        newFurniture.InitializeState();
+        // newFurniture.InitializeState();
 
         Vector2Int gridSize = GridSystem.Instance.Size;
         int numXPositions = gridSize.x - newFurniture.Size.x + 1;
@@ -56,19 +59,22 @@ public class InventoryManager : MonoBehaviour
                 if (newFurniture.CheckValidPos())
                 {
                     newFurniture.SetLocationAsValid();
-                    newFurniture.ResetToValidLocation();
 
-                    InventoryItem item = inventorySO.inventoryList.Find(x => x.Prefab == furniturePrefab);
+                    InventoryItem item = inventorySO.inventoryList.Find(x =>
+                        x.Prefab == furniturePrefab
+                    );
                     if (item != null)
                     {
                         if (item.CurrentPlacedCount >= item.MaxPlacements)
                         {
                             // Destory instantiated furniture if reached MaxPlacement
-                            Debug.LogWarning($"Limit exceeded for {furniturePrefab.name}!");
-                            Destroy(newFurnitureGameObject);
+                            Debug.LogWarning(
+                                $"Limit exceeded for {furniturePrefab.name}!"
+                            );
+                            Destroy(newFurniture.gameObject);
                             return;
-                        } 
-                        
+                        }
+
                         item.CurrentPlacedCount++;
                     }
 
@@ -82,7 +88,6 @@ public class InventoryManager : MonoBehaviour
         }
 
         // Destroy if no empty space.
-        Destroy(newFurnitureGameObject);
+        Destroy(newFurniture.gameObject);
     }
 }
-

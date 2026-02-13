@@ -55,11 +55,6 @@ public class Furniture : MonoBehaviour
         }
     }
 
-    // private void Start()
-    // {
-    //     InitializeState();
-    // }
-
     public void InitializeState()
     {
         _displayPosition = new(transform.position.x, transform.position.z);
@@ -68,8 +63,6 @@ public class Furniture : MonoBehaviour
         height = Colliders[0].bounds.max.y;
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
-        WinCondition.Instance.AddFurnitureIfRequired(this);
-        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
         WinCondition.Instance.UpdateRuleCheck();
     }
 
@@ -92,19 +85,30 @@ public class Furniture : MonoBehaviour
     // Update lastValidPos and lastValidRotation;
     public void SetLocationAsValid()
     {
-        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), null);
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         // TODO: Change the type of sfx played
         SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
-        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
-        WinCondition.Instance.UpdateRuleCheck();
+        ColliderOn();
     }
 
     public void ResetToValidLocation()
     {
         DisplayPosition = LastValidPosition;
         DisplayRotation = LastValidRotation;
+    }
+
+    public void ColliderOff()
+    {
+        SetColliderEnabled(false);
+        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), null);
+    }
+
+    public void ColliderOn()
+    {
+        SetColliderEnabled(true);
+        GridSystem.Instance.placedFurnitures.Set(GetBoundingBox(), this);
+        WinCondition.Instance.UpdateRuleCheck();
     }
 
     public void ResetSize()
@@ -135,10 +139,8 @@ public class Furniture : MonoBehaviour
 
     public void TryPlace()
     {
-        bool isValidPosition = CheckValidPos();
-        SetColliderEnabled(true);
         SetNormalMat();
-        if (isValidPosition)
+        if (CheckValidPos())
         {
             SetLocationAsValid();
         }
@@ -168,22 +170,26 @@ public class Furniture : MonoBehaviour
 
     public bool CheckValidPos()
     {
-        for (int i = 0; i < ShapeUnits.childCount; i++)
-        {
-            // raycast at shapeUnit
-            if (
-                !Physics.Raycast(
-                    ShapeUnits.GetChild(i).position,
-                    Vector3.down,
-                    out RaycastHit hit,
-                    100f
-                ) || !hit.collider.CompareTag("Floor")
-            )
-            {
-                return false;
-            }
-        }
-        return true;
+        BoundingBox box = GetDisplayBoundingBox();
+        BoundingBox clamped = box.Clamp();
+        if (clamped != box)
+            return false;
+        return GridSystem.Instance.placedFurnitures.SatisfiesAll(
+            GridSystem.Instance.placedFurnitures.furnitureGrid,
+            clamped,
+            (Furniture furniture) => furniture == null
+        );
+    }
+
+    public BoundingBox GetDisplayBoundingBox()
+    {
+        return BoundingBox.FromCenterAndSize(
+            DisplayPosition,
+            Mathf.Abs(DisplayRotation) < 0.1f
+            || Mathf.Abs(Mathf.Abs(DisplayRotation) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x)
+        );
     }
 
     public BoundingBox GetBoundingBox()

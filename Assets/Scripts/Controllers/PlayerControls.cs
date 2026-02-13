@@ -86,7 +86,7 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator DragUpdate()
     {
-        selectedFurniture.SetColliderEnabled(false);
+        selectedFurniture.ColliderOff();
         mouseIndicator.Size = selectedFurniture.Size;
 
         while (clickAction.action.ReadValue<float>() != 0)
@@ -97,8 +97,6 @@ public class PlayerControls : MonoBehaviour
         }
 
         selectedFurniture.TryPlace();
-        selectedFurniture.SetNormalMat();
-        selectedFurniture.SetColliderEnabled(true);
         selectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);
@@ -122,16 +120,16 @@ public class PlayerControls : MonoBehaviour
         if (hoverFurniture.Size.x == hoverFurniture.Size.y)
         {
             mouseIndicator.Rotate();
+            hoverFurniture.ColliderOff();
             hoverFurniture.SetLocationAsValid();
             return;
         }
 
         bool sizeIsEven =
             (hoverFurniture.Size.x + hoverFurniture.Size.y) % 2 == 0;
-        hoverFurniture.SetColliderEnabled(false);
+        hoverFurniture.ColliderOff();
         if (sizeIsEven && hoverFurniture.CheckValidPos())
         {
-            hoverFurniture.SetColliderEnabled(true);
             mouseIndicator.Rotate();
             hoverFurniture.SetLocationAsValid();
             return;
@@ -163,13 +161,11 @@ public class PlayerControls : MonoBehaviour
                 // current offset
                 rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 2) % 4;
                 mouseIndicator.Rotate();
-                hoverFurniture.SetColliderEnabled(true);
                 hoverFurniture.SetLocationAsValid();
                 return;
             }
         }
 
-        hoverFurniture.SetColliderEnabled(true);
         hoverFurniture.ResetToValidLocation();
     }
 

@@ -277,4 +277,14 @@ public class BoundingBox
     {
         return sizeX >= 0 && sizeY <= 0;
     }
+
+    public static bool operator ==(BoundingBox box1, BoundingBox box2)
+    {
+        return box1.position == box2.position && box1.size == box2.size;
+    }
+
+    public static bool operator !=(BoundingBox box1, BoundingBox box2)
+    {
+        return box1.position != box2.position || box1.size != box2.size;
+    }
 }
