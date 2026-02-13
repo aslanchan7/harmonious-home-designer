@@ -8,17 +8,8 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private GameObject inventoryFurnitureButtonPrefab;
     [SerializeField] GameObject MenuButtonsUI;
 
-    void Update()
-    {
-        if (Input.GetKeyDown("tab"))
-        {
-            if (inventoryPanel != null)
-            {
-                bool currentState = inventoryPanel.activeSelf;
-                inventoryPanel.SetActive(!currentState);
-            }
-        }
-    }
+    [Header("Animation Settings")]
+    [SerializeField] float fadeOutAnimTime = 0.5f;
 
     public void InstantiateInventoryButton(InventoryItem item)
     {
@@ -45,11 +36,17 @@ public class InventoryUI : MonoBehaviour
 
     public void CloseInventoryUI()
     {
-        gameObject.SetActive(false);
-        MenuButtonsUI.SetActive(true);
+        // fade out inventory
+        gameObject.GetComponent<CanvasGroup>().LeanAlpha(0f, fadeOutAnimTime).setOnComplete(() =>
+        {
+            gameObject.SetActive(false);
+        });
 
-        // TODO: Animate this to be a smooth transition (tweening)
-        Vector3 newCamPos = new(Camera.main.transform.position.x, Camera.main.transform.position.y - 2f, Camera.main.transform.position.z);
-        Camera.main.transform.position = newCamPos;
+        // simultaneously zoom in camera
+        Camera.main.transform.LeanMoveLocalY(Camera.main.transform.position.y - 2f, fadeOutAnimTime);
+
+        // simultaneously fade in MenuButtonsUI
+        MenuButtonsUI.SetActive(true);
+        MenuButtonsUI.GetComponent<CanvasGroup>().LeanAlpha(1f, fadeOutAnimTime);
     }
 }

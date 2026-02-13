@@ -974,6 +974,7 @@ GameObject:
   - component: {fileID: 143061318}
   - component: {fileID: 143061317}
   - component: {fileID: 143061321}
+  - component: {fileID: 143061322}
   m_Layer: 5
   m_Name: JournalUI
   m_TagString: Untagged
@@ -1084,6 +1085,19 @@ MonoBehaviour:
   journalBG: {fileID: 475794647}
   closeNoteButton: {fileID: 1884347810}
   MenuButtonsUI: {fileID: 1596812701}
+  fadeOutAnimTime: 0.5
+--- !u!225 &143061322
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143061316}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &148238500
 GameObject:
   m_ObjectHideFlags: 0
@@ -4288,6 +4302,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 781157562}
+  - component: {fileID: 781157563}
   m_Layer: 5
   m_Name: SubMenuButtons
   m_TagString: Untagged
@@ -4317,6 +4332,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &781157563
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781157561}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &789965839
 GameObject:
   m_ObjectHideFlags: 0
@@ -5345,6 +5372,7 @@ GameObject:
   - component: {fileID: 1191044708}
   - component: {fileID: 1191044707}
   - component: {fileID: 1191044711}
+  - component: {fileID: 1191044712}
   m_Layer: 5
   m_Name: CatalogueUI
   m_TagString: Untagged
@@ -5451,6 +5479,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CatalogueUI
   MenuButtonsUI: {fileID: 1596812701}
+  fadeOutAnimTime: 0.5
+--- !u!225 &1191044712
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191044705}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1197110781
 GameObject:
   m_ObjectHideFlags: 0
@@ -6690,6 +6731,7 @@ GameObject:
   - component: {fileID: 1596812703}
   - component: {fileID: 1596812702}
   - component: {fileID: 1596812706}
+  - component: {fileID: 1596812707}
   m_Layer: 5
   m_Name: MenuButtonsUI
   m_TagString: Untagged
@@ -6801,6 +6843,22 @@ MonoBehaviour:
   InventoryUI: {fileID: 1982422781}
   JournalUI: {fileID: 143061316}
   CatalogueUI: {fileID: 1191044705}
+  fadeAnimTime: 0.2
+  inventoryAnimTime: 0.5
+  journalAnimTime: 0.5
+  catalogueAnimTime: 0.5
+--- !u!225 &1596812707
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596812701}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1640487344
 GameObject:
   m_ObjectHideFlags: 0
@@ -8598,6 +8656,7 @@ GameObject:
   - component: {fileID: 1982422783}
   - component: {fileID: 1982422782}
   - component: {fileID: 1982422786}
+  - component: {fileID: 1982422787}
   m_Layer: 5
   m_Name: InventoryUI
   m_TagString: Untagged
@@ -8708,6 +8767,19 @@ MonoBehaviour:
   inventoryPanel: {fileID: 1222055090}
   inventoryFurnitureButtonPrefab: {fileID: 2904201386631487994, guid: c0e8715bbafa575438341f873ae3b132, type: 3}
   MenuButtonsUI: {fileID: 1596812701}
+  fadeOutAnimTime: 0.5
+--- !u!225 &1982422787
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982422781}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1986524625
 GameObject:
   m_ObjectHideFlags: 0

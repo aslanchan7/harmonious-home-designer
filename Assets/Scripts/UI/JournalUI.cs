@@ -11,6 +11,9 @@ public class JournalUI : MonoBehaviour
     private int noteIdx = 0;
     private List<GameObject> pages = new();
 
+    [Header("Animation Settings")]
+    [SerializeField] float fadeOutAnimTime = 0.5f;
+
     void Start()
     {
         for (int i = 0; i < pagesContainer.transform.childCount; i++)
@@ -21,23 +24,19 @@ public class JournalUI : MonoBehaviour
 
         // This ensures the first page is always the first one to open
         pages[0].SetActive(true);
-        
-        // CloseJournalUI();
-    }
-
-    public void OpenJournalUI()
-    {
-        pagesContainer.SetActive(true);
-        background.SetActive(true);
-
-        closeNoteButton.SetActive(true);
-        journalBG.SetActive(true);
     }
 
     public void CloseJournalUI()
     {
-        gameObject.SetActive(false);
+        // fade out journal ui
+        gameObject.GetComponent<CanvasGroup>().LeanAlpha(0f, fadeOutAnimTime).setOnComplete(() =>
+        {
+            gameObject.SetActive(false);
+        });
+
+        // fade in menu buttons
         MenuButtonsUI.SetActive(true);
+        MenuButtonsUI.GetComponent<CanvasGroup>().LeanAlpha(1f, fadeOutAnimTime);
     }
 
     public void ShowNextPage()
