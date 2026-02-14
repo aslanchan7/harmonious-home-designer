@@ -285,6 +285,7 @@ public class WinCondition : MonoBehaviour
                 new String[] { "Bed" }
             )
         );
+        BarController.SetMax(maxPoints);
 
         UpdateRuleCheck();
     }

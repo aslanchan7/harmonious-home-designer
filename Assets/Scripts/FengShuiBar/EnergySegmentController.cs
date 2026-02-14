@@ -5,21 +5,56 @@ public class EnergySegmentController : MonoBehaviour
 {
     [Header("References")]
     public Slider energySegment;
-    [SerializeField] private Transform segmentFill;
-    [SerializeField] private Button hoverDetection;
+
+    [SerializeField]
+    private Transform segmentFill;
+
+    [SerializeField]
+    private Button hoverDetection;
 
     [Header("Settings")]
-    [SerializeField] private int energyValue = 0;
-    [SerializeField] private FSEnergyType energyType;
-    [SerializeField] private bool polarity = true;
+    [SerializeField]
+    private int energyValue = 0;
 
-    void Awake()
+    [SerializeField]
+    private FSEnergyType energyType;
+
+    [SerializeField]
+    private bool polarity = true;
+
+    public EnergySegmentController InstantiatePrefab(
+        Transform transform,
+        int maxE
+    )
     {
-        energySegment.maxValue = FSBarController.maxE;
-        float sliderWidth = energySegment.GetComponent<RectTransform>().sizeDelta.x;
-        float buttonWidth = sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
-        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(buttonWidth, 5);
+        GameObject newEnergySegmentGameObject = Instantiate(
+            gameObject,
+            transform
+        );
+        EnergySegmentController newEnergySegment =
+            newEnergySegmentGameObject.GetComponent<EnergySegmentController>();
+
+        energySegment.maxValue = maxE;
+        float sliderWidth = energySegment
+            .GetComponent<RectTransform>()
+            .sizeDelta.x;
+        float buttonWidth =
+            sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
+        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
+            buttonWidth,
+            5
+        );
+
+        return newEnergySegment;
     }
+
+    // void Awake()
+    // {
+    //     energySegment.maxValue = FSBarController.maxE;
+    //     float sliderWidth = energySegment.GetComponent<RectTransform>().sizeDelta.x;
+    //     float buttonWidth = sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
+    //     hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(buttonWidth, 5);
+    // }
 
     public FSEnergyType GetEnergyType()
     {
@@ -48,11 +83,18 @@ public class EnergySegmentController : MonoBehaviour
                 break;
         }
     }
+
     void Update()
     {
-        float sliderWidth = energySegment.GetComponent<RectTransform>().sizeDelta.x;
-        float buttonWidth = sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
-        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(buttonWidth, 5);
+        float sliderWidth = energySegment
+            .GetComponent<RectTransform>()
+            .sizeDelta.x;
+        float buttonWidth =
+            sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
+        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
+            buttonWidth,
+            5
+        );
     }
 
     public void SetPolarity(bool sourcePolarity)

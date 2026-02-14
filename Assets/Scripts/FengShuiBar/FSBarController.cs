@@ -5,9 +5,14 @@ using UnityEngine.UI;
 public class FSBarController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Slider _ProgressSlider;
-    [SerializeField] private Slider _SinsSlider;
-    [SerializeField] private FengShuiBarUI fengShuiBarUI;
+    [SerializeField]
+    private Slider _ProgressSlider;
+
+    [SerializeField]
+    private Slider _SinsSlider;
+
+    [SerializeField]
+    private FengShuiBarUI fengShuiBarUI;
 
     // [SerializeField] private UnityEngine.UI.Slider _BonusSlider;
     //private List<GameObject> GoodEnergySegments = new List<GameObject>();
@@ -17,11 +22,11 @@ public class FSBarController : MonoBehaviour
     private bool chopped = false;
     public int totalBadEnergy = 0;
     public int totalGoodEnergy = 0;
-    public static int maxE = 100;
+    public int maxE = 100;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void Start()
+    public void SetMax(int maxE)
     {
+        this.maxE = maxE;
         _ProgressSlider.maxValue = maxE;
         _SinsSlider.maxValue = maxE;
         _ProgressSlider.value = 0;
@@ -32,7 +37,6 @@ public class FSBarController : MonoBehaviour
         //_BonusSlider.value = 0;
 
         // Need to add sometheing here to initialize positions relative to level / rest of UI
-
     }
 
     // Update is called once per frame
@@ -77,9 +81,13 @@ public class FSBarController : MonoBehaviour
             {
                 if (BadEnergies[i].getType() == type)
                 {
-                    Debug.Log("Added to existing energy of type: " + BadEnergies[i].getType());
+                    Debug.Log(
+                        "Added to existing energy of type: "
+                            + BadEnergies[i].getType()
+                    );
                     isNewType = false;
-                    BadEnergies[i].setEnergy(BadEnergies[i].getAmount() + amount);
+                    BadEnergies[i]
+                        .setEnergy(BadEnergies[i].getAmount() + amount);
                 }
             }
             if (isNewType)
@@ -87,13 +95,17 @@ public class FSBarController : MonoBehaviour
                 FSEnergy newEnergyType = new FSEnergy(polarity, amount, type);
                 BadEnergies.Add(newEnergyType);
                 Debug.Log("Added new energy of type: " + type);
-                fengShuiBarUI.CreateEnergySegment(type, polarity);
+                fengShuiBarUI.CreateEnergySegment(type, polarity, maxE);
             }
         }
 
         TallyEnergy();
         fengShuiBarUI.UpdateEnergySegmentValues(BadEnergies);
-        fengShuiBarUI.UpdateEnergySegmentGraphics(_SinsSlider.GetComponent<RectTransform>(), BadEnergies, maxE);
+        fengShuiBarUI.UpdateEnergySegmentGraphics(
+            _SinsSlider.GetComponent<RectTransform>(),
+            BadEnergies,
+            maxE
+        );
     }
 
     // Lowers the amount of a specified energy type
@@ -156,7 +168,11 @@ public class FSBarController : MonoBehaviour
         }
         TallyEnergy();
         fengShuiBarUI.UpdateEnergySegmentValues(BadEnergies);
-        fengShuiBarUI.UpdateEnergySegmentGraphics(_SinsSlider.GetComponent<RectTransform>(), BadEnergies, maxE);
+        fengShuiBarUI.UpdateEnergySegmentGraphics(
+            _SinsSlider.GetComponent<RectTransform>(),
+            BadEnergies,
+            maxE
+        );
     }
 
     // Calculates total good / bad energies, adjusts energy ratio accordingly
@@ -205,11 +221,10 @@ public class FSBarController : MonoBehaviour
 // Class for the energies provided by furniture pieces
 public class FSEnergy
 {
-
     // If the energy is good or bad
     private bool isGood;
 
-    // The amount of good or bad Feng Shui energy 
+    // The amount of good or bad Feng Shui energy
     private int amount;
 
     // The name of the energy type
@@ -228,7 +243,7 @@ public class FSEnergy
         return amount;
     }
 
-    // Access the Polarity (good / bad) 
+    // Access the Polarity (good / bad)
     public bool getPolarity()
     {
         return isGood;
@@ -261,5 +276,5 @@ public enum FSEnergyType
     Chaos,
     Death,
     Skibbidy,
-    Functional
+    Functional,
 }

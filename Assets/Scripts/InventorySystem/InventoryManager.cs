@@ -59,6 +59,7 @@ public class InventoryManager : MonoBehaviour
                 if (newFurniture.CheckValidPos())
                 {
                     newFurniture.SetLocationAsValid();
+                    WinCondition.Instance.AddFurnitureIfRequired(newFurniture);
 
                     InventoryItem item = inventorySO.inventoryList.Find(x =>
                         x.Prefab == furniturePrefab
