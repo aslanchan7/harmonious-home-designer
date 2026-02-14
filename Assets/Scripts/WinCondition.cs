@@ -272,7 +272,7 @@ public class WinCondition : MonoBehaviour
                 Invert(BedIsFacingDoor),
                 10,
                 FSEnergyType.Functional,
-                new String[] { "Bed" }
+                new string[] { "Bed" }
             )
         );
         RegisterRule(
@@ -281,7 +281,7 @@ public class WinCondition : MonoBehaviour
                 Invert(BedHeadIsFacingBathroom),
                 10,
                 FSEnergyType.Functional,
-                new String[] { "Bed" }
+                new string[] { "Bed" }
             )
         );
         RegisterRule(
@@ -290,7 +290,7 @@ public class WinCondition : MonoBehaviour
                 Invert(FurnitureIsInZone("Bed", Bathroom)),
                 10,
                 FSEnergyType.Chaos,
-                new String[] { "Bed" }
+                new string[] { "Bed" }
             )
         );
         RegisterRule(
@@ -299,7 +299,7 @@ public class WinCondition : MonoBehaviour
                 NotInChaosZone(MainDoorChaosZone),
                 10,
                 FSEnergyType.Chaos,
-                new String[] { "Bed" }
+                new string[0]
             )
         );
         RegisterRule(
@@ -308,7 +308,7 @@ public class WinCondition : MonoBehaviour
                 NotInChaosZone(BathroomDoorChaosZone),
                 10,
                 FSEnergyType.Chaos,
-                new String[] { "Bed" }
+                new string[0]
             )
         );
         RegisterRule(
@@ -317,7 +317,7 @@ public class WinCondition : MonoBehaviour
                 NotInChaosZone(Window),
                 10,
                 FSEnergyType.Chaos,
-                new String[] { "Bed" }
+                new string[0]
             )
         );
         RegisterRule(
@@ -326,7 +326,7 @@ public class WinCondition : MonoBehaviour
                 BedIsAccessible,
                 50,
                 FSEnergyType.Functional,
-                new String[] { "Bed" }
+                new string[] { "Bed" }
             )
         );
         RegisterRule(
@@ -335,7 +335,7 @@ public class WinCondition : MonoBehaviour
                 BedIsAgainstSolidWall,
                 20,
                 FSEnergyType.Functional,
-                new String[] { "Bed" }
+                new string[] { "Bed" }
             )
         );
         RegisterRule(
@@ -344,7 +344,7 @@ public class WinCondition : MonoBehaviour
                 CommandPosition,
                 40,
                 FSEnergyType.Functional,
-                new String[] { "Bed" }
+                new string[] { "Bed" }
             )
         );
         BarController.SetMax(maxPoints);
