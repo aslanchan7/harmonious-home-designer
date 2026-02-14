@@ -439,12 +439,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1753d26275e9e5648ba9ea1138a42d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JournalUI
-  notesContainer: {fileID: 704289534}
-  openNoteButton: {fileID: 263500785}
+  pagesContainer: {fileID: 0}
   background: {fileID: 1752116686}
+  journalBG: {fileID: 0}
   closeNoteButton: {fileID: 326336685}
-  prevNoteButton: {fileID: 2063175815}
-  nextNoteButton: {fileID: 313665318}
+  MenuButtonsUI: {fileID: 0}
+  fadeOutAnimTime: 0.5
 --- !u!1 &168266891
 GameObject:
   m_ObjectHideFlags: 0
@@ -5587,6 +5587,7 @@ MonoBehaviour:
   fengShuiBarUI: {fileID: 647229824}
   totalBadEnergy: 0
   totalGoodEnergy: 0
+  maxE: 100
 --- !u!4 &1427989006
 Transform:
   m_ObjectHideFlags: 0
@@ -6139,7 +6140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1674515697
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6848,6 +6849,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUI
   inventoryPanel: {fileID: 1222055090}
   inventoryFurnitureButtonPrefab: {fileID: 2904201386631487994, guid: c0e8715bbafa575438341f873ae3b132, type: 3}
+  MenuButtonsUI: {fileID: 0}
+  fadeOutAnimTime: 0.5
 --- !u!1 &1986524625
 GameObject:
   m_ObjectHideFlags: 0
@@ -7172,17 +7175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a967683e07194737bdad65ce86062f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinCondition
-  Bed: {fileID: 0}
   BarController: {fileID: 0}
-  bedIsFacingDoor: 0
-  bedIsAccessible: 0
-  mainDoorIsObstructed: 0
-  bathroomDoorIsObstructed: 0
-  bedHeadIsFacingBathroom: 0
-  bedIsNearBathroom: 0
-  bedIsNearWindow: 0
-  bedIsAgainstSolidWall: 0
-  commandPosition: 0
+  ruleBook: []
 --- !u!4 &2055431772
 Transform:
   m_ObjectHideFlags: 0

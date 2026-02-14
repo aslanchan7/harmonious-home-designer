@@ -23,6 +23,7 @@ public class FengShuiBarUI : MonoBehaviour
         newEnergySegment.SetPolarity(polarity);
         newEnergySegment.SetSize(rectTransform.sizeDelta);
         rectTransform.localPosition = Vector3.zero;
+        newEnergySegment.gameObject.SetActive(false);
         if (!polarity)
         {
             BadEnergySegments.Add(newEnergySegment.gameObject);
