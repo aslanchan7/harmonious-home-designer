@@ -103,6 +103,9 @@ public class PlayerControls : MonoBehaviour
         {
             selectedFurniture = raycastFurniture;
 
+            if (SFXManager.Instance != null)
+            SFXManager.Instance.PlayFurnitureSFX(selectedFurniture.sfxCategory, SFXAction.Pickup);
+
             if(selectedFurniture.canBeStackedOn)
             {
                 selectedFurniture.transform.SetParent(null, true);
@@ -144,6 +147,10 @@ public class PlayerControls : MonoBehaviour
         {
             selectedFurniture.DisplayRotation += 90;
             mouseIndicator.Rotate();
+
+            if (SFXManager.Instance != null)
+            SFXManager.Instance.PlayFurnitureSFX(selectedFurniture.sfxCategory, SFXAction.Rotate);
+            
             return;
         }
 
@@ -151,6 +158,9 @@ public class PlayerControls : MonoBehaviour
         if (hoverFurniture == null)
             return;
         hoverFurniture.DisplayRotation += 90;
+
+        if (SFXManager.Instance != null)
+        SFXManager.Instance.PlayFurnitureSFX(hoverFurniture.sfxCategory, SFXAction.Rotate);
 
         if (hoverFurniture.Size.x == hoverFurniture.Size.y)
         {

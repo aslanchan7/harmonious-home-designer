@@ -26,5 +26,9 @@ public class FurnitureSFXSet
 public class GlobalSFXSet
 {
     public SFXEntry uiClick;
+    public SFXEntry uiOpen;
+    public SFXEntry uiClose;
+    public SFXEntry uiPaper;
+    public SFXEntry uiBoxOpen;
     public SFXEntry invalid;
 }

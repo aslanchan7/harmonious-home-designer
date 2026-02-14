@@ -53,7 +53,11 @@ public class SFXManager : MonoBehaviour
         SFXEntry entry = action switch
         {
             SFXAction.UI_Click => globalSfx.uiClick,
-            SFXAction.Invalid => globalSfx.invalid,
+            SFXAction.UI_Open  => globalSfx.uiOpen,
+            SFXAction.UI_Close => globalSfx.uiClose,
+            SFXAction.UI_Paper => globalSfx.uiPaper,
+            SFXAction.UI_BoxOpen => globalSfx.uiBoxOpen,
+            SFXAction.Invalid  => globalSfx.invalid,
             _ => null
         };
 
@@ -81,7 +85,7 @@ public class SFXManager : MonoBehaviour
 
     private void PlayEntry(SFXEntry entry)
     {
-        // Optional pitch in semitones. If you don’t want pitch shift, leave at 0.
+        // Optional pitch in semitones. If you donï¿½t want pitch shift, leave at 0.
         float originalPitch = sfxSource.pitch;
         if (Mathf.Abs(entry.pitchSemitones) > 0.001f)
             sfxSource.pitch = Mathf.Pow(2f, entry.pitchSemitones / 12f);
@@ -90,6 +94,11 @@ public class SFXManager : MonoBehaviour
 
         // Restore pitch
         sfxSource.pitch = originalPitch;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 }
 

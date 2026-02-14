@@ -49,9 +49,12 @@ MonoBehaviour:
   furnitureName: NightStand
   Size: {x: 1, y: 1}
   height: 1
+  canBeStackedOn: 0
+  canStackOnOthers: 0
   LastValidPosition: {x: 0, y: 0}
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 5
   MeshRenderers:
   - Item1: {fileID: 5288622499991270206}
     Item2: {fileID: 2100000, guid: 890c5646eed4dda4d80c342bb6e3f52f, type: 2}

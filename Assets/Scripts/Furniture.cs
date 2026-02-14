@@ -20,6 +20,9 @@ public class Furniture : MonoBehaviour
     [HideInInspector] public float LastValidRotation;
     [HideInInspector] public Vector2Int StartingSize;
 
+    [Header("Audio")]
+    public FurnitureSFXCategory sfxCategory = FurnitureSFXCategory.Default;
+
     [Header("References")]
     public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
     public Collider[] Colliders;
@@ -87,7 +90,7 @@ public class Furniture : MonoBehaviour
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         // TODO: Change the type of sfx played
-        SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
+        // SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         ColliderOn();
     }
 
@@ -146,6 +149,10 @@ public class Furniture : MonoBehaviour
         {
             SetLocationAsValid();
 
+            if (SFXManager.Instance != null)
+            SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
+
+
             // Only MFurn can attach to WFurn
             if (canStackOnOthers && lastStackCandidate != null)
             {
@@ -159,6 +166,8 @@ public class Furniture : MonoBehaviour
         else
         {
             ResetToValidLocation();
+            if (SFXManager.Instance != null)
+            SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Invalid);
         }
     }
 

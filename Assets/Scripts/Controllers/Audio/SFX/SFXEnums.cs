@@ -7,7 +7,12 @@ public enum SFXAction
     Pickup,
     Rotate,
     Invalid,
-    UI_Click
+    UI_Click,
+
+    UI_Open,
+    UI_Close,
+    UI_Paper,
+    UI_BoxOpen
 }
 
 public enum FurnitureSFXCategory
@@ -19,5 +24,6 @@ public enum FurnitureSFXCategory
     Table,
     Corner_Table,
     Night_Stand,
-    Bed
+    Bed,
+    Trash
 }
