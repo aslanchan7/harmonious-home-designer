@@ -13,8 +13,11 @@ public class Furniture : MonoBehaviour
     public bool lockRotation;
     public bool acceptRotationPassThrough;
 
-    private Furniture stackBase;
-    private Furniture lastStackCandidate;
+    private Furniture LastValidBase;
+    private Furniture DisplayBase;
+
+    private bool hasUnsetPlacedFurniture = true;
+
     private List<Furniture> carrying;
 
     [HideInInspector]
@@ -81,8 +84,8 @@ public class Furniture : MonoBehaviour
         LastValidPosition = DisplayPosition;
         LastValidElevation = DisplayElevation;
         LastValidRotation = DisplayRotation;
-        stackBase = null;
-        lastStackCandidate = null;
+        LastValidBase = null;
+        DisplayBase = null;
         carrying = new List<Furniture>();
     }
 
@@ -97,14 +100,14 @@ public class Furniture : MonoBehaviour
     public void DestroyPrefab()
     {
         WinCondition.Instance.RemoveFurnitureIfRegistered(this);
-        ColliderOff();
+        PlacedFurnituresUnset();
         if (canBeStackedOn)
         {
             while (carrying.Count > 0)
             {
                 Furniture furniture = carrying[carrying.Count - 1];
-                furniture.ColliderOff();
-                furniture.lastStackCandidate = null;
+                furniture.PlacedFurnituresUnset();
+                furniture.DisplayBase = null;
                 furniture.DisplayElevation = 0;
                 furniture.SetLocationAsValid();
             }
@@ -116,21 +119,33 @@ public class Furniture : MonoBehaviour
     // Update lastValidPos and lastValidRotation;
     public void SetLocationAsValid()
     {
+        if (!hasUnsetPlacedFurniture)
+        {
+            throw new InvalidOperationException(
+                "Trying to set this location as valid without unsetting the "
+                    + "PlacedFurniture object first."
+            );
+        }
         LastValidPosition = DisplayPosition;
         LastValidElevation = DisplayElevation;
         LastValidRotation = DisplayRotation;
-        AttachOrDetach();
+        if (canStackOnOthers)
+        {
+            AttachOrDetach();
+        }
         if (canBeStackedOn)
         {
             foreach (Furniture furniture in carrying)
             {
-                furniture.lastStackCandidate = this;
+                furniture.PlacedFurnituresUnset();
+                furniture.DisplayBase = this;
                 furniture.SetLocationAsValid();
             }
         }
         // TODO: Change the type of sfx played
         SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
-        ColliderOn();
+        PlacedFurnitureSet();
+        WinCondition.Instance.UpdateRuleCheck();
     }
 
     public void ResetToValidLocation()
@@ -138,25 +153,24 @@ public class Furniture : MonoBehaviour
         DisplayPosition = LastValidPosition;
         DisplayElevation = LastValidElevation;
         DisplayRotation = LastValidRotation;
-        ColliderOn();
+        PlacedFurnitureSet();
     }
 
-    public void ColliderOff()
+    public void PlacedFurnituresUnset()
     {
-        SetColliderEnabled(false);
         PlacedFurnituresSet(null);
+        hasUnsetPlacedFurniture = true;
     }
 
-    public void ColliderOn()
+    public void PlacedFurnitureSet()
     {
-        SetColliderEnabled(true);
         PlacedFurnituresSet(this);
-        WinCondition.Instance.UpdateRuleCheck();
+        hasUnsetPlacedFurniture = false;
     }
 
-    public void PlacedFurnituresSet(Furniture furniture)
+    private void PlacedFurnituresSet(Furniture furniture)
     {
-        if (stackBase == null)
+        if (LastValidBase == null)
         {
             PlacedFurnitures.Instance.SetBase(GetBoundingBox(), furniture);
         }
@@ -215,14 +229,6 @@ public class Furniture : MonoBehaviour
         }
     }
 
-    public void SetColliderEnabled(bool enabled)
-    {
-        foreach (Collider collider in Colliders)
-        {
-            collider.enabled = enabled;
-        }
-    }
-
     public bool CheckValidPos()
     {
         BoundingBox displayBox = GetDisplayBoundingBox();
@@ -230,62 +236,40 @@ public class Furniture : MonoBehaviour
         if (clamped != displayBox)
             return false;
 
-        if (!canStackOnOthers)
-        {
-            lastStackCandidate = null;
-            return PlacedFurnitures.Instance.SatisfiesAll(
-                PlacedFurnitures.Instance.furnitureBaseGrid,
-                displayBox,
-                (Furniture f) => f == null
-            );
-        }
-
         PlacedFurnitures.Instance.BoundingBoxToIndices(
             displayBox,
             out Vector2Int starting,
             out _
         );
+        Furniture bottomLeftBase = PlacedFurnitures.Instance.GetBase(starting);
+        bool wholeAreaHasSameBase = PlacedFurnitures.Instance.SatisfiesAll(
+            PlacedFurnitures.Instance.furnitureBaseGrid,
+            displayBox,
+            (Furniture f) => f == bottomLeftBase
+        );
 
-        lastStackCandidate = PlacedFurnitures.Instance.GetBase(starting);
-
-        if (lastStackCandidate != null && !lastStackCandidate.canBeStackedOn)
+        if (!canStackOnOthers)
         {
-            lastStackCandidate = null;
-            return false;
+            return bottomLeftBase == null && wholeAreaHasSameBase;
         }
 
         if (
-            !PlacedFurnitures.Instance.SatisfiesAll(
-                PlacedFurnitures.Instance.furnitureBaseGrid,
-                displayBox,
-                (Furniture f) => f == lastStackCandidate
-            )
+            bottomLeftBase != null && !bottomLeftBase.canBeStackedOn
+            || !wholeAreaHasSameBase
         )
         {
-            lastStackCandidate = null;
             return false;
         }
 
-        if (lastStackCandidate == null)
-        {
-            DisplayElevation = 0;
-            return true;
-        }
+        DisplayBase = bottomLeftBase;
+        DisplayElevation = bottomLeftBase != null ? bottomLeftBase.height : 0;
 
-        if (
-            PlacedFurnitures.Instance.SatisfiesAll(
+        return bottomLeftBase == null
+            || PlacedFurnitures.Instance.SatisfiesAll(
                 PlacedFurnitures.Instance.furnitureStackGrid,
                 displayBox,
                 (Furniture f) => f == null
-            )
-        )
-        {
-            DisplayElevation = lastStackCandidate.height;
-            return true;
-        }
-
-        lastStackCandidate = null;
-        return false;
+            );
     }
 
     public BoundingBox GetDisplayBoundingBox()
@@ -323,21 +307,24 @@ public class Furniture : MonoBehaviour
     private void AttachOrDetach()
     {
         // Keep world position/rotation when parenting
-        if (lastStackCandidate == stackBase)
+        if (DisplayBase == LastValidBase)
             return;
-        if (stackBase != null)
+        if (LastValidBase != null)
         {
-            stackBase.carrying.Remove(this);
+            LastValidBase.carrying.Remove(this);
         }
-        if (lastStackCandidate == null)
+
+        LastValidBase = DisplayBase;
+
+        if (LastValidBase != null)
         {
-            stackBase = lastStackCandidate;
-            transform.SetParent(null, true);
-            return;
+            LastValidBase.carrying.Add(this);
         }
-        stackBase = lastStackCandidate;
-        stackBase.carrying.Add(this);
-        transform.SetParent(lastStackCandidate.transform, true);
+
+        transform.SetParent(
+            LastValidBase != null ? LastValidBase.transform : null,
+            true
+        );
     }
 }
 

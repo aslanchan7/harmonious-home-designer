@@ -86,7 +86,7 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator DragUpdate()
     {
-        selectedFurniture.ColliderOff();
+        selectedFurniture.PlacedFurnituresUnset();
         mouseIndicator.Size = selectedFurniture.Size;
 
         while (clickAction.action.ReadValue<float>() != 0)
@@ -134,14 +134,14 @@ public class PlayerControls : MonoBehaviour
         if (hoverFurniture.Size.x == hoverFurniture.Size.y)
         {
             mouseIndicator.Rotate();
-            hoverFurniture.ColliderOff();
+            hoverFurniture.PlacedFurnituresUnset();
             hoverFurniture.SetLocationAsValid();
             return;
         }
 
         bool sizeIsEven =
             (hoverFurniture.Size.x + hoverFurniture.Size.y) % 2 == 0;
-        hoverFurniture.ColliderOff();
+        hoverFurniture.PlacedFurnituresUnset();
         if (sizeIsEven && hoverFurniture.CheckValidPos())
         {
             mouseIndicator.Rotate();
