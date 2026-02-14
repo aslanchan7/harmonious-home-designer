@@ -97,7 +97,18 @@ public class Furniture : MonoBehaviour
     public void DestroyPrefab()
     {
         WinCondition.Instance.RemoveFurnitureIfRegistered(this);
-        PlacedFurnitures.Instance.SetBase(GetBoundingBox(), null);
+        ColliderOff();
+        if (canBeStackedOn)
+        {
+            while (carrying.Count > 0)
+            {
+                Furniture furniture = carrying[carrying.Count - 1];
+                furniture.ColliderOff();
+                furniture.lastStackCandidate = null;
+                furniture.DisplayElevation = 0;
+                furniture.SetLocationAsValid();
+            }
+        }
         WinCondition.Instance.UpdateRuleCheck();
         Destroy(gameObject);
     }
