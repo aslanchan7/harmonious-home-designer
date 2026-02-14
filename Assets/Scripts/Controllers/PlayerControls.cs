@@ -27,6 +27,8 @@ public class PlayerControls : MonoBehaviour
     [SerializeField]
     private MouseIndicator mouseIndicator;
 
+    private Coroutine dragUpdateCoroutine;
+
     private readonly Vector2[] evenSizeSnapOffset =
     {
         Vector2.down,
@@ -75,7 +77,7 @@ public class PlayerControls : MonoBehaviour
         {
             selectedFurniture = raycastFurniture;
             GridSystem.Instance.ShowGridVisualizer();
-            StartCoroutine(DragUpdate());
+            dragUpdateCoroutine = StartCoroutine(DragUpdate());
         }
         else
         {
@@ -200,13 +202,24 @@ public class PlayerControls : MonoBehaviour
 
     private void OnDelete(InputAction.CallbackContext callbackContext)
     {
-        Furniture hoverFurniture = RaycastFurniture();
-        if (hoverFurniture == null)
-            return;
+        Furniture deletedFurniture = null;
+        if (selectedFurniture != null)
+        {
+            StopCoroutine(dragUpdateCoroutine);
+            selectedFurniture.TryPlace();
+            deletedFurniture = selectedFurniture;
+            selectedFurniture = null;
+        }
+        else
+        {
+            deletedFurniture = RaycastFurniture();
+            if (deletedFurniture == null)
+                return;
+        }
 
         InventoryItem item =
             InventoryManager.Instance.inventorySO.inventoryList.Find(x =>
-                hoverFurniture.furnitureName.Equals(
+                deletedFurniture.furnitureName.Equals(
                     x.Prefab.GetComponent<Furniture>().furnitureName
                 )
             );
@@ -223,8 +236,7 @@ public class PlayerControls : MonoBehaviour
             item.CurrentPlacedCount--;
         }
 
-        hoverFurniture.DestroyPrefab();
-        selectedFurniture = null;
+        deletedFurniture.DestroyPrefab();
         GridSystem.Instance.HideGridVisualizer();
         mouseIndicator.Size = new(1, 1);
     }
