@@ -27,7 +27,6 @@ public class GridSystem : MonoBehaviour
     private GameObject testFurniturePrefab;
 
     private Vector3 centerCellOffset = new(0.5f, 0.0f, 0.5f);
-    public PlacedFurnitures placedFurnitures;
 
     private void Awake()
     {
@@ -37,7 +36,6 @@ public class GridSystem : MonoBehaviour
         }
 
         Instance = this;
-        placedFurnitures = new PlacedFurnitures(Size);
     }
 
     private void Start()

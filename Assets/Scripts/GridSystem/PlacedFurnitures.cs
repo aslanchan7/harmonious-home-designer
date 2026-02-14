@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public class PlacedFurnitures
+public class PlacedFurnitures : MonoBehaviour
 {
-    public Vector2Int Size;
-    public Furniture[,] furnitureGrid;
+    public static PlacedFurnitures Instance;
 
-    public delegate bool HeightCheckFunction(Furniture furniture);
+    public Vector2Int Size;
+    public Furniture[,] furnitureBaseGrid;
+    public Furniture[,] furnitureStackGrid;
 
     public readonly struct DijkstraCell
     {
@@ -25,10 +26,20 @@ public class PlacedFurnitures
         }
     }
 
-    public PlacedFurnitures(Vector2Int size)
+    private void Awake()
     {
-        Size = size;
-        furnitureGrid = new Furniture[size.y, size.x];
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        furnitureBaseGrid = new Furniture[Size.y, Size.x];
+        furnitureStackGrid = new Furniture[Size.y, Size.x];
     }
 
     public void BoundingBoxToIndices(
@@ -42,7 +53,7 @@ public class PlacedFurnitures
         ending = Vector2Int.RoundToInt(boundingBox.opposite + offset);
     }
 
-    public void Set(BoundingBox boundingBox, Furniture newFurniture)
+    public void SetBase(BoundingBox boundingBox, Furniture newFurniture)
     {
         Vector2Int starting,
             ending;
@@ -51,14 +62,33 @@ public class PlacedFurnitures
         {
             for (int j = starting.x; j < ending.x; j++)
             {
-                furnitureGrid[i, j] = newFurniture;
+                furnitureBaseGrid[i, j] = newFurniture;
             }
         }
     }
 
-    public Furniture Get(Vector2Int vector)
+    public Furniture GetBase(Vector2Int vector)
     {
-        return furnitureGrid[vector.y, vector.x];
+        return furnitureBaseGrid[vector.y, vector.x];
+    }
+
+    public void SetStack(BoundingBox boundingBox, Furniture newFurniture)
+    {
+        Vector2Int starting,
+            ending;
+        BoundingBoxToIndices(boundingBox, out starting, out ending);
+        for (int i = starting.y; i < ending.y; i++)
+        {
+            for (int j = starting.x; j < ending.x; j++)
+            {
+                furnitureStackGrid[i, j] = newFurniture;
+            }
+        }
+    }
+
+    public Furniture GetStack(Vector2Int vector)
+    {
+        return furnitureStackGrid[vector.y, vector.x];
     }
 
     public bool ExistsColumnSatisfiesAll<T>(
@@ -195,8 +225,8 @@ public class PlacedFurnitures
                     Vector2Int.zero
                 );
                 if (
-                    furnitureGrid[i, j] == null
-                    || furnitureGrid[i, j].height <= maxHeight
+                    furnitureBaseGrid[i, j] == null
+                    || furnitureBaseGrid[i, j].height <= maxHeight
                 )
                 {
                     unvisited.Add(
@@ -285,7 +315,9 @@ public class PlacedFurnitures
             for (int j = 0; j < Size.x; j++)
             {
                 sb.Append(
-                    furnitureGrid[i, j] != null ? furnitureGrid[i, j].height : 0
+                    furnitureBaseGrid[i, j] != null
+                        ? furnitureBaseGrid[i, j].height
+                        : 0
                 );
                 sb.Append(' ');
             }

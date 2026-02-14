@@ -51,7 +51,9 @@ MonoBehaviour:
   height: 1
   canBeStackedOn: 0
   canStackOnOthers: 1
+  lockRotation: 1
   LastValidPosition: {x: 0, y: 0}
+  LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
   MeshRenderers:

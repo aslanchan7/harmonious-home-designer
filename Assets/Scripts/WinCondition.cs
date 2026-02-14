@@ -28,12 +28,12 @@ public class WinCondition : MonoBehaviour
     {
         return () =>
         {
-            GridSystem.Instance.placedFurnitures.BoundingBoxToIndices(
+            PlacedFurnitures.Instance.BoundingBoxToIndices(
                 door.Box,
                 out Vector2Int starting,
                 out _
             );
-            return GridSystem.Instance.placedFurnitures.Get(starting) == null;
+            return PlacedFurnitures.Instance.GetBase(starting) == null;
         };
     }
 
@@ -48,8 +48,8 @@ public class WinCondition : MonoBehaviour
         return bedFoot.IsOppositeTo(doorInsideFace)
             && bedBox.InLineWithFaceOf(doorBoxFlat, doorInsideFace)
             && bedBox.ToFaceOf(doorBoxFlat, doorInsideFace)
-            && GridSystem.Instance.placedFurnitures.ExistsLineSatisfiesAll(
-                GridSystem.Instance.placedFurnitures.furnitureGrid,
+            && PlacedFurnitures.Instance.ExistsLineSatisfiesAll(
+                PlacedFurnitures.Instance.furnitureBaseGrid,
                 bedBox.IntersectionOrGapWith(doorBoxFlat),
                 (Furniture furniture) =>
                     furniture == null || furniture.height < bed.height
@@ -121,12 +121,12 @@ public class WinCondition : MonoBehaviour
         BoundingBox bedRight = bedBox
             .GetNextToFace(bed.GetFace(Direction.RIGHT), 1)
             .Clamp();
-        return !GridSystem.Instance.placedFurnitures.SatisfiesAll(
+        return !PlacedFurnitures.Instance.SatisfiesAll(
                 dijkstraCells,
                 bedLeft,
                 (cell) => cell.distance == float.PositiveInfinity
             )
-            || !GridSystem.Instance.placedFurnitures.SatisfiesAll(
+            || !PlacedFurnitures.Instance.SatisfiesAll(
                 dijkstraCells,
                 bedRight,
                 (cell) => cell.distance == float.PositiveInfinity
@@ -166,7 +166,7 @@ public class WinCondition : MonoBehaviour
     public void TryPathfindFrom(Zone door)
     {
         dijkstraCells = DoorIsClear(door)()
-            ? GridSystem.Instance.placedFurnitures.Dijkstra(door.Box, 0)
+            ? PlacedFurnitures.Instance.Dijkstra(door.Box, 0)
             : null;
     }
 
@@ -286,7 +286,6 @@ public class WinCondition : MonoBehaviour
             )
         );
 
-        Debug.Log(requiredFurnitures);
         UpdateRuleCheck();
     }
 
