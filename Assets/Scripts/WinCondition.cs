@@ -9,7 +9,9 @@ public class WinCondition : MonoBehaviour
     public FSBarController BarController;
 
     private Zone MainDoor;
+    private Zone MainDoorChaosZone;
     private Zone BathroomDoor;
+    private Zone BathroomDoorChaosZone;
     private Zone Bathroom;
     private Zone Window;
     private Zone[] Walls;
@@ -153,6 +155,46 @@ public class WinCondition : MonoBehaviour
         );
     }
 
+    public Func<bool> NotInChaosZone(Zone chaosZone)
+    {
+        return () =>
+        {
+            bool hasFurnitureInZone = false;
+            PlacedFurnitures.Instance.BoundingBoxToIndices(
+                chaosZone.Box,
+                out Vector2Int starting,
+                out Vector2Int ending
+            );
+
+            for (int j = starting.x; j < ending.x; j++)
+            {
+                for (int i = starting.y; i < ending.y; i++)
+                {
+                    Vector2Int index = new(j, i);
+                    Furniture baseFurniture = PlacedFurnitures.Instance.GetBase(
+                        index
+                    );
+                    Furniture stackFurniture =
+                        PlacedFurnitures.Instance.GetStack(index);
+
+                    if (baseFurniture == null)
+                        continue;
+
+                    if (
+                        baseFurniture.furnitureName.Equals("Lamp")
+                        || stackFurniture != null
+                            && stackFurniture.furnitureName.Equals("Lamp")
+                    )
+                        return true;
+
+                    hasFurnitureInZone = true;
+                }
+            }
+
+            return !hasFurnitureInZone;
+        };
+    }
+
     public Func<bool> FurnitureIsPresent(string furniture)
     {
         return () => furnitures.ContainsKey(furniture);
@@ -183,7 +225,9 @@ public class WinCondition : MonoBehaviour
     public void Start()
     {
         MainDoor = new Zone(new(2, -2.5f), new(1, 1), 180);
+        MainDoorChaosZone = new Zone(new(2, -2), new(3, 2), 180);
         BathroomDoor = new Zone(new(-3, -1.5f), new(1, 1), -90);
+        BathroomDoorChaosZone = new Zone(new(-2.5f, -1.5f), new(2, 3), -90);
         Bathroom = new Zone(new(-2.5f, 0), new(2, 6), 0);
         Window = new Zone(new(2.5f, 1.5f), new(2, 3), 0);
         Vector2Int roomSize = GridSystem.Instance.Size;
@@ -251,8 +295,26 @@ public class WinCondition : MonoBehaviour
         );
         RegisterRule(
             new Rule(
-                "Bed is not near window",
-                Invert(FurnitureIsInZone("Bed", Window)),
+                "No furniture in chaos zone of the main door",
+                NotInChaosZone(MainDoorChaosZone),
+                10,
+                FSEnergyType.Chaos,
+                new String[] { "Bed" }
+            )
+        );
+        RegisterRule(
+            new Rule(
+                "No furniture in chaos zone of the bathroom door",
+                NotInChaosZone(BathroomDoorChaosZone),
+                10,
+                FSEnergyType.Chaos,
+                new String[] { "Bed" }
+            )
+        );
+        RegisterRule(
+            new Rule(
+                "No furniture in chaos zone of the window",
+                NotInChaosZone(Window),
                 10,
                 FSEnergyType.Chaos,
                 new String[] { "Bed" }
