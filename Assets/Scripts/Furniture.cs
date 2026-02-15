@@ -133,15 +133,14 @@ public class Furniture : MonoBehaviour
         {
             AttachOrDetach();
         }
-        if (canBeStackedOn)
-        {
-            foreach (Furniture furniture in carrying)
+        TryRecursiveStack(
+            (furniture) =>
             {
                 furniture.PlacedFurnituresUnset();
                 furniture.DisplayBase = this;
                 furniture.SetLocationAsValid();
             }
-        }
+        );
         // TODO: Change the type of sfx played
         SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         PlacedFurnitureSet();
@@ -158,12 +157,14 @@ public class Furniture : MonoBehaviour
 
     public void PlacedFurnituresUnset()
     {
+        SetColliderEnabled(false);
         PlacedFurnituresSet(null);
         hasUnsetPlacedFurniture = true;
     }
 
     public void PlacedFurnitureSet()
     {
+        SetColliderEnabled(true);
         PlacedFurnituresSet(this);
         hasUnsetPlacedFurniture = false;
     }
@@ -196,14 +197,30 @@ public class Furniture : MonoBehaviour
 
         // Check if position is a valid pos for the object to move
         bool valid = CheckValidPos();
+        Material material = valid ? GhostMat : InvalidGhostMat;
 
         // Set materials for mesh renderers
         foreach (
             SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
         )
         {
-            tuple.Item1.material = valid ? GhostMat : InvalidGhostMat;
+            tuple.Item1.material = material;
         }
+
+        TryRecursiveStack(
+            (furniture) =>
+            {
+                foreach (
+                    SerializableTuple<
+                        MeshRenderer,
+                        Material
+                    > tuple in furniture.MeshRenderers
+                )
+                {
+                    tuple.Item1.material = material;
+                }
+            }
+        );
     }
 
     public void TryPlace()
@@ -227,6 +244,16 @@ public class Furniture : MonoBehaviour
         {
             tuple.Item1.material = tuple.Item2;
         }
+        TryRecursiveStack((furniture) => furniture.SetNormalMat());
+    }
+
+    public void SetColliderEnabled(bool enabled)
+    {
+        foreach (Collider collider in Colliders)
+        {
+            collider.enabled = enabled;
+        }
+        TryRecursiveStack((furniture) => furniture.SetColliderEnabled(enabled));
     }
 
     public bool CheckValidPos()
@@ -325,6 +352,19 @@ public class Furniture : MonoBehaviour
             LastValidBase != null ? LastValidBase.transform : null,
             true
         );
+    }
+
+    private delegate void FurnitureFunc(Furniture furniture);
+
+    private void TryRecursiveStack(FurnitureFunc func)
+    {
+        if (canBeStackedOn)
+        {
+            foreach (Furniture furniture in carrying)
+            {
+                func(furniture);
+            }
+        }
     }
 }
 

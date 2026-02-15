@@ -1,14 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerControls : MonoBehaviour
 {
     [HideInInspector]
-    public Vector3 MousePos;
-    private Furniture selectedFurniture;
+    public Vector2 MouseTileCenter;
+
+    [HideInInspector]
+    public Vector3 MouseNormal;
+
+    public Furniture HoverFurniture;
+    public Furniture SelectedFurniture;
     private Furniture lastRotatedFurniture;
 
     [Header("Actions")]
@@ -72,56 +75,56 @@ public class PlayerControls : MonoBehaviour
 
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
-        Furniture raycastFurniture = RaycastFurniture();
-        if (raycastFurniture != null)
+        if (HoverFurniture != null)
         {
-            selectedFurniture = raycastFurniture;
+            SelectedFurniture = HoverFurniture;
             GridSystem.Instance.ShowGridVisualizer();
             dragUpdateCoroutine = StartCoroutine(DragUpdate());
         }
         else
         {
-            selectedFurniture = null;
+            SelectedFurniture = null;
             GridSystem.Instance.HideGridVisualizer();
         }
     }
 
     private IEnumerator DragUpdate()
     {
-        selectedFurniture.PlacedFurnituresUnset();
-        mouseIndicator.Size = selectedFurniture.Size;
+        SelectedFurniture.PlacedFurnituresUnset();
 
         while (clickAction.action.ReadValue<float>() != 0)
         {
-            selectedFurniture.MoveGhost(mouseIndicator.Position);
+            SelectedFurniture.MoveGhost(mouseIndicator.Position);
+            // Adjust mouse indicator's elevation;
+            if (SelectedFurniture.DisplayElevation != mouseIndicator.Elevation)
+                mouseIndicator.Elevation = SelectedFurniture.DisplayElevation;
 
             yield return null;
         }
 
-        selectedFurniture.TryPlace();
-        selectedFurniture = null;
+        SelectedFurniture.TryPlace();
+        SelectedFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
-        mouseIndicator.Size = new(1, 1);
     }
 
     private void OnRotate(InputAction.CallbackContext callbackContext)
     {
-        if (selectedFurniture != null)
+        if (SelectedFurniture != null)
         {
-            if (selectedFurniture.lockRotation)
+            if (SelectedFurniture.lockRotation)
                 return;
-            selectedFurniture.DisplayRotation += 90;
+            SelectedFurniture.DisplayRotation += 90;
             mouseIndicator.Rotate();
             return;
         }
 
-        Furniture hoverFurniture = RaycastFurniture();
-        if (hoverFurniture == null)
+        if (HoverFurniture == null)
             return;
-        if (hoverFurniture.lockRotation)
+
+        if (HoverFurniture.lockRotation)
         {
             PlacedFurnitures.Instance.BoundingBoxToIndices(
-                hoverFurniture.GetBoundingBox(),
+                HoverFurniture.GetBoundingBox(),
                 out Vector2Int starting,
                 out _
             );
@@ -129,39 +132,37 @@ public class PlayerControls : MonoBehaviour
             // beneath should not be null.
             if (beneath.lockRotation || !beneath.acceptRotationPassThrough)
                 return;
-            hoverFurniture = beneath;
+            HoverFurniture = beneath;
         }
-        hoverFurniture.DisplayRotation += 90;
+        HoverFurniture.DisplayRotation += 90;
 
-        if (hoverFurniture.Size.x == hoverFurniture.Size.y)
+        if (HoverFurniture.Size.x == HoverFurniture.Size.y)
         {
-            mouseIndicator.Rotate();
-            hoverFurniture.PlacedFurnituresUnset();
-            hoverFurniture.SetLocationAsValid();
+            HoverFurniture.PlacedFurnituresUnset();
+            HoverFurniture.SetLocationAsValid();
             return;
         }
 
         bool sizeIsEven =
-            (hoverFurniture.Size.x + hoverFurniture.Size.y) % 2 == 0;
-        hoverFurniture.PlacedFurnituresUnset();
-        if (sizeIsEven && hoverFurniture.CheckValidPos())
+            (HoverFurniture.Size.x + HoverFurniture.Size.y) % 2 == 0;
+        HoverFurniture.PlacedFurnituresUnset();
+        if (sizeIsEven && HoverFurniture.CheckValidPos())
         {
-            mouseIndicator.Rotate();
-            hoverFurniture.SetLocationAsValid();
+            HoverFurniture.SetLocationAsValid();
             return;
         }
 
-        Vector2 currentPosition = hoverFurniture.LastValidPosition;
+        Vector2 currentPosition = HoverFurniture.LastValidPosition;
         Vector2[] offsetsToCheck = sizeIsEven
             ? evenSizeSnapOffset
             : oddSizeSnapOffset;
         if (
             lastRotatedFurniture == null
-            || hoverFurniture != lastRotatedFurniture
+            || HoverFurniture != lastRotatedFurniture
         )
         {
             rotateSnapOffsetIndex = 0;
-            lastRotatedFurniture = hoverFurniture;
+            lastRotatedFurniture = HoverFurniture;
         }
 
         for (int i = 0; i < 4; i++)
@@ -169,50 +170,34 @@ public class PlayerControls : MonoBehaviour
             Vector2 testPosition =
                 currentPosition
                 + offsetsToCheck[(rotateSnapOffsetIndex + i) % 4];
-            hoverFurniture.DisplayPosition = testPosition;
-            if (hoverFurniture.CheckValidPos())
+            HoverFurniture.DisplayPosition = testPosition;
+            if (HoverFurniture.CheckValidPos())
             {
                 // Make sure that if the furniture is rotated consecutively,
                 // it would favor the offset direction opposite to the
                 // current offset
                 rotateSnapOffsetIndex = (rotateSnapOffsetIndex + i + 2) % 4;
-                mouseIndicator.Rotate();
-                hoverFurniture.SetLocationAsValid();
+                HoverFurniture.SetLocationAsValid();
                 return;
             }
         }
 
-        hoverFurniture.ResetToValidLocation();
-    }
-
-    public Furniture RaycastFurniture()
-    {
-        Vector2 mousePos = mousePositionAction.ReadValue<Vector2>();
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (
-            Physics.Raycast(ray, out hit)
-            && hit.collider.CompareTag("Furniture")
-        )
-        {
-            return hit.collider.transform.parent.GetComponent<Furniture>();
-        }
-        return null;
+        HoverFurniture.ResetToValidLocation();
     }
 
     private void OnDelete(InputAction.CallbackContext callbackContext)
     {
-        Furniture deletedFurniture = null;
-        if (selectedFurniture != null)
+        Furniture deletedFurniture;
+        if (SelectedFurniture != null)
         {
             StopCoroutine(dragUpdateCoroutine);
-            selectedFurniture.TryPlace();
-            deletedFurniture = selectedFurniture;
-            selectedFurniture = null;
+            SelectedFurniture.TryPlace();
+            deletedFurniture = SelectedFurniture;
+            SelectedFurniture = null;
         }
         else
         {
-            deletedFurniture = RaycastFurniture();
+            deletedFurniture = HoverFurniture;
             if (deletedFurniture == null)
                 return;
         }
@@ -238,7 +223,6 @@ public class PlayerControls : MonoBehaviour
 
         deletedFurniture.DestroyPrefab();
         GridSystem.Instance.HideGridVisualizer();
-        mouseIndicator.Size = new(1, 1);
     }
 
     public void RaycastMouse()
@@ -255,7 +239,36 @@ public class PlayerControls : MonoBehaviour
             )
         )
         {
-            MousePos = hit.point;
+            Vector2 position2d = new(hit.point.x, hit.point.z);
+            Vector2 halfSize = (Vector2)GridSystem.Instance.Size / 2.0f;
+            Vector2 centerCellOffset = new Vector2(
+                GridSystem.Instance.CenterCellOffset.x,
+                GridSystem.Instance.CenterCellOffset.z
+            );
+            Vector2Int index = Vector2Int.FloorToInt(position2d + halfSize);
+            if (hit.collider.CompareTag("Furniture"))
+            {
+                HoverFurniture =
+                    hit.transform.GetComponentInParent<Furniture>();
+            }
+            else
+            {
+                if (
+                    Mathf.Abs(position2d.x) > halfSize.x
+                    || Mathf.Abs(position2d.y) > halfSize.y
+                )
+                {
+                    HoverFurniture = null;
+                }
+                else
+                {
+                    HoverFurniture = PlacedFurnitures.Instance.GetBase(index);
+                }
+            }
+            MouseTileCenter =
+                Vector2Int.RoundToInt(position2d - centerCellOffset)
+                + centerCellOffset;
+            MouseNormal = hit.normal;
         }
     }
 }

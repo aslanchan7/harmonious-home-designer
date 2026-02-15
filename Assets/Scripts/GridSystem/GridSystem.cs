@@ -26,7 +26,7 @@ public class GridSystem : MonoBehaviour
     [SerializeField]
     private GameObject testFurniturePrefab;
 
-    private Vector3 centerCellOffset = new(0.5f, 0.0f, 0.5f);
+    public Vector3 CenterCellOffset = new(0.5f, 0.0f, 0.5f);
 
     private void Awake()
     {
@@ -51,8 +51,8 @@ public class GridSystem : MonoBehaviour
         }
 
         // If grid size is even then set offset; otherwise set offset = 0;
-        centerCellOffset.x = Size.x % 2 == 0 ? 0.5f : 0.0f;
-        centerCellOffset.z = Size.y % 2 == 0 ? 0.5f : 0.0f;
+        CenterCellOffset.x = Size.x % 2 == 0 ? 0.5f : 0.0f;
+        CenterCellOffset.z = Size.y % 2 == 0 ? 0.5f : 0.0f;
 
         // Initially hide grid visualizer
         HideGridVisualizer();
@@ -61,8 +61,8 @@ public class GridSystem : MonoBehaviour
     public Vector2Int GetGridPosFromWorldPos(Vector3 pos)
     {
         // if grid is odd, pos + 0.5
-        pos.x += 0.5f - centerCellOffset.x;
-        pos.z += 0.5f - centerCellOffset.z;
+        pos.x += 0.5f - CenterCellOffset.x;
+        pos.z += 0.5f - CenterCellOffset.z;
 
         Vector3Int gridPos = grid.WorldToCell(pos);
         return new(gridPos.x, gridPos.z);
@@ -71,7 +71,7 @@ public class GridSystem : MonoBehaviour
     public Vector3 GetWorldPosFromGridPos(Vector2Int pos)
     {
         Vector3Int gridPos = new(pos.x, 0, pos.y);
-        Vector3 worldPos = grid.CellToWorld(gridPos) + centerCellOffset;
+        Vector3 worldPos = grid.CellToWorld(gridPos) + CenterCellOffset;
         return worldPos;
     }
 

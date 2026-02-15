@@ -148,7 +148,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7da1fbb07278424d8a47aab599f548c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControls
-  MousePos: {x: 0, y: 0, z: 0}
+  MouseTileCenter: {x: 0, y: 0}
+  MouseNormal: {x: 0, y: 0, z: 0}
+  HoverFurniture: {fileID: 0}
+  SelectedFurniture: {fileID: 0}
   clickAction: {fileID: 86437814}
   rotateAction: {fileID: 949383598}
   deleteAction: {fileID: 571315925}
@@ -4178,6 +4181,7 @@ MonoBehaviour:
     m_Bits: 192
   Size: {x: 7, y: 6}
   testFurniturePrefab: {fileID: 3693291784662702186, guid: bb0541d51bcbed344b92f49916b66956, type: 3}
+  CenterCellOffset: {x: 0.5, y: 0, z: 0.5}
 --- !u!4 &1950910640
 Transform:
   m_ObjectHideFlags: 0
