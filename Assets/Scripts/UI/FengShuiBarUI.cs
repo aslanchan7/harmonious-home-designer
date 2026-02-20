@@ -38,6 +38,14 @@ public class FengShuiBarUI : MonoBehaviour
         }
     }
 
+    public void SetMax(int maxE)
+    {
+        foreach (GameObject segmentObject in BadEnergySegments)
+        {
+            segmentObject.GetComponent<Slider>().maxValue = maxE;
+        }
+    }
+
     // Removes the sin segment of a desired type (only called if amount of that type of sin = 0)
     public void RemoveEnergySement(FSEnergyType type, bool polarity)
     {

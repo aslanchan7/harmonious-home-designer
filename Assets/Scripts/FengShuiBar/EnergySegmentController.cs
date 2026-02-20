@@ -34,16 +34,15 @@ public class EnergySegmentController : MonoBehaviour
         EnergySegmentController newEnergySegment =
             newEnergySegmentGameObject.GetComponent<EnergySegmentController>();
 
-        energySegment.maxValue = maxE;
-        float sliderWidth = energySegment
-            .GetComponent<RectTransform>()
+        newEnergySegment.energySegment.maxValue = maxE;
+        float sliderWidth = newEnergySegment
+            .energySegment.GetComponent<RectTransform>()
             .sizeDelta.x;
         float buttonWidth =
-            sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
-        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
-            buttonWidth,
-            5
-        );
+            sliderWidth - newEnergySegment.energyValue * (sliderWidth / maxE);
+        newEnergySegment
+            .hoverDetection.GetComponent<RectTransform>()
+            .offsetMin = new Vector2(buttonWidth, 5);
 
         return newEnergySegment;
     }
