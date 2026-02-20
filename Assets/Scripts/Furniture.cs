@@ -1,38 +1,350 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Furniture : MonoBehaviour
 {
+    [Header("Furniture Settings")]
     public string furnitureName;
+    public Vector2Int Size;
+    public float height;
+    public bool canBeStackedOn; // If true, other furniture items can stack on top of this one
+    public bool canStackOnOthers; // If ture, this furniture item can stack on top of others (naming variables is very hard...)
+    public bool lockRotation;
+    public bool acceptRotationPassThrough;
 
-    // placing furniture on the xz-plane
-    public void SetPosition(Vector2 position)
+    private Furniture LastValidBase;
+    private Furniture DisplayBase;
+
+    private bool hasUnsetPlacedFurniture = true;
+
+    private List<Furniture> carrying;
+
+    [HideInInspector]
+    public Vector2 LastValidPosition;
+
+    [HideInInspector]
+    public float LastValidElevation;
+
+    [HideInInspector]
+    public float LastValidRotation;
+
+    [HideInInspector]
+    public Vector2Int StartingSize;
+
+    [Header("References")]
+    public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
+    public Collider[] Colliders;
+    public Material GhostMat,
+        InvalidGhostMat;
+    public Transform ShapeUnits;
+
+    public Vector2 DisplayPosition
     {
-        this.transform.position = new Vector3(position.x, this.transform.position.y, position.y);
-        // TODO snap y-position based on objects caught in downward raycast
-        // ^ grid system subtask, i believe
+        get { return new(transform.position.x, transform.position.z); }
+        set
+        {
+            transform.position = new Vector3(
+                value.x,
+                transform.position.y,
+                value.y
+            );
+        }
+    }
+    public float DisplayElevation
+    {
+        get { return transform.position.y; }
+        set
+        {
+            transform.position = new Vector3(
+                transform.position.x,
+                value,
+                transform.position.z
+            );
+        }
+    }
+    public float DisplayRotation
+    {
+        get { return transform.eulerAngles.y; }
+        set
+        {
+            transform.eulerAngles = new Vector3(
+                transform.eulerAngles.x,
+                value % 360,
+                transform.eulerAngles.z
+            );
+            ResetSize();
+        }
     }
 
-    // rotating furniture on the y-axis
-    public void SetRotation(float rotation)
+    public void InitializeState()
     {
-        this.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
+        StartingSize = Size;
+        height = Colliders[0].bounds.max.y;
+        LastValidPosition = DisplayPosition;
+        LastValidElevation = DisplayElevation;
+        LastValidRotation = DisplayRotation;
+        LastValidBase = null;
+        DisplayBase = null;
+        carrying = new List<Furniture>();
     }
 
-    void Update()
+    public Furniture InstantiatePrefab()
     {
-        // TESTING SETPOSITION & SETROTATION, TODO: REMOVE AFTER PLAYER INPUTS IMPLEMENTED -----------------------------
-        // -- testing SetPosition
-        if (Input.GetKeyDown(KeyCode.A))
-            SetPosition(new Vector2(transform.position.x - 1f, transform.position.z));
-        if (Input.GetKeyDown(KeyCode.D))
-            SetPosition(new Vector2(transform.position.x + 1f, transform.position.z));
-        if (Input.GetKeyDown(KeyCode.W))
-            SetPosition(new Vector2(transform.position.x, transform.position.z + 1f));
-        if (Input.GetKeyDown(KeyCode.S))
-            SetPosition(new Vector2(transform.position.x, transform.position.z - 1f));
-        // -- testing SetRotation
-        if (Input.GetKeyDown(KeyCode.R))
-            SetRotation(transform.eulerAngles.y + 90f);
-        // -------------------------------------------------------------------------------------------------------------
+        GameObject newGameObject = Instantiate(gameObject);
+        Furniture newFurniture = newGameObject.GetComponent<Furniture>();
+        newFurniture.InitializeState();
+        return newFurniture;
+    }
+
+    public void DestroyPrefab()
+    {
+        WinCondition.Instance.RemoveFurnitureIfRegistered(this);
+        PlacedFurnituresUnset();
+        if (canBeStackedOn)
+        {
+            while (carrying.Count > 0)
+            {
+                Furniture furniture = carrying[carrying.Count - 1];
+                furniture.PlacedFurnituresUnset();
+                furniture.DisplayBase = null;
+                furniture.DisplayElevation = 0;
+                furniture.SetLocationAsValid();
+            }
+        }
+        WinCondition.Instance.UpdateRuleCheck();
+        Destroy(gameObject);
+    }
+
+    // Update lastValidPos and lastValidRotation;
+    public void SetLocationAsValid()
+    {
+        if (!hasUnsetPlacedFurniture)
+        {
+            throw new InvalidOperationException(
+                "Trying to set this location as valid without unsetting the "
+                    + "PlacedFurniture object first."
+            );
+        }
+        LastValidPosition = DisplayPosition;
+        LastValidElevation = DisplayElevation;
+        LastValidRotation = DisplayRotation;
+        if (canStackOnOthers)
+        {
+            AttachOrDetach();
+        }
+        if (canBeStackedOn)
+        {
+            foreach (Furniture furniture in carrying)
+            {
+                furniture.PlacedFurnituresUnset();
+                furniture.DisplayBase = this;
+                furniture.SetLocationAsValid();
+            }
+        }
+        // TODO: Change the type of sfx played
+        SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
+        PlacedFurnitureSet();
+        WinCondition.Instance.UpdateRuleCheck();
+    }
+
+    public void ResetToValidLocation()
+    {
+        DisplayPosition = LastValidPosition;
+        DisplayElevation = LastValidElevation;
+        DisplayRotation = LastValidRotation;
+        PlacedFurnitureSet();
+    }
+
+    public void PlacedFurnituresUnset()
+    {
+        PlacedFurnituresSet(null);
+        hasUnsetPlacedFurniture = true;
+    }
+
+    public void PlacedFurnitureSet()
+    {
+        PlacedFurnituresSet(this);
+        hasUnsetPlacedFurniture = false;
+    }
+
+    private void PlacedFurnituresSet(Furniture furniture)
+    {
+        if (LastValidBase == null)
+        {
+            PlacedFurnitures.Instance.SetBase(GetBoundingBox(), furniture);
+        }
+        else
+        {
+            PlacedFurnitures.Instance.SetStack(GetBoundingBox(), furniture);
+        }
+    }
+
+    public void ResetSize()
+    {
+        Size =
+            Mathf.Abs(transform.eulerAngles.y) < 0.1f
+            || Mathf.Abs(Mathf.Abs(transform.eulerAngles.y) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x);
+    }
+
+    public void MoveGhost(Vector2 position)
+    {
+        // Visually move ghost furniture
+        DisplayPosition = position;
+
+        // Check if position is a valid pos for the object to move
+        bool valid = CheckValidPos();
+
+        // Set materials for mesh renderers
+        foreach (
+            SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
+        )
+        {
+            tuple.Item1.material = valid ? GhostMat : InvalidGhostMat;
+        }
+    }
+
+    public void TryPlace()
+    {
+        SetNormalMat();
+        if (CheckValidPos())
+        {
+            SetLocationAsValid();
+        }
+        else
+        {
+            ResetToValidLocation();
+        }
+    }
+
+    public void SetNormalMat()
+    {
+        foreach (
+            SerializableTuple<MeshRenderer, Material> tuple in MeshRenderers
+        )
+        {
+            tuple.Item1.material = tuple.Item2;
+        }
+    }
+
+    public bool CheckValidPos()
+    {
+        BoundingBox displayBox = GetDisplayBoundingBox();
+        BoundingBox clamped = displayBox.Clamp();
+        if (clamped != displayBox)
+            return false;
+
+        PlacedFurnitures.Instance.BoundingBoxToIndices(
+            displayBox,
+            out Vector2Int starting,
+            out _
+        );
+        Furniture bottomLeftBase = PlacedFurnitures.Instance.GetBase(starting);
+        bool wholeAreaHasSameBase = PlacedFurnitures.Instance.SatisfiesAll(
+            PlacedFurnitures.Instance.furnitureBaseGrid,
+            displayBox,
+            (Furniture f) => f == bottomLeftBase
+        );
+
+        if (!canStackOnOthers)
+        {
+            return bottomLeftBase == null && wholeAreaHasSameBase;
+        }
+
+        if (
+            bottomLeftBase != null && !bottomLeftBase.canBeStackedOn
+            || !wholeAreaHasSameBase
+        )
+        {
+            return false;
+        }
+
+        DisplayBase = bottomLeftBase;
+        DisplayElevation = bottomLeftBase != null ? bottomLeftBase.height : 0;
+
+        return bottomLeftBase == null
+            || PlacedFurnitures.Instance.SatisfiesAll(
+                PlacedFurnitures.Instance.furnitureStackGrid,
+                displayBox,
+                (Furniture f) => f == null
+            );
+    }
+
+    public BoundingBox GetDisplayBoundingBox()
+    {
+        return BoundingBox.FromCenterAndSize(
+            DisplayPosition,
+            Mathf.Abs(DisplayRotation) < 0.1f
+            || Mathf.Abs(Mathf.Abs(DisplayRotation) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x)
+        );
+    }
+
+    public BoundingBox GetBoundingBox()
+    {
+        return BoundingBox.FromCenterAndSize(
+            LastValidPosition,
+            Mathf.Abs(LastValidRotation) < 0.1f
+            || Mathf.Abs(Mathf.Abs(LastValidRotation) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x)
+        );
+    }
+
+    public Direction GetFace(Direction face)
+    {
+        return face.Rotate(LastValidRotation);
+    }
+
+    public BoundingBox GetNextToFace(Direction face, int width)
+    {
+        return GetBoundingBox().GetNextToFace(GetFace(face), width);
+    }
+
+    private void AttachOrDetach()
+    {
+        // Keep world position/rotation when parenting
+        if (DisplayBase == LastValidBase)
+            return;
+        if (LastValidBase != null)
+        {
+            LastValidBase.carrying.Remove(this);
+        }
+
+        LastValidBase = DisplayBase;
+
+        if (LastValidBase != null)
+        {
+            LastValidBase.carrying.Add(this);
+        }
+
+        transform.SetParent(
+            LastValidBase != null ? LastValidBase.transform : null,
+            true
+        );
+    }
+}
+
+/*
+This class is just a way for me to be able to serialize tuples.
+*/
+[Serializable]
+public class SerializableTuple<T1, T2>
+{
+    public T1 Item1;
+    public T2 Item2;
+
+    public SerializableTuple(T1 item1, T2 item2)
+    {
+        Item1 = item1;
+        Item2 = item2;
+    }
+
+    public override string ToString()
+    {
+        return $"({Item1}, {Item2})";
     }
 }
