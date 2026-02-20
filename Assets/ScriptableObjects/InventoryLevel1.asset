@@ -27,10 +27,13 @@ MonoBehaviour:
     CurrentPlacedCount: 0
   - Prefab: {fileID: 5896300683249224083, guid: 319e4ff46f9ae4546ac6c0da502de93c, type: 3}
     MaxPlacements: 2
-    CurrentPlacedCount: 0
+    CurrentPlacedCount: 1
   - Prefab: {fileID: 8497282342468787328, guid: ca1a20138850da94faef3975c3472183, type: 3}
     MaxPlacements: 1
-    CurrentPlacedCount: 0
+    CurrentPlacedCount: 1
   - Prefab: {fileID: 2050798650972208330, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 1
+  - Prefab: {fileID: 8336270989740125061, guid: 27444192ea7abcf498e9a3d2f386fcb1, type: 3}
     MaxPlacements: 1
     CurrentPlacedCount: 0
