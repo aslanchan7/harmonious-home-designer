@@ -3955,6 +3955,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f881c0e9a0d44cc4bb2f3a0cb50300ca, type: 3}
+--- !u!1001 &7409435386116842606
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.892
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.886
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451374363824511333, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006027534904319328, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+      propertyPath: m_Name
+      value: OrangeBonsaiFurniture
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3990,3 +4047,4 @@ SceneRoots:
   - {fileID: 1998588607}
   - {fileID: 168266892}
   - {fileID: 1377224088}
+  - {fileID: 7409435386116842606}
