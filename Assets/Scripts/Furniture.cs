@@ -33,7 +33,7 @@ public class Furniture : MonoBehaviour
     public Vector2Int StartingSize;
 
     [Header("References")]
-    public SerializableTuple<MeshRenderer, Material>[] MeshRenderers;
+    public List<SerializableTuple<MeshRenderer, Material>> MeshRenderers;
     public Collider[] Colliders;
     public Material GhostMat,
         InvalidGhostMat;
@@ -87,6 +87,19 @@ public class Furniture : MonoBehaviour
         LastValidBase = null;
         DisplayBase = null;
         carrying = new List<Furniture>();
+
+        // Match MeshRenderers with Materials
+        MeshRenderers.Clear();
+        foreach (MeshRenderer meshRenderer in transform.GetChild(0).GetComponentsInChildren<MeshRenderer>())
+        {
+            SerializableTuple<MeshRenderer, Material> newTuple = new(meshRenderer, meshRenderer.material);
+            MeshRenderers.Add(newTuple);
+        }
+    }
+
+    void Start()
+    {
+        InitializeState();
     }
 
     public Furniture InstantiatePrefab()
