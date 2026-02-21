@@ -148,6 +148,11 @@ public class IconThumbnailEditor : EditorWindow
             sceneCamera.clearFlags = CameraClearFlags.SolidColor;
             sceneCamera.targetTexture = new RenderTexture(size, size, 32, RenderTextureFormat.ARGBFloat);
 
+            // Add directional light
+            Light light = cameraObject.AddComponent<Light>();
+            light.type = LightType.Directional;
+            light.color = Color.white;
+
             SceneManager.MoveGameObjectToScene(cameraObject, previewScene);
 
             sceneCamera.scene = previewScene;
