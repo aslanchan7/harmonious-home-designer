@@ -17,7 +17,7 @@ public class InventoryUI : MonoBehaviour
             inventoryFurnitureButtonPrefab,
             inventoryPanel.transform
         );
-        // TODO: Edit the sprite of the button to include an image of the furniture item
+        
         instantiated.GetComponent<InventoryFurnitureButton>().inventoryItem =
             item;
 

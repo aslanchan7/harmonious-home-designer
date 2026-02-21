@@ -12,7 +12,7 @@ public class InventoryItem
 {
     public string Name;
     public GameObject Prefab;
-    public Texture2D Icon;
+    public Sprite Icon;
     public int MaxPlacements;
     public int CurrentPlacedCount = 0;
 }
