@@ -1,0 +1,14 @@
+.custom-label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}
+
+.unity-base-field {
+}
+
+.unity-vector3-field {
+}
+
+.unity-composite-field {
+}

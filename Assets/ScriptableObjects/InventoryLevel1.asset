@@ -13,24 +13,63 @@ MonoBehaviour:
   m_Name: InventoryLevel1
   m_EditorClassIdentifier: Assembly-CSharp::InventoryScriptableObject
   inventoryList:
-  - Prefab: {fileID: 2476502737128270008, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
+  - Name: Bed
+    Prefab: {fileID: 2476502737128270008, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
+    Icon: {fileID: 21300000, guid: 46aa5879f9238cb4bb8f8f57169c6abb, type: 3}
     MaxPlacements: 1
     CurrentPlacedCount: 0
-  - Prefab: {fileID: 6111234008104112674, guid: d044847fbde8ef344bc4f0dac5415e57, type: 3}
+  - Name: Desk
+    Prefab: {fileID: 6111234008104112674, guid: d044847fbde8ef344bc4f0dac5415e57, type: 3}
+    Icon: {fileID: 21300000, guid: f156b6a5cc4639d47bd567dd1637f870, type: 3}
     MaxPlacements: 1
     CurrentPlacedCount: 0
-  - Prefab: {fileID: 707164867603984169, guid: b6a810349eb6d2c4e90be12a723c9135, type: 3}
+  - Name: Dresser
+    Prefab: {fileID: 707164867603984169, guid: b6a810349eb6d2c4e90be12a723c9135, type: 3}
+    Icon: {fileID: 21300000, guid: d39d705b79063ec4e84919cdb97e716a, type: 3}
     MaxPlacements: 2
     CurrentPlacedCount: 0
-  - Prefab: {fileID: 1898647692820854127, guid: 71945d275a4475742a3321fa311f2ca2, type: 3}
+  - Name: Lamp
+    Prefab: {fileID: 1898647692820854127, guid: 71945d275a4475742a3321fa311f2ca2, type: 3}
+    Icon: {fileID: 21300000, guid: 6b69f5c8ea5475c4993ab6eb0a820f18, type: 3}
     MaxPlacements: 2
     CurrentPlacedCount: 0
-  - Prefab: {fileID: 5896300683249224083, guid: 319e4ff46f9ae4546ac6c0da502de93c, type: 3}
+  - Name: Night Stand
+    Prefab: {fileID: 5896300683249224083, guid: 319e4ff46f9ae4546ac6c0da502de93c, type: 3}
+    Icon: {fileID: 21300000, guid: 8b0985a6dfe4dfe40a165e69b156278e, type: 3}
     MaxPlacements: 2
     CurrentPlacedCount: 0
-  - Prefab: {fileID: 8497282342468787328, guid: ca1a20138850da94faef3975c3472183, type: 3}
+  - Name: Trash Can
+    Prefab: {fileID: 8497282342468787328, guid: ca1a20138850da94faef3975c3472183, type: 3}
+    Icon: {fileID: 21300000, guid: 9327ff5fd296c954798c8da3f2f29743, type: 3}
     MaxPlacements: 1
     CurrentPlacedCount: 0
-  - Prefab: {fileID: 2050798650972208330, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
+  - Name: Wardrobe
+    Prefab: {fileID: 2050798650972208330, guid: 11eae3fedf0bf1b40800891ae967b4b5, type: 3}
+    Icon: {fileID: 21300000, guid: 230d3bfaf5607ce46ab5bd19b34d184f, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 0
+  - Name: Rock Lamp
+    Prefab: {fileID: 8336270989740125061, guid: 27444192ea7abcf498e9a3d2f386fcb1, type: 3}
+    Icon: {fileID: 21300000, guid: 3ba9c8c078798164a9108a3e8cb9e84f, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 0
+  - Name: Paper Lamp
+    Prefab: {fileID: 5074657682869939431, guid: f881c0e9a0d44cc4bb2f3a0cb50300ca, type: 3}
+    Icon: {fileID: 21300000, guid: fab1febe1f1d6b14dac3ff3a3f0077ea, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 0
+  - Name: Orange Bonsai
+    Prefab: {fileID: 1006027534904319328, guid: b101b7bc198672041a15f421acd9dde0, type: 3}
+    Icon: {fileID: 21300000, guid: 25da18c32f0f15e43812dfdf5d2995de, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 0
+  - Name: Money Tree
+    Prefab: {fileID: 2977958108490089250, guid: 197f2394f96af2345a8cdcda68f47afa, type: 3}
+    Icon: {fileID: 21300000, guid: 78f7bf30b409cf846a99941f867032ef, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 0
+  - Name: Bamboo Plant
+    Prefab: {fileID: 9195192961262427461, guid: 701bd7303e5babb46b561888fba4820d, type: 3}
+    Icon: {fileID: 21300000, guid: 7404c2189ec48d54198d4f0f64dede92, type: 3}
     MaxPlacements: 1
     CurrentPlacedCount: 0

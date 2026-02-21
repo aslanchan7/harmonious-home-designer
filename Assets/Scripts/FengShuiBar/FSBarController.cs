@@ -32,6 +32,8 @@ public class FSBarController : MonoBehaviour
         _ProgressSlider.value = 0;
         _SinsSlider.value = maxE;
 
+        fengShuiBarUI.SetMax(maxE);
+
         // Comment out Bonus Slider
         //_BonusSlider.maxValue = maxE;
         //_BonusSlider.value = 0;

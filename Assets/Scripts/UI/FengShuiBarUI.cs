@@ -21,9 +21,11 @@ public class FengShuiBarUI : MonoBehaviour
             newEnergySegment.gameObject.GetComponent<RectTransform>();
         newEnergySegment.SetEnergyType(type);
         newEnergySegment.SetPolarity(polarity);
-        newEnergySegment.SetSize(rectTransform.sizeDelta);
+        newEnergySegment.SetSize(
+            sinSlider.GetComponent<RectTransform>().sizeDelta
+        );
         rectTransform.localPosition = Vector3.zero;
-        newEnergySegment.gameObject.SetActive(false);
+        // newEnergySegment.gameObject.SetActive(false);
         if (!polarity)
         {
             BadEnergySegments.Add(newEnergySegment.gameObject);
@@ -33,6 +35,14 @@ public class FengShuiBarUI : MonoBehaviour
             Debug.Log(
                 "Not segmenting good energies at this point in development :/"
             );
+        }
+    }
+
+    public void SetMax(int maxE)
+    {
+        foreach (GameObject segmentObject in BadEnergySegments)
+        {
+            segmentObject.GetComponent<Slider>().maxValue = maxE;
         }
     }
 

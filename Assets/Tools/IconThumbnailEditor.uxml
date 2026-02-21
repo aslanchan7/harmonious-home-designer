@@ -1,0 +1,22 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Tools/IconThumbnailEditor.uss?fileID=7433441132597879392&amp;guid=7160ca431015a7745b2618f0c3601cd3&amp;type=3#IconThumbnailEditor"/>
+    <ui:VisualElement name="Container" style="flex-grow: 1; flex-direction: row; background-color: rgb(40, 40, 40);">
+        <ui:ListView name="List" show-foldout-header="true" header-title="Furniture" allow-remove="false" allow-add="false" show-bound-collection-size="false" style="width: 270px; background-color: rgba(0, 0, 0, 0.2); color: rgb(196, 196, 196); -unity-font-style: bold; -unity-text-align: middle-left; visibility: visible; display: flex; overflow: visible; border-left-color: rgb(37, 37, 37); border-right-color: rgb(37, 37, 37); border-top-color: rgb(37, 37, 37); border-bottom-color: rgb(37, 37, 37); border-right-width: 2px; padding-left: 5px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; flex-direction: column;"/>
+        <ui:VisualElement name="Content" data-source-type="IconThumbnailEditor, Assembly-CSharp" style="flex-grow: 1; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+            <ui:Button text="Save" name="SaveButton" style="-unity-text-align: middle-center; white-space: nowrap; align-self: flex-end;"/>
+            <ui:Label text="Label" name="Header" style="font-size: 21px; color: rgb(196, 196, 196); -unity-font-style: bold;">
+                <Bindings>
+                    <ui:DataBinding property="text" data-source-path="selectedAssetName" binding-mode="ToTarget" update-trigger="OnSourceChanged"/>
+                </Bindings>
+            </ui:Label>
+            <ui:VisualElement name="Output" style="flex-grow: 0; width: 256px; height: 256px; aspect-ratio: 1; flex-basis: auto; flex-direction: column; align-items: stretch; justify-content: flex-start; align-self: center; margin-top: 30px; margin-bottom: 30px;">
+                <Bindings>
+                    <ui:DataBinding property="style.backgroundImage" data-source-path="previewTexture" binding-mode="ToTarget"/>
+                </Bindings>
+            </ui:VisualElement>
+            <ui:Vector3Field label="CameraPos" name="CameraPos" style="flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start; align-self: auto; align-content: auto; color: rgb(196, 196, 196);"/>
+            <ui:Vector3Field label="CameraRotation" name="CameraRotation" style="flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start; align-self: auto; align-content: auto; color: rgb(196, 196, 196);"/>
+            <ui:Slider label="ObjectRotation" value="42" high-value="359" name="ObjectRotation" style="color: rgb(196, 196, 196);"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
