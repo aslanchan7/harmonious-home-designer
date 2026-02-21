@@ -10,7 +10,9 @@ public class InventoryScriptableObject : ScriptableObject
 [System.Serializable]
 public class InventoryItem
 {
+    public string Name;
     public GameObject Prefab;
+    public Texture2D Icon;
     public int MaxPlacements;
     public int CurrentPlacedCount = 0;
 }
