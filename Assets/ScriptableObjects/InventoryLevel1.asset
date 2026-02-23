@@ -73,3 +73,8 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 7404c2189ec48d54198d4f0f64dede92, type: 3}
     MaxPlacements: 1
     CurrentPlacedCount: 0
+  - Name: Desk Chair
+    Prefab: {fileID: 9090992602203398952, guid: cbcdea702ac74524fb3ca87900ba5087, type: 3}
+    Icon: {fileID: 21300000, guid: 7b5855530547efa4ca041114b1fe5f0d, type: 3}
+    MaxPlacements: 1
+    CurrentPlacedCount: 0
