@@ -2562,6 +2562,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuButtonsUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1365595207191620356, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 324.48453
+      objectReference: {fileID: 0}
+    - target: {fileID: 1365595207191620356, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 136.44327
+      objectReference: {fileID: 0}
+    - target: {fileID: 2013272838539507250, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 2013272838539507250, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460352130894682201, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 334.3814
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460352130894682201, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 278.29895
+      objectReference: {fileID: 0}
+    - target: {fileID: 4972282115468706612, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4988790662927073391, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2654,6 +2682,14 @@ PrefabInstance:
       propertyPath: InventoryUI
       value: 
       objectReference: {fileID: 1070855020}
+    - target: {fileID: 7805706343377131530, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 222.21648
+      objectReference: {fileID: 0}
+    - target: {fileID: 7805706343377131530, guid: 0c3c904fdfcaa5f49afd1ccd952e33c3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 370.6701
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
