@@ -1040,10 +1040,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 346061841}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf3abc523826c45428e433c80db81ec1, type: 3}
+  m_Script: {fileID: 11500000, guid: 016907095874f21498a8b38ccaf56ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicManager
-  audioSource: {fileID: 346061844}
+  library: {fileID: 11400000, guid: 701cf26c90e7db64395a8fca4a3e2adc, type: 2}
+  crossfadeSeconds: 1
+  initialPlayDelaySeconds: 1
 --- !u!82 &346061844
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1684,8 +1686,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 522872962}
-  - component: {fileID: 522872963}
   - component: {fileID: 522872964}
+  - component: {fileID: 522872963}
   m_Layer: 0
   m_Name: SFX Manager
   m_TagString: Untagged
@@ -1814,13 +1816,246 @@ MonoBehaviour:
   m_GameObject: {fileID: 522872961}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09184817de046de4d9c5555e3a0baae1, type: 3}
+  m_Script: {fileID: 11500000, guid: 032ef61af9b0a404ebc140f5ecf7868b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SFXManager
-  audioClips:
-  - Clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
-    sfxType: 0
-  audioSource: {fileID: 522872963}
+  sfxSource: {fileID: 522872963}
+  furnitureSets:
+  - category: 0
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: d6981ce67a04ee54399206293c816d85, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 4fc41e46e8177d343a185a6596554290, type: 3}
+      volume: 0.676
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.602
+      pitchSemitones: 0
+  - category: 8
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 14726afe5b88ce44a94ace392c72bf9f, type: 3}
+      volume: 0.566
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: cb7ee695316543f47bedccdd09d625b1, type: 3}
+      volume: 0.573
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.631
+      pitchSemitones: 0
+  - category: 7
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 843056d5ddca2844ea98e8e7db8d42cf, type: 3}
+      volume: 0.65
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 4fc41e46e8177d343a185a6596554290, type: 3}
+      volume: 0.583
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.563
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.647
+      pitchSemitones: 0
+  - category: 6
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: d6981ce67a04ee54399206293c816d85, type: 3}
+      volume: 0.589
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 88569b4351bee5040960c6fb1c337ff0, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.638
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.657
+      pitchSemitones: 0
+  - category: 5
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 075c2cb93e188ee4da8fb276ce729b8d, type: 3}
+      volume: 0.586
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: cb7ee695316543f47bedccdd09d625b1, type: 3}
+      volume: 0.592
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.599
+      pitchSemitones: 0
+  - category: 4
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 2b967e08c30807f4d86447e0f713ca94, type: 3}
+      volume: 0.621
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 4d7f04c598d475c458a4a744896ec4fc, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.602
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.638
+      pitchSemitones: 0
+  - category: 3
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 91b4332db3d8b0644ad687e7364624d4, type: 3}
+      volume: 0.644
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 65cf51c157a461d4f968e3bbff0650d7, type: 3}
+      volume: 0.605
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.631
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.608
+      pitchSemitones: 0
+  - category: 2
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: a2dd594542d136249a75b08a54e1a811, type: 3}
+      volume: 0.566
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 4fc41e46e8177d343a185a6596554290, type: 3}
+      volume: 0.583
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.608
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.605
+      pitchSemitones: 0
+  - category: 1
+    place:
+      key: 
+      clip: {fileID: 0}
+      volume: 0
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 88569b4351bee5040960c6fb1c337ff0, type: 3}
+      volume: 0.644
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+  globalSfx:
+    uiClick:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiOpen:
+      key: 
+      clip: {fileID: 8300000, guid: 5cb1bd0d1e04e47448d56e42c70034bd, type: 3}
+      volume: 1
+      pitchSemitones: 0
+    uiClose:
+      key: 
+      clip: {fileID: 8300000, guid: acdf7a3065339874fa9fc89b548be31d, type: 3}
+      volume: 1
+      pitchSemitones: 0
+    uiBookOpen:
+      key: 
+      clip: {fileID: 8300000, guid: e0f37b4719a2ac54fb41f373fbfa7731, type: 3}
+      volume: 1
+      pitchSemitones: 0
+    uiPageForward:
+      key: 
+      clip: {fileID: 8300000, guid: c04b1a68bc7fa8e4b96cc4c360920e75, type: 3}
+      volume: 0.788
+      pitchSemitones: 0
+    uiPageBack:
+      key: 
+      clip: {fileID: 8300000, guid: e7943fea7ff0ec84c8bd6c96bb102ec3, type: 3}
+      volume: 0.701
+      pitchSemitones: 0
+    uiBookClose:
+      key: 
+      clip: {fileID: 8300000, guid: db11b50a5fae7af44817d25dded05016, type: 3}
+      volume: 1
+      pitchSemitones: 0
+    uiBoxOpen:
+      key: 
+      clip: {fileID: 8300000, guid: 5d12e39d121c093468542f152a7dade1, type: 3}
+      volume: 0.64
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
 --- !u!1 &523982856
 GameObject:
   m_ObjectHideFlags: 0

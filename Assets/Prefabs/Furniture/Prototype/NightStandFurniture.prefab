@@ -57,6 +57,7 @@ MonoBehaviour:
   LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 5
   MeshRenderers:
   - Item1: {fileID: 2218606301289080333}
     Item2: {fileID: 2100000, guid: 98c1a1620c3ef4fb4a82d218216e9849, type: 2}

@@ -65,7 +65,8 @@ public class PlayerControls : MonoBehaviour
     {
         clickAction.action.performed -= OnClick;
         rotateAction.action.performed -= OnRotate;
-        deleteAction.action.performed += OnDelete;
+        // This was += seems like it should be -= if I am wrong just switch it back :D
+        deleteAction.action.performed -= OnDelete;
     }
 
     private void Update()
@@ -78,6 +79,9 @@ public class PlayerControls : MonoBehaviour
         if (HoverFurniture != null)
         {
             SelectedFurniture = HoverFurniture;
+
+            SFXManager.Instance?.PlayFurnitureSFX(SelectedFurniture.SfxCategory, SFXAction.Pickup);
+
             GridSystem.Instance.ShowGridVisualizer();
             dragUpdateCoroutine = StartCoroutine(DragUpdate());
         }
@@ -114,6 +118,9 @@ public class PlayerControls : MonoBehaviour
             if (SelectedFurniture.lockRotation)
                 return;
             SelectedFurniture.DisplayRotation += 90;
+
+            SFXManager.Instance?.PlayFurnitureSFX(SelectedFurniture.SfxCategory, SFXAction.Rotate);
+
             mouseIndicator.Rotate();
             return;
         }
@@ -135,6 +142,8 @@ public class PlayerControls : MonoBehaviour
             HoverFurniture = beneath;
         }
         HoverFurniture.DisplayRotation += 90;
+
+        SFXManager.Instance?.PlayFurnitureSFX(HoverFurniture.SfxCategory, SFXAction.Rotate);
 
         if (HoverFurniture.Size.x == HoverFurniture.Size.y)
         {

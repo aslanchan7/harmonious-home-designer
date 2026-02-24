@@ -85,9 +85,13 @@ MonoBehaviour:
   height: 1
   canBeStackedOn: 1
   canStackOnOthers: 0
+  lockRotation: 0
+  acceptRotationPassThrough: 0
   LastValidPosition: {x: 0, y: 0}
+  LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 4
   MeshRenderers:
   - Item1: {fileID: 7512840229557384074}
     Item2: {fileID: 2100000, guid: 38c5066ae54b10b4ba03e9e8dd2bd814, type: 2}
