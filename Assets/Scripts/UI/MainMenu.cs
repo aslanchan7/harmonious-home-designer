@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,8 +25,15 @@ public class MainMenu : MonoBehaviour
         fadeOutPanel.alpha = 0f;
         fadeOutPanel.LeanAlpha(1f, fadeOutAnimTime).setOnComplete(() =>
         {
+            StartCoroutine(WaitForFadeOut(0.5f));
             SceneManager.LoadScene(1);
         });
+
+    }
+
+    private IEnumerator WaitForFadeOut(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
     }
 
     public void OpenCredits()

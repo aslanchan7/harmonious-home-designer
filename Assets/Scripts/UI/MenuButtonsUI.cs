@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class MenuButtonsUI : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] CanvasGroup FadeInPanel;
     [SerializeField] GameObject OpenSubMenuButton;
     [SerializeField] List<Sprite> OpenSubMenuButtonSprites = new(2);
     [SerializeField] GameObject SubMenuButtons;
@@ -13,19 +14,31 @@ public class MenuButtonsUI : MonoBehaviour
     [SerializeField] GameObject CatalogueUI;
 
     [Header("Animation Settings")]
+    [SerializeField] float fadeInAnimTime = 0.5f;
     [SerializeField] float fadeAnimTime = 1f;
     [SerializeField] float inventoryAnimTime = 0.5f;
     [SerializeField] float journalAnimTime = 0.5f;
     [SerializeField] float catalogueAnimTime = 0.5f;
 
+    void Start()
+    {
+        FadeInPanel.gameObject.SetActive(true);
+        FadeInPanel.alpha = 1f;
+        FadeInPanel.LeanAlpha(0f, fadeInAnimTime).setOnComplete(() =>
+        {
+            FadeInPanel.gameObject.SetActive(false);
+        });
+    }
+
     public void ToggleSubMenuButtons()
     {
         // SubMenuButtons.SetActive(!SubMenuButtons.activeSelf);
-        if(SubMenuButtons.activeSelf)
+        if (SubMenuButtons.activeSelf)
         {
             StartHideSubMenuButtonsAnim();
             UISFX.Play(SFXAction.UI_BoxClose);
-        } else
+        }
+        else
         {
             StartShowSubMenuButtonsAnim();
             UISFX.Play(SFXAction.UI_BoxOpen);
@@ -38,12 +51,12 @@ public class MenuButtonsUI : MonoBehaviour
         InventoryUI.GetComponent<CanvasGroup>().alpha = 0f;
         InventoryUI.SetActive(true);
         InventoryUI.GetComponent<CanvasGroup>().LeanAlpha(1f, inventoryAnimTime);
-        
+
         UISFX.Play(SFXAction.UI_Open);
 
         // simultaneously zoom out camera
         Camera.main.transform.LeanMoveLocalY(Camera.main.transform.position.y + 2f, inventoryAnimTime);
-        
+
         FadeOutMenuButtonsUI(inventoryAnimTime);
     }
 
@@ -53,9 +66,9 @@ public class MenuButtonsUI : MonoBehaviour
         JournalUI.GetComponent<CanvasGroup>().alpha = 0f;
         JournalUI.SetActive(true);
         JournalUI.GetComponent<CanvasGroup>().LeanAlpha(1f, journalAnimTime);
-        
+
         UISFX.Play(SFXAction.UI_OpenBook);
-        
+
         FadeOutMenuButtonsUI(journalAnimTime);
     }
 
