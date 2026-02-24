@@ -70,4 +70,10 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
     }
+
+    void OnEnable()
+    {
+        fadeOutPanel.alpha = 1f;
+        fadeOutPanel.LeanAlpha(0f, fadeOutAnimTime);
+    }
 }

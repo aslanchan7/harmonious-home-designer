@@ -25,10 +25,15 @@ public class PlayerControls : MonoBehaviour
 
     [SerializeField]
     private InputActionReference deleteAction;
-
+    [SerializeField]
+    private InputActionReference pauseAction;
+    
     [Header("References")]
     [SerializeField]
     private MouseIndicator mouseIndicator;
+    
+    [SerializeField]
+    private GameObject pauseMenu;
 
     private Coroutine dragUpdateCoroutine;
 
@@ -59,6 +64,7 @@ public class PlayerControls : MonoBehaviour
         clickAction.action.performed += OnClick;
         rotateAction.action.performed += OnRotate;
         deleteAction.action.performed += OnDelete;
+        pauseAction.action.performed += OnPause;
     }
 
     private void OnDisable()
@@ -67,11 +73,20 @@ public class PlayerControls : MonoBehaviour
         rotateAction.action.performed -= OnRotate;
         // This was += seems like it should be -= if I am wrong just switch it back :D
         deleteAction.action.performed -= OnDelete;
+        pauseAction.action.performed -= OnPause;
     }
 
     private void Update()
     {
         RaycastMouse();
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        if(pauseMenu.activeSelf)
+            pauseMenu.GetComponent<PauseMenuUI>().ResumeGame();
+        else
+            pauseMenu.SetActive(true);
     }
 
     private void OnClick(InputAction.CallbackContext callbackContext)
