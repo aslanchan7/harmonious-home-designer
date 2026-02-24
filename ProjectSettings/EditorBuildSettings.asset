@@ -9,11 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: bb2bb34f4dcb7f64ca9b1dd4e46e2a03
   - enabled: 1
-    path: Assets/Scenes/FurnitureSandbox.unity
-    guid: 2a29fe31fad83484494765ba9cce990d
-  - enabled: 1
-    path: Assets/Scenes/Credits.unity
-    guid: ce4d0bfc5d8235444851f610b3e108e3
+    path: Assets/Scenes/PrototypeLevel.unity
+    guid: eee6735f23dd0a6439e3af55fa6fca28
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
