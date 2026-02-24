@@ -33,5 +33,6 @@ public class GlobalSFXSet
     public SFXEntry uiPageBack;
     public SFXEntry uiBookClose;
     public SFXEntry uiBoxOpen;
+    public SFXEntry uiBoxClose;
     public SFXEntry invalid;
 }

@@ -2049,7 +2049,12 @@ MonoBehaviour:
     uiBoxOpen:
       key: 
       clip: {fileID: 8300000, guid: 5d12e39d121c093468542f152a7dade1, type: 3}
-      volume: 0.64
+      volume: 0.435
+      pitchSemitones: 0
+    uiBoxClose:
+      key: 
+      clip: {fileID: 8300000, guid: 9490bf205bd5c1f4883f07620a6693cc, type: 3}
+      volume: 0.457
       pitchSemitones: 0
     invalid:
       key: 

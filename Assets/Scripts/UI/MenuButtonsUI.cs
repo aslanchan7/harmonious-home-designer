@@ -24,6 +24,7 @@ public class MenuButtonsUI : MonoBehaviour
         if(SubMenuButtons.activeSelf)
         {
             StartHideSubMenuButtonsAnim();
+            UISFX.Play(SFXAction.UI_BoxClose);
         } else
         {
             StartShowSubMenuButtonsAnim();

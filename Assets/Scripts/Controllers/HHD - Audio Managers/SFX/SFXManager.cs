@@ -60,6 +60,7 @@ public class SFXManager : MonoBehaviour
             SFXAction.UI_PageBack => globalSfx.uiPageBack,
             SFXAction.UI_CloseBook => globalSfx.uiBookClose,
             SFXAction.UI_BoxOpen => globalSfx.uiBoxOpen,
+            SFXAction.UI_BoxClose => globalSfx.uiBoxClose,
             SFXAction.Invalid  => globalSfx.invalid,
             _ => null
         };
