@@ -90,12 +90,9 @@ public class Furniture : MonoBehaviour
         LastValidPosition = DisplayPosition;
         LastValidRotation = DisplayRotation;
         // TODO: Change the type of sfx played
-<<<<<<< Updated upstream
-=======
         //SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         GridSystem.Instance.heightGrid.Set(GetLastValidBoundingBox(), height);
         WinCondition.Instance.UpdateRuleCheck();
->>>>>>> Stashed changes
         // SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         ColliderOn();
     }
