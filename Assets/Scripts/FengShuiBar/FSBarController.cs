@@ -263,20 +263,3 @@ public class FSEnergy
         amount = inAmount;
     }
 }
-
-// Enumerator class for the types of energies
-public enum FSEnergyType
-{
-    // Good energies, when running addEnergy() or removeEnergy() input true for "polarity" field
-    Luck,
-    Wealth,
-    Love,
-    Happiness,
-
-    // Bad energies, when running addEnergy() or removeEnergy() input false for "polarity" field
-    Toilet,
-    Chaos,
-    Death,
-    Skibbidy,
-    Functional,
-}
