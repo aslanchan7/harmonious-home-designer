@@ -1,0 +1,138 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df200a48aedba4e7a9020b4570fe67e9, type: 3}
+  m_Name: RuleSetLevel1
+  m_EditorClassIdentifier: Assembly-CSharp::RuleSet
+  furnitures:
+  - name: Bed
+    categories: 5
+  - name: NightStand
+    categories: 1
+  - name: Wardrobe
+    categories: 5
+  - name: Desk
+    categories: 1
+  - name: DeskChair
+    categories: 1
+  - name: Lamp
+    categories: 8
+  - name: PaperLamp
+    categories: 8
+  - name: RockLamp
+    categories: 8
+  - name: LightSource
+    categories: 1
+  fixedItems:
+  - name: Main Door
+    boundingBox:
+      position: {x: 1.5, y: -3}
+      size: {x: 1, y: 0}
+      rotation: 0
+    categories: -1
+    showInEditor: 0
+  - name: Bathroom Door
+    boundingBox:
+      position: {x: -3.5, y: -2}
+      size: {x: 0, y: 1}
+      rotation: 90
+    categories: -1
+    showInEditor: 0
+  zones:
+  - name: Main Door Chaos
+    zone:
+      position: {x: 0.5, y: -3}
+      size: {x: 3, y: 2}
+    categories: 1
+    showInEditor: 0
+  - name: Bathroom Door Chaos
+    zone:
+      position: {x: -3.5, y: -3}
+      size: {x: 2, y: 3}
+    categories: 1
+    showInEditor: 0
+  - name: Window
+    zone:
+      position: {x: 1.5, y: 0}
+      size: {x: 2, y: 3}
+    categories: 1
+    showInEditor: 0
+  - name: Bathroom Proximity
+    zone:
+      position: {x: -3.5, y: -3}
+      size: {x: 2, y: 4}
+    categories: 0
+    showInEditor: 0
+  rules:
+  - name: Required Furnitures are Present
+    ruleFunction:
+      ruleType: 0
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Doors are Clear
+    ruleFunction:
+      ruleType: 3
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Furnitures are Accessible
+    ruleFunction:
+      ruleType: 4
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Bed Feet is not Facing Main Door
+    ruleFunction:
+      ruleType: 5
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Bed Head is not Near and Facing Bathroom
+    ruleFunction:
+      ruleType: 6
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Bed is against Solid Wall
+    ruleFunction:
+      ruleType: 7
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Bed is in Command Position
+    ruleFunction:
+      ruleType: 9
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: No Furniture in Chaos Zones
+    ruleFunction:
+      ruleType: 8
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Bagua
+    ruleFunction:
+      ruleType: 10
+      arguments: []
+    basePoints: 20
+    precondition: 2
+  - name: Stars
+    ruleFunction:
+      ruleType: 11
+      arguments:
+      - name: 2
+        type: 4
+      - name: 3
+        type: 4
+    basePoints: 20
+    precondition: 2

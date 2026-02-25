@@ -25,6 +25,7 @@ public class PlayerControls : MonoBehaviour
 
     [SerializeField]
     private InputActionReference deleteAction;
+
     [SerializeField]
     private InputActionReference pauseAction;
 
@@ -95,7 +96,10 @@ public class PlayerControls : MonoBehaviour
         {
             SelectedFurniture = HoverFurniture;
 
-            SFXManager.Instance?.PlayFurnitureSFX(SelectedFurniture.SfxCategory, SFXAction.Pickup);
+            SFXManager.Instance?.PlayFurnitureSFX(
+                SelectedFurniture.SfxCategory,
+                SFXAction.Pickup
+            );
 
             GridSystem.Instance.ShowGridVisualizer();
             dragUpdateCoroutine = StartCoroutine(DragUpdate());
@@ -123,6 +127,7 @@ public class PlayerControls : MonoBehaviour
 
         SelectedFurniture.TryPlace();
         SelectedFurniture = null;
+        HoverFurniture = null;
         GridSystem.Instance.HideGridVisualizer();
     }
 
@@ -134,7 +139,10 @@ public class PlayerControls : MonoBehaviour
                 return;
             SelectedFurniture.DisplayRotation += 90;
 
-            SFXManager.Instance?.PlayFurnitureSFX(SelectedFurniture.SfxCategory, SFXAction.Rotate);
+            SFXManager.Instance?.PlayFurnitureSFX(
+                SelectedFurniture.SfxCategory,
+                SFXAction.Rotate
+            );
 
             mouseIndicator.Rotate();
             return;
@@ -145,12 +153,11 @@ public class PlayerControls : MonoBehaviour
 
         if (HoverFurniture.lockRotation)
         {
-            PlacedFurnitures.Instance.BoundingBoxToIndices(
-                HoverFurniture.GetBoundingBox(),
-                out Vector2Int starting,
-                out _
+            Furniture beneath = PlacedFurnitures.Instance.GetBase(
+                GridSystem.Instance.WorldToIndex(
+                    HoverFurniture.GetBoundingBox().position
+                )
             );
-            Furniture beneath = PlacedFurnitures.Instance.GetBase(starting);
             // beneath should not be null.
             if (beneath.lockRotation || !beneath.acceptRotationPassThrough)
                 return;
@@ -158,7 +165,10 @@ public class PlayerControls : MonoBehaviour
         }
         HoverFurniture.DisplayRotation += 90;
 
-        SFXManager.Instance?.PlayFurnitureSFX(HoverFurniture.SfxCategory, SFXAction.Rotate);
+        SFXManager.Instance?.PlayFurnitureSFX(
+            HoverFurniture.SfxCategory,
+            SFXAction.Rotate
+        );
 
         if (HoverFurniture.Size.x == HoverFurniture.Size.y)
         {
@@ -265,24 +275,25 @@ public class PlayerControls : MonoBehaviour
                 HoverFurniture =
                     hit.transform.GetComponentInParent<Furniture>();
             }
+            else if (
+                Mathf.Abs(position2d.x) > halfSize.x
+                || Mathf.Abs(position2d.y) > halfSize.y
+            )
+            {
+                HoverFurniture = null;
+            }
             else
             {
-                if (
-                    Mathf.Abs(position2d.x) > halfSize.x
-                    || Mathf.Abs(position2d.y) > halfSize.y
-                )
-                {
-                    HoverFurniture = null;
-                }
-                else
-                {
-                    HoverFurniture = PlacedFurnitures.Instance.GetBase(index);
-                }
+                HoverFurniture = PlacedFurnitures.Instance.GetBase(index);
             }
             MouseTileCenter =
                 Vector2Int.RoundToInt(position2d - centerCellOffset)
                 + centerCellOffset;
             MouseNormal = hit.normal;
+        }
+        else
+        {
+            HoverFurniture = null;
         }
     }
 }

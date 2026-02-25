@@ -2906,9 +2906,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3141140290793624269, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3141140290793624269, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8246947251150581751, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
+      propertyPath: endScreenUI
+      value: 
+      objectReference: {fileID: 1933680788}
     - target: {fileID: 8484010825459865736, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
       propertyPath: m_Name
       value: FengShuiUI
@@ -4920,7 +4928,6 @@ MonoBehaviour:
   _ProgressSlider: {fileID: 1600169844}
   _SinsSlider: {fileID: 1799214139}
   fengShuiBarUI: {fileID: 1664741797}
-  endScreenUI: {fileID: 1933680788}
   totalBadEnergy: 0
   totalGoodEnergy: 0
   maxE: 100
@@ -4965,11 +4972,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 2055431770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a967683e07194737bdad65ce86062f0, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e2be045612a440f98f13a18377214fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinCondition
   BarController: {fileID: 1998588606}
-  ruleBook: []
+  ruleSet: {fileID: 11400000, guid: 1f9decd46b21f47209e77bfbc9afb726, type: 2}
+  points:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  lifeAreaPoints:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  elementPoints:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  stars: 0
 --- !u!4 &2055431772
 Transform:
   m_ObjectHideFlags: 0

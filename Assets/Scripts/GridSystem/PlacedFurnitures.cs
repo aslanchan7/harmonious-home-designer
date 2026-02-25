@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -42,22 +41,13 @@ public class PlacedFurnitures : MonoBehaviour
         furnitureStackGrid = new Furniture[Size.y, Size.x];
     }
 
-    public void BoundingBoxToIndices(
-        BoundingBox boundingBox,
-        out Vector2Int starting,
-        out Vector2Int ending
-    )
-    {
-        Vector2 offset = (Vector2)Size / 2.0f;
-        starting = Vector2Int.RoundToInt(boundingBox.position + offset);
-        ending = Vector2Int.RoundToInt(boundingBox.opposite + offset);
-    }
-
     public void SetBase(BoundingBox boundingBox, Furniture newFurniture)
     {
-        Vector2Int starting,
-            ending;
-        BoundingBoxToIndices(boundingBox, out starting, out ending);
+        GridSystem.Instance.WorldBoxToIndices(
+            boundingBox,
+            out Vector2Int starting,
+            out Vector2Int ending
+        );
         for (int i = starting.y; i < ending.y; i++)
         {
             for (int j = starting.x; j < ending.x; j++)
@@ -74,9 +64,11 @@ public class PlacedFurnitures : MonoBehaviour
 
     public void SetStack(BoundingBox boundingBox, Furniture newFurniture)
     {
-        Vector2Int starting,
-            ending;
-        BoundingBoxToIndices(boundingBox, out starting, out ending);
+        GridSystem.Instance.WorldBoxToIndices(
+            boundingBox,
+            out Vector2Int starting,
+            out Vector2Int ending
+        );
         for (int i = starting.y; i < ending.y; i++)
         {
             for (int j = starting.x; j < ending.x; j++)
@@ -91,119 +83,11 @@ public class PlacedFurnitures : MonoBehaviour
         return furnitureStackGrid[vector.y, vector.x];
     }
 
-    public bool ExistsColumnSatisfiesAll<T>(
-        T[,] values,
-        BoundingBox boundingBox,
-        Func<T, bool> checkFunction
-    )
-    {
-        Vector2Int starting,
-            ending;
-        BoundingBoxToIndices(boundingBox, out starting, out ending);
-        for (int j = starting.x; j < ending.x; j++)
-        {
-            bool satisfied = true;
-            for (int i = starting.y; i < ending.y; i++)
-            {
-                if (!checkFunction(values[i, j]))
-                {
-                    satisfied = false;
-                    break;
-                }
-            }
-
-            if (satisfied)
-                return true;
-        }
-
-        return false;
-    }
-
-    public bool ExistsRowSatisfiesAll<T>(
-        T[,] values,
-        BoundingBox boundingBox,
-        Func<T, bool> checkFunction
-    )
-    {
-        Vector2Int starting,
-            ending;
-        BoundingBoxToIndices(boundingBox, out starting, out ending);
-        for (int i = starting.y; i < ending.y; i++)
-        {
-            bool satisfied = true;
-            for (int j = starting.x; j < ending.x; j++)
-            {
-                if (!checkFunction(values[i, j]))
-                {
-                    satisfied = false;
-                    break;
-                }
-            }
-
-            if (satisfied)
-                return true;
-        }
-
-        return false;
-    }
-
-    public bool ExistsLineSatisfiesAll<T>(
-        T[,] values,
-        BoundingBox intersection,
-        Func<T, bool> heightCheckFunction
-    )
-    {
-        BoundingBox normalized = intersection.Normalize();
-        if (intersection.IsHorizontalGap())
-        {
-            return ExistsRowSatisfiesAll(
-                values,
-                normalized,
-                heightCheckFunction
-            );
-        }
-
-        if (intersection.IsVerticalGap())
-        {
-            return ExistsColumnSatisfiesAll(
-                values,
-                normalized,
-                heightCheckFunction
-            );
-        }
-
-        throw new Exception(
-            "Intersection must be horizontal or vertical, found intersection "
-                + "with size: "
-                + intersection.size
-        );
-    }
-
-    public bool SatisfiesAll<T>(
-        T[,] values,
-        BoundingBox boundingBox,
-        Func<T, bool> checkFunction
-    )
-    {
-        Vector2Int starting,
-            ending;
-        BoundingBoxToIndices(boundingBox, out starting, out ending);
-        for (int j = starting.x; j < ending.x; j++)
-        {
-            for (int i = starting.y; i < ending.y; i++)
-            {
-                if (!checkFunction(values[i, j]))
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
     public DijkstraCell[,] Dijkstra(BoundingBox startSquare, float maxHeight)
     {
-        Vector2Int start;
-        BoundingBoxToIndices(startSquare, out start, out _);
+        Vector2Int start = GridSystem.Instance.WorldToIndex(
+            startSquare.position
+        );
         List<DijkstraCell> unvisited = new List<DijkstraCell>();
         DijkstraCell[,] cells = new DijkstraCell[Size.y, Size.x];
         bool[,] visited = new bool[Size.y, Size.x];
@@ -243,6 +127,11 @@ public class PlacedFurnitures : MonoBehaviour
             }
         }
 
+        if (furnitureBaseGrid[start.y, start.x] != null)
+        {
+            // Starting point is blocked.
+            return cells;
+        }
         cells[start.y, start.x] = new DijkstraCell(0, Vector2Int.zero);
         unvisited.RemoveAt(
             unvisited.BinarySearch(
@@ -263,7 +152,10 @@ public class PlacedFurnitures : MonoBehaviour
             foreach (Vector2Int offset in directions)
             {
                 Vector2Int adjacent = position + offset;
-                if (InBound(adjacent) && !visited[adjacent.y, adjacent.x])
+                if (
+                    GridSystem.Instance.IndexInBound(adjacent)
+                    && !visited[adjacent.y, adjacent.x]
+                )
                 {
                     float newDistance = currentCell.distance + 1;
                     if (newDistance < cells[adjacent.y, adjacent.x].distance)
@@ -297,14 +189,6 @@ public class PlacedFurnitures : MonoBehaviour
         }
 
         return cells;
-    }
-
-    private bool InBound(Vector2Int vector)
-    {
-        return 0 <= vector.x
-            && vector.x < Size.x
-            && 0 <= vector.y
-            && vector.y < Size.y;
     }
 
     public override string ToString()

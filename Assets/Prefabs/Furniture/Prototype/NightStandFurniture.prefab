@@ -53,6 +53,11 @@ MonoBehaviour:
   canStackOnOthers: 0
   lockRotation: 0
   acceptRotationPassThrough: 0
+  requireAllDirectionsAccessible: 0
+  accessibleDirections: 
+  energy: 0
+  element: 2
+  lifeArea: 2
   LastValidPosition: {x: 0, y: 0}
   LastValidElevation: 0
   LastValidRotation: 0

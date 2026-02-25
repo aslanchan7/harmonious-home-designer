@@ -14,14 +14,19 @@ public class EnergySegmentController : MonoBehaviour
     private Button hoverDetection;
 
     [Header("Tooltip")]
-    [SerializeField] private RectTransform tooltip;
-    [SerializeField] private float tooltipOffsetY;
-    [SerializeField] private float tooltipScale;
+    [SerializeField]
+    private RectTransform tooltip;
+
+    [SerializeField]
+    private float tooltipOffsetY;
+
+    [SerializeField]
+    private float tooltipScale;
     private FSEnergyDictionaryItem fSEnergyDictionaryItem;
 
     [Header("Settings")]
     [SerializeField]
-    private int energyValue = 0;
+    private float energyValue = 0;
 
     [SerializeField]
     private FSEnergyType energyType;
@@ -29,11 +34,14 @@ public class EnergySegmentController : MonoBehaviour
     [SerializeField]
     private bool polarity = true;
 
+    [SerializeField]
+    private Image icon;
+
     public void Initialize(
         FSEnergyType fsEnergyType,
         bool polarity,
         Vector2 size,
-        int maxE,
+        float maxE,
         FSEnergyDictionary fSEnergyDictionary
     )
     {
@@ -49,28 +57,35 @@ public class EnergySegmentController : MonoBehaviour
         SetSize(size);
 
         energySegment.maxValue = maxE;
-        float sliderWidth = energySegment.GetComponent<RectTransform>()
+        float sliderWidth = energySegment
+            .GetComponent<RectTransform>()
             .sizeDelta.x;
-        float buttonWidth =
-            sliderWidth - energyValue * (sliderWidth / maxE);
-        hoverDetection.GetComponent<RectTransform>()
-            .offsetMin = new Vector2(buttonWidth, 5);
-
+        float buttonWidth = sliderWidth - energyValue * (sliderWidth / maxE);
+        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
+            buttonWidth,
+            5
+        );
 
         // Set tooltip image
-        fSEnergyDictionaryItem = fSEnergyDictionary.dictionary.Find(x => x.energyType == this.energyType);
-        if(fSEnergyDictionaryItem == null)
+        fSEnergyDictionaryItem = fSEnergyDictionary.dictionary.Find(x =>
+            x.energyType == this.energyType
+        );
+        if (fSEnergyDictionaryItem == null)
         {
             Debug.LogError($"Missing icon for energy type: {energyType}");
         }
-        tooltip.GetComponent<Image>().sprite = fSEnergyDictionaryItem.energyTooltip;
+        tooltip.GetComponent<Image>().sprite =
+            fSEnergyDictionaryItem.energyTooltip;
 
         // Set tooltip pos & scale
         tooltip.localPosition = new(0f, tooltipOffsetY);
         tooltip.localScale = new(tooltipScale, tooltipScale, tooltipScale);
-    
+
         // Determine color of segment fill
         segmentFill.GetComponent<Image>().color = fSEnergyDictionaryItem.color;
+
+        // Determine icon
+        icon.sprite = fSEnergyDictionaryItem.energyIcon;
     }
 
     // void Awake()
@@ -133,13 +148,13 @@ public class EnergySegmentController : MonoBehaviour
         }
     }
 
-    public int GetValue()
+    public float GetValue()
     {
         return energyValue;
     }
 
     // Set the velue of energy in the segment
-    public void SetValue(int value)
+    public void SetValue(float value)
     {
         energyValue = value;
         energySegment.value = energyValue;
@@ -148,5 +163,10 @@ public class EnergySegmentController : MonoBehaviour
     public void SetSize(Vector2 size)
     {
         energySegment.GetComponent<RectTransform>().sizeDelta = size;
+    }
+
+    public void SetIcon(bool enabled)
+    {
+        icon.enabled = enabled;
     }
 }
