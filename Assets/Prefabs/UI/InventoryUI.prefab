@@ -628,6 +628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ddba530036004e933780baf0f1c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverableButton
+  hoverSounds: 
 --- !u!1 &8848248525307391075
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,7 +695,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &7021239588183697564
 MonoBehaviour:
