@@ -2325,6 +2325,31 @@ MonoBehaviour:
       clip: {fileID: 0}
       volume: 1
       pitchSemitones: 0
+    uiMenuHover1:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiMenuHover2:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiMenuHover3:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiMenuHover4:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiMenuHover5:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
     uiOpen:
       key: 
       clip: {fileID: 8300000, guid: 5cb1bd0d1e04e47448d56e42c70034bd, type: 3}
@@ -3395,16 +3420,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3141140290793624269, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3141140290793624269, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8484010825459865736, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
       propertyPath: m_Name
       value: FengShuiUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 9139438738189921870, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4771,6 +4796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ddba530036004e933780baf0f1c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverableButton
+  hoverSounds: 
 --- !u!1 &1611475241 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6537573170653772103, guid: 5a7d1606dd85f6145b889672691b8a69, type: 3}
@@ -5460,6 +5486,23 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  lifeAreaPoints:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  elementPoints:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  stars: 0
 --- !u!4 &2055431772
 Transform:
   m_ObjectHideFlags: 0

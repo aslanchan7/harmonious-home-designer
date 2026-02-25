@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7507078682914984497}
   - component: {fileID: 7830451090821127677}
   m_Layer: 0
-  m_Name: star-empty
+  m_Name: Star 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -389,7 +389,7 @@ GameObject:
   - component: {fileID: 3399803446448467618}
   - component: {fileID: 1566192382360467830}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: StarParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -924,6 +924,9 @@ MonoBehaviour:
   - {fileID: 2145035916625948414}
   - {fileID: 8404763166071232180}
   - {fileID: 6354787942214855097}
+  StarParent: {fileID: 6070908176349124075}
+  StarEmpty: {fileID: 21300000, guid: f0c598aba405f8c4fb9d7541d4e21c33, type: 3}
+  StarFilled: {fileID: 21300000, guid: 141fec6c8fe28e34282d33f5ec710241, type: 3}
   MinValueToShowIcons: 50
   fSEnergyDictionary: {fileID: 11400000, guid: 3ef0f043da313a14a9552b51ea26c6b4, type: 2}
 --- !u!1 &8828764112426207204
