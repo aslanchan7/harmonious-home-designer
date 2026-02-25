@@ -14,6 +14,7 @@ public class FSBarController : MonoBehaviour
 
     [SerializeField]
     private FengShuiBarUI fengShuiBarUI;
+    [SerializeField] EndScreenUI endScreenUI;
 
     // [SerializeField] private UnityEngine.UI.Slider _BonusSlider;
     //private List<GameObject> GoodEnergySegments = new List<GameObject>();
@@ -57,10 +58,9 @@ public class FSBarController : MonoBehaviour
 
     private void CheckForEndOfGame()
     {
-        if (totalBadEnergy <= 0)
+        if (totalBadEnergy <= 0 && !endScreenUI.GameContinued)
         {
-            // TODO: Enable EndScreen
-            // EndScreenUI.Instance.
+            endScreenUI.gameObject.SetActive(true);
         }
     }
 

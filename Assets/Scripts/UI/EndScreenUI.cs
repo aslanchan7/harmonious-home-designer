@@ -4,18 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class EndScreenUI : MonoBehaviour
 {
-    public static EndScreenUI Instance;
     [SerializeField] CanvasGroup elementsGroup;
     [SerializeField] CanvasGroup fadePanel;
     [SerializeField] float fadeAnimTime;
-
-    void Awake()
-    {
-        // TODO: Make singleton
-    }
+    public bool GameContinued;
 
     public void ContinueGame()
     {
+        GameContinued = true;
         elementsGroup.LeanAlpha(0f, fadeAnimTime).setOnComplete(() =>
         {
             gameObject.SetActive(false);
@@ -28,6 +24,17 @@ public class EndScreenUI : MonoBehaviour
         fadePanel.LeanAlpha(1f, fadeAnimTime).setOnComplete(() =>
         {
             SceneManager.LoadScene(0);
+        });
+    }
+
+    void OnEnable()
+    {
+        fadePanel.alpha = 0f;
+        elementsGroup.alpha = 0f;
+
+        elementsGroup.LeanAlpha(1f, fadeAnimTime).setOnComplete(() =>
+        {
+            gameObject.SetActive(true);
         });
     }
 }
