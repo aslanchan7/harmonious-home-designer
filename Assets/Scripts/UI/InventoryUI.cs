@@ -12,6 +12,12 @@ public class InventoryUI : MonoBehaviour
 
     [Header("Animation Settings")]
     [SerializeField] float fadeOutAnimTime = 0.5f;
+    private float targetCameraPosY;
+
+    void Start()
+    {
+        targetCameraPosY = Camera.main.transform.position.y;
+    }
 
     public void InstantiateInventoryButton(InventoryItem item)
     {
@@ -27,12 +33,12 @@ public class InventoryUI : MonoBehaviour
         instantiated
             .GetComponent<Button>()
             .onClick.AddListener(
-                delegate()
+                delegate ()
                 {
                     InventoryManager.Instance.TryPlaceFurniture(item.Prefab);
                 }
             );
-        
+
         // Change the size of buttonsChild to account for scroll view
         UpdateScrollViewSize();
     }
@@ -52,7 +58,9 @@ public class InventoryUI : MonoBehaviour
             numberOfButtons += buttonsChild.GetChild(i).gameObject.activeSelf ? 1 : 0;
         }
         int rows = (numberOfButtons + 1) / buttonsGrid.constraintCount;
-        float height = buttonsGrid.padding.top + (rows * buttonsGrid.cellSize.y) 
+        // float height = buttonsGrid.padding.top + (rows * buttonsGrid.cellSize.y) 
+        //                 + ((rows - 1) * buttonsGrid.spacing.y) + (buttonsGrid.spacing.y / 2f) + buttonsGrid.padding.bottom;
+        float height = (rows * buttonsGrid.cellSize.y)
                         + ((rows - 1) * buttonsGrid.spacing.y) + (buttonsGrid.spacing.y / 2f) + buttonsGrid.padding.bottom;
         content.sizeDelta = new(content.sizeDelta.x, height);
     }
@@ -81,8 +89,10 @@ public class InventoryUI : MonoBehaviour
             gameObject.SetActive(false);
         });
 
+        UISFX.Play(SFXAction.UI_Close);
+
         // simultaneously zoom in camera
-        Camera.main.transform.LeanMoveLocalY(Camera.main.transform.position.y - 2f, fadeOutAnimTime);
+        Camera.main.transform.LeanMoveLocalY(targetCameraPosY, fadeOutAnimTime);
 
         // simultaneously fade in MenuButtonsUI
         MenuButtonsUI.SetActive(true);

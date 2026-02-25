@@ -32,6 +32,11 @@ public class Furniture : MonoBehaviour
     [HideInInspector]
     public Vector2Int StartingSize;
 
+    [Header("Audio")]
+    [SerializeField] private FurnitureSFXCategory sfxCategory = FurnitureSFXCategory.Default;
+
+    public FurnitureSFXCategory SfxCategory => sfxCategory;
+
     [Header("References")]
     public List<SerializableTuple<MeshRenderer, Material>> MeshRenderers;
     public Collider[] Colliders;
@@ -45,7 +50,7 @@ public class Furniture : MonoBehaviour
     public void PlayPickupVFX()
     {
         if (pickupVFX == null) return;
-       Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
     }
 
     public void PlayPlaceVFX()
@@ -170,13 +175,10 @@ public class Furniture : MonoBehaviour
             }
         );
         // TODO: Change the type of sfx played
-<<<<<<< Updated upstream
-        SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
-=======
+
         // SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         SFXManager.Instance?.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
         PlayPlaceVFX();
->>>>>>> Stashed changes
         PlacedFurnitureSet();
         WinCondition.Instance.UpdateRuleCheck();
     }
@@ -267,6 +269,8 @@ public class Furniture : MonoBehaviour
         else
         {
             ResetToValidLocation();
+            if (SFXManager.Instance != null)
+                SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Invalid);
         }
     }
 

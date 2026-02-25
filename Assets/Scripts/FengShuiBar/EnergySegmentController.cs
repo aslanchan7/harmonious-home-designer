@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,12 @@ public class EnergySegmentController : MonoBehaviour
     [SerializeField]
     private Button hoverDetection;
 
+    [Header("Tooltip")]
+    [SerializeField] private RectTransform tooltip;
+    [SerializeField] private float tooltipOffsetY;
+    [SerializeField] private float tooltipScale;
+    private FSEnergyDictionaryItem fSEnergyDictionaryItem;
+
     [Header("Settings")]
     [SerializeField]
     private int energyValue = 0;
@@ -22,29 +29,48 @@ public class EnergySegmentController : MonoBehaviour
     [SerializeField]
     private bool polarity = true;
 
-    public EnergySegmentController InstantiatePrefab(
-        Transform transform,
-        int maxE
+    public void Initialize(
+        FSEnergyType fsEnergyType,
+        bool polarity,
+        Vector2 size,
+        int maxE,
+        FSEnergyDictionary fSEnergyDictionary
     )
     {
-        GameObject newEnergySegmentGameObject = Instantiate(
-            gameObject,
-            transform
-        );
-        EnergySegmentController newEnergySegment =
-            newEnergySegmentGameObject.GetComponent<EnergySegmentController>();
+        // GameObject newEnergySegmentGameObject = Instantiate(
+        //     gameObject,
+        //     transform
+        // );
+        // EnergySegmentController newEnergySegment =
+        //     newEnergySegmentGameObject.GetComponent<EnergySegmentController>();
 
-        newEnergySegment.energySegment.maxValue = maxE;
-        float sliderWidth = newEnergySegment
-            .energySegment.GetComponent<RectTransform>()
+        energyType = fsEnergyType;
+        SetPolarity(polarity);
+        SetSize(size);
+
+        energySegment.maxValue = maxE;
+        float sliderWidth = energySegment.GetComponent<RectTransform>()
             .sizeDelta.x;
         float buttonWidth =
-            sliderWidth - newEnergySegment.energyValue * (sliderWidth / maxE);
-        newEnergySegment
-            .hoverDetection.GetComponent<RectTransform>()
+            sliderWidth - energyValue * (sliderWidth / maxE);
+        hoverDetection.GetComponent<RectTransform>()
             .offsetMin = new Vector2(buttonWidth, 5);
 
-        return newEnergySegment;
+
+        // Set tooltip image
+        fSEnergyDictionaryItem = fSEnergyDictionary.dictionary.Find(x => x.energyType == this.energyType);
+        if(fSEnergyDictionaryItem == null)
+        {
+            Debug.LogError($"Missing icon for energy type: {energyType}");
+        }
+        tooltip.GetComponent<Image>().sprite = fSEnergyDictionaryItem.energyTooltip;
+
+        // Set tooltip pos & scale
+        tooltip.localPosition = new(0f, tooltipOffsetY);
+        tooltip.localScale = new(tooltipScale, tooltipScale, tooltipScale);
+    
+        // Determine color of segment fill
+        segmentFill.GetComponent<Image>().color = fSEnergyDictionaryItem.color;
     }
 
     // void Awake()
@@ -62,25 +88,23 @@ public class EnergySegmentController : MonoBehaviour
 
     public void SetEnergyType(FSEnergyType sourceType)
     {
-        energyType = sourceType;
-        switch (energyType)
-        {
-            case FSEnergyType.Toilet:
-                segmentFill.GetComponent<Image>().color = Color.brown;
-                break;
-            case FSEnergyType.Chaos:
-                segmentFill.GetComponent<Image>().color = Color.purple;
-                break;
-            case FSEnergyType.Death:
-                segmentFill.GetComponent<Image>().color = Color.darkGray;
-                break;
-            case FSEnergyType.Skibbidy:
-                segmentFill.GetComponent<Image>().color = Color.orange;
-                break;
-            default:
-                segmentFill.GetComponent<Image>().color = Color.black;
-                break;
-        }
+        Debug.LogWarning("Deprecated function! Do not use this function");
+        // energyType = sourceType;
+        // switch (energyType)
+        // {
+        //     case FSEnergyType.Toilet:
+        //         segmentFill.GetComponent<Image>().color = fSEnergyDictionaryItem.color;
+        //         break;
+        //     case FSEnergyType.Chaos:
+        //         segmentFill.GetComponent<Image>().color = Color.purple;
+        //         break;
+        //     case FSEnergyType.Death:
+        //         segmentFill.GetComponent<Image>().color = Color.darkGray;
+        //         break;
+        //     default:
+        //         segmentFill.GetComponent<Image>().color = Color.black;
+        //         break;
+        // }
     }
 
     void Update()

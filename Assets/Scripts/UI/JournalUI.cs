@@ -34,6 +34,8 @@ public class JournalUI : MonoBehaviour
             gameObject.SetActive(false);
         });
 
+        UISFX.Play(SFXAction.UI_CloseBook);
+
         // fade in menu buttons
         MenuButtonsUI.SetActive(true);
         MenuButtonsUI.GetComponent<CanvasGroup>().LeanAlpha(1f, fadeOutAnimTime);
@@ -43,6 +45,9 @@ public class JournalUI : MonoBehaviour
     {
         pages[noteIdx].SetActive(false);
         noteIdx++;
+
+        UISFX.Play(SFXAction.UI_PageForward);
+
         pages[noteIdx].SetActive(true);
     }
 
@@ -50,6 +55,9 @@ public class JournalUI : MonoBehaviour
     {
         pages[noteIdx].SetActive(false);
         noteIdx--;
+
+        UISFX.Play(SFXAction.UI_PageBack);
+
         pages[noteIdx].SetActive(true);
     }
 }

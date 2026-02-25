@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -28,6 +29,8 @@ public class IconThumbnailEditor : EditorWindow
     private Vector3Field cameraRotationField;
     private Slider objectRotationSlider;
     private Button saveButton;
+    private Toggle orthographicToggle;
+    private FloatField objectScaleField;
 
     // Preview
     private int size = 512;
@@ -68,6 +71,12 @@ public class IconThumbnailEditor : EditorWindow
 
         saveButton = rootVisualElement.Q<Button>("SaveButton");
         saveButton.clicked += Export;
+
+        orthographicToggle = rootVisualElement.Q<Toggle>("OrthographicToggle");
+        orthographicToggle.RegisterValueChangedCallback(OnCameraOrthographicChange);
+
+        objectScaleField = rootVisualElement.Q<FloatField>("ObjectScale");
+        objectScaleField.RegisterValueChangedCallback(OnObjectScaleChange);
     }
 
     void Export()
@@ -106,6 +115,19 @@ public class IconThumbnailEditor : EditorWindow
         {
             Debug.LogError("Failed to encode texture to PNG.");
         }
+    }
+    
+    private void OnCameraOrthographicChange(ChangeEvent<bool> evt)
+    {
+        sceneCamera.orthographic = evt.newValue;
+        UpdateCamera();
+    }
+
+    private void OnObjectScaleChange(ChangeEvent<float> evt)
+    {
+        Vector3 newScale = new(evt.newValue, evt.newValue, evt.newValue);
+        instance.transform.localScale = newScale;
+        UpdateCamera();
     }
 
     void OnObjectRotationChange(ChangeEvent<float> evt)

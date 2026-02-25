@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9078685555967790414
 RectTransform:
   m_ObjectHideFlags: 0
@@ -516,8 +516,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba203ecc44132f4ab178bb41cfdd044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FengShuiBarUI
-  _EnergySegmentPrefab: {fileID: 888072315117063363, guid: abdc68854584e3f4992ba6ba74e00c0a, type: 3}
+  _EnergySegmentPrefab: {fileID: 6213113383085905026, guid: abdc68854584e3f4992ba6ba74e00c0a, type: 3}
   sinSlider: {fileID: 6740390214046674456}
+  fSEnergyDictionary: {fileID: 11400000, guid: 3ef0f043da313a14a9552b51ea26c6b4, type: 2}
 --- !u!1 &8828764112426207204
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,7 +577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.046749115, a: 1}
+  m_Color: {r: 0.6039216, g: 0.85882354, b: 0.3764706, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

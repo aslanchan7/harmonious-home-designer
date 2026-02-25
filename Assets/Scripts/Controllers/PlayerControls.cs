@@ -25,10 +25,15 @@ public class PlayerControls : MonoBehaviour
 
     [SerializeField]
     private InputActionReference deleteAction;
+    [SerializeField]
+    private InputActionReference pauseAction;
 
     [Header("References")]
     [SerializeField]
     private MouseIndicator mouseIndicator;
+
+    [SerializeField]
+    private GameObject pauseMenu;
 
     private Coroutine dragUpdateCoroutine;
 
@@ -59,13 +64,16 @@ public class PlayerControls : MonoBehaviour
         clickAction.action.performed += OnClick;
         rotateAction.action.performed += OnRotate;
         deleteAction.action.performed += OnDelete;
+        pauseAction.action.performed += OnPause;
     }
 
     private void OnDisable()
     {
         clickAction.action.performed -= OnClick;
         rotateAction.action.performed -= OnRotate;
-        deleteAction.action.performed += OnDelete;
+        // This was += seems like it should be -= if I am wrong just switch it back :D
+        deleteAction.action.performed -= OnDelete;
+        pauseAction.action.performed -= OnPause;
     }
 
     private void Update()
@@ -73,11 +81,22 @@ public class PlayerControls : MonoBehaviour
         RaycastMouse();
     }
 
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        if (pauseMenu.activeSelf)
+            pauseMenu.GetComponent<PauseMenuUI>().ResumeGame();
+        else
+            pauseMenu.SetActive(true);
+    }
+
     private void OnClick(InputAction.CallbackContext callbackContext)
     {
         if (HoverFurniture != null)
         {
             SelectedFurniture = HoverFurniture;
+
+            SFXManager.Instance?.PlayFurnitureSFX(SelectedFurniture.SfxCategory, SFXAction.Pickup);
+
             GridSystem.Instance.ShowGridVisualizer();
             dragUpdateCoroutine = StartCoroutine(DragUpdate());
         }
@@ -114,6 +133,9 @@ public class PlayerControls : MonoBehaviour
             if (SelectedFurniture.lockRotation)
                 return;
             SelectedFurniture.DisplayRotation += 90;
+
+            SFXManager.Instance?.PlayFurnitureSFX(SelectedFurniture.SfxCategory, SFXAction.Rotate);
+
             mouseIndicator.Rotate();
             return;
         }
@@ -135,6 +157,8 @@ public class PlayerControls : MonoBehaviour
             HoverFurniture = beneath;
         }
         HoverFurniture.DisplayRotation += 90;
+
+        SFXManager.Instance?.PlayFurnitureSFX(HoverFurniture.SfxCategory, SFXAction.Rotate);
 
         if (HoverFurniture.Size.x == HoverFurniture.Size.y)
         {
@@ -208,18 +232,6 @@ public class PlayerControls : MonoBehaviour
                     x.Prefab.GetComponent<Furniture>().furnitureName
                 )
             );
-
-        if (item != null)
-        {
-            if (item.CurrentPlacedCount == item.MaxPlacements)
-            {
-                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(
-                    item
-                );
-            }
-
-            item.CurrentPlacedCount--;
-        }
 
         deletedFurniture.DestroyPrefab();
         GridSystem.Instance.HideGridVisualizer();

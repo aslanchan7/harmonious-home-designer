@@ -81,9 +81,15 @@ MonoBehaviour:
   furnitureName: TrashCan
   Size: {x: 1, y: 1}
   height: 1
+  canBeStackedOn: 0
+  canStackOnOthers: 0
+  lockRotation: 0
+  acceptRotationPassThrough: 0
   LastValidPosition: {x: 0, y: 0}
+  LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 8
   MeshRenderers:
   - Item1: {fileID: 3711413845855605050}
     Item2: {fileID: 2100000, guid: 61f01227874954442907ce8f19ce0a4b, type: 2}

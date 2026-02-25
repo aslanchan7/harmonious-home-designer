@@ -17,6 +17,8 @@
             <ui:Vector3Field label="CameraPos" name="CameraPos" style="flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start; align-self: auto; align-content: auto; color: rgb(196, 196, 196);"/>
             <ui:Vector3Field label="CameraRotation" name="CameraRotation" style="flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start; align-self: auto; align-content: auto; color: rgb(196, 196, 196);"/>
             <ui:Slider label="ObjectRotation" value="42" high-value="359" name="ObjectRotation" style="color: rgb(196, 196, 196);"/>
+            <ui:Toggle label="Orthographic?" name="OrthographicToggle" style="color: rgb(196, 196, 196);"/>
+            <ui:FloatField label="Object Scale" value="1" name="ObjectScale" style="color: rgb(196, 196, 196);"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
