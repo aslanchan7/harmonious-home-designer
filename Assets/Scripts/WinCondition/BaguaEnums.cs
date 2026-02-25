@@ -37,6 +37,30 @@ namespace Bagua
         TravelAndHelpfulPeople,
     }
 
+    public static class LifeAreaExtension
+    {
+        public static Element GetElement(this LifeArea lifeArea)
+        {
+            switch (lifeArea)
+            {
+                case LifeArea.WealthAndProsperity:
+                case LifeArea.Family:
+                    return Element.Wood;
+                case LifeArea.FameAndReputation:
+                    return Element.Fire;
+                case LifeArea.Relationships:
+                case LifeArea.Health:
+                case LifeArea.KnowledgeAndSelfCultivation:
+                    return Element.Earth;
+                case LifeArea.ChildrenAndCreativity:
+                case LifeArea.TravelAndHelpfulPeople:
+                    return Element.Metal;
+                default:
+                    return Element.Water;
+            }
+        }
+    }
+
     [Flags]
     public enum Energy
     {

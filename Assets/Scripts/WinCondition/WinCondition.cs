@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Bagua;
 using UnityEngine;
 
 public class WinCondition : MonoBehaviour
@@ -19,6 +20,12 @@ public class WinCondition : MonoBehaviour
     ];
     public float[] points = new float[
         Enum.GetNames(typeof(FSEnergyType)).Length
+    ];
+    public float[] lifeAreaPoints = new float[
+        Enum.GetNames(typeof(LifeArea)).Length
+    ];
+    public float[] elementPoints = new float[
+        Enum.GetNames(typeof(Element)).Length
     ];
 
     public void TryPathfindFrom(DirectedBox door)
@@ -114,7 +121,11 @@ public class WinCondition : MonoBehaviour
     public void UpdateRuleCheck()
     {
         float[] oldPoints = (float[])points.Clone();
+        float[] oldLifeAreaPoints = (float[])lifeAreaPoints.Clone();
+        float[] oldElementPoints = (float[])elementPoints.Clone();
         points = new float[oldPoints.Length];
+        lifeAreaPoints = new float[oldLifeAreaPoints.Length];
+        elementPoints = new float[oldElementPoints.Length];
         TryPathfindFrom(GetFixedItems("Main Door")[0]);
         PreconditionCheck();
         foreach (Rule rule in ruleSet.rules)
@@ -136,6 +147,31 @@ public class WinCondition : MonoBehaviour
                 );
             }
         }
+
+        PreconditionFirstStarCheck();
+        if (preconditions.HasFlag(Rule.Precondition.FirstStar))
+        {
+            foreach (Rule rule in ruleSet.rules)
+            {
+                if (rule.precondition.HasFlag(Rule.Precondition.FirstStar))
+                {
+                    rule.Check();
+                    Debug.Log(
+                        "after "
+                            + rule.name
+                            + ": "
+                            + points[0]
+                            + ", "
+                            + points[1]
+                            + ", "
+                            + points[2]
+                            + ", "
+                            + points[3]
+                    );
+                }
+            }
+        }
+
         foreach (
             FSEnergyType energyType in Enum.GetValues(typeof(FSEnergyType))
         )
@@ -235,6 +271,12 @@ public class WinCondition : MonoBehaviour
         }
     }
 
+    public void PreconditionFirstStarCheck()
+    {
+        if (Functional.All(points, point => point == 0))
+            preconditions |= Rule.Precondition.FirstStar;
+    }
+
     public void PopulateWallAndBagua()
     {
         Vector2Int roomSize = GridSystem.Instance.Size;
@@ -286,16 +328,16 @@ public class WinCondition : MonoBehaviour
         int thirdWidth = roomSize.x / 3;
         int widthRemainder = roomSize.x % 3;
         int sideBaguaZoneWidth =
-            widthRemainder == 1 ? thirdWidth + 1 : thirdWidth;
-        int centerBaguaZoneWidth =
             widthRemainder == 2 ? thirdWidth + 1 : thirdWidth;
+        int centerBaguaZoneWidth =
+            widthRemainder == 1 ? thirdWidth + 1 : thirdWidth;
 
         int thirdHeight = roomSize.y / 3;
         int heightRemainder = roomSize.y % 3;
         int sideBaguaZoneHeight =
-            heightRemainder == 1 ? thirdHeight + 1 : thirdHeight;
-        int centerBaguaZoneHeight =
             heightRemainder == 2 ? thirdHeight + 1 : thirdHeight;
+        int centerBaguaZoneHeight =
+            heightRemainder == 1 ? thirdHeight + 1 : thirdHeight;
 
         List<BoundingBox> bagua = new(
             new BoundingBox[]
@@ -337,15 +379,15 @@ public class WinCondition : MonoBehaviour
                     new(sideBaguaZoneWidth, centerBaguaZoneHeight)
                 ),
                 new BoundingBox(
-                    new(-halfWidth, halfHeight),
+                    new(-halfWidth, -halfHeight),
                     new(sideBaguaZoneWidth, sideBaguaZoneHeight)
                 ),
                 new BoundingBox(
-                    new(-halfWidth + sideBaguaZoneWidth, halfHeight),
+                    new(-halfWidth + sideBaguaZoneWidth, -halfHeight),
                     new(centerBaguaZoneWidth, sideBaguaZoneHeight)
                 ),
                 new BoundingBox(
-                    new(halfWidth - sideBaguaZoneWidth, halfHeight),
+                    new(halfWidth - sideBaguaZoneWidth, -halfHeight),
                     new(sideBaguaZoneWidth, sideBaguaZoneHeight)
                 ),
             }
@@ -363,7 +405,7 @@ public class WinCondition : MonoBehaviour
             new(new BoundingBox[] { bagua[2] })
         );
         ruleSet.zoneDict.Add("Family", new(new BoundingBox[] { bagua[3] }));
-        ruleSet.zoneDict.Add("Center", new(new BoundingBox[] { bagua[4] }));
+        ruleSet.zoneDict.Add("Health", new(new BoundingBox[] { bagua[4] }));
         ruleSet.zoneDict.Add(
             "ChildrenAndCreativity",
             new(new BoundingBox[] { bagua[5] })

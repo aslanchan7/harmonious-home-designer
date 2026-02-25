@@ -23,6 +23,7 @@ public class Rule
         BedHeadIsAgainstWall,
         FurnituresInChaosZoneWithoutPeace,
         CommandPosition,
+        BaguaBonus,
         Present,
         NotPresent,
         Clear,
@@ -40,6 +41,7 @@ public class Rule
     public enum Precondition
     {
         AtLeastOneRequiredFurniturePresent = 1,
+        FirstStar = 1 << 1,
     }
 
     [Serializable]
@@ -362,9 +364,80 @@ public class Rule
         };
     }
 
-    // public Action BaguaBonus() {
-    //     List<BoundingBox> baguaZones = WinCondition.Instance.GetZones("Bagua");
-    // }
+    public Action BaguaBonus()
+    {
+        return () =>
+        {
+            HashSet<Furniture> encounteredFurnitures = new();
+            foreach (LifeArea lifeArea in Enum.GetValues(typeof(LifeArea)))
+            {
+                Element element = lifeArea.GetElement();
+                BoundingBox zone = WinCondition.Instance.GetZones(
+                    lifeArea.ToString()
+                )[0];
+
+                GridSystem.Instance.WorldBoxToIndices(
+                    zone,
+                    out Vector2Int starting,
+                    out Vector2Int ending
+                );
+
+                for (int j = starting.x; j < ending.x; j++)
+                {
+                    for (int i = starting.y; i < ending.y; i++)
+                    {
+                        Vector2Int index = new(j, i);
+                        Furniture baseFurniture =
+                            PlacedFurnitures.Instance.GetBase(index);
+                        Furniture stackFurniture =
+                            PlacedFurnitures.Instance.GetStack(index);
+
+                        if (
+                            baseFurniture != null
+                            && !encounteredFurnitures.Contains(baseFurniture)
+                        )
+                        {
+                            if (baseFurniture.lifeArea == lifeArea)
+                            {
+                                WinCondition.Instance.lifeAreaPoints[
+                                    (int)lifeArea
+                                ] += basePoints;
+                                encounteredFurnitures.Add(baseFurniture);
+                            }
+                            else if (baseFurniture.element == element)
+                            {
+                                WinCondition.Instance.elementPoints[
+                                    (int)element
+                                ] += basePoints;
+                                encounteredFurnitures.Add(baseFurniture);
+                            }
+                        }
+
+                        if (
+                            stackFurniture != null
+                            && !encounteredFurnitures.Contains(stackFurniture)
+                        )
+                        {
+                            if (stackFurniture.lifeArea == lifeArea)
+                            {
+                                WinCondition.Instance.lifeAreaPoints[
+                                    (int)lifeArea
+                                ] += basePoints;
+                                encounteredFurnitures.Add(stackFurniture);
+                            }
+                            else if (stackFurniture.element == element)
+                            {
+                                WinCondition.Instance.elementPoints[
+                                    (int)element
+                                ] += basePoints;
+                                encounteredFurnitures.Add(stackFurniture);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
 
     public Action Present(string furnitureCategory)
     {
