@@ -342,7 +342,20 @@ public class Rule
                             )
                                 return false;
 
-                            hasFurnitureInZone = true;
+                            if (
+                                !baseFurniture.energy.HasFlag(
+                                    Energy.UnaffectedByChaos
+                                )
+                                && (
+                                    stackFurniture == null
+                                    || stackFurniture.energy.HasFlag(
+                                        Energy.UnaffectedByChaos
+                                    )
+                                )
+                            )
+                            {
+                                hasFurnitureInZone = true;
+                            }
                         }
                     }
 

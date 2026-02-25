@@ -87,7 +87,7 @@ MonoBehaviour:
   acceptRotationPassThrough: 0
   requireAllDirectionsAccessible: 0
   accessibleDirections: 
-  energy: 0
+  energy: 4
   element: 3
   lifeArea: 1
   LastValidPosition: {x: 0, y: 0}

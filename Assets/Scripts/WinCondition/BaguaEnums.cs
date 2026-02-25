@@ -42,5 +42,6 @@ namespace Bagua
     {
         Chaos = 1,
         Peace = 1 << 1,
+        UnaffectedByChaos = 1 << 2,
     }
 }
