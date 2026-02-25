@@ -2118,6 +2118,11 @@ MonoBehaviour:
       clip: {fileID: 0}
       volume: 1
       pitchSemitones: 0
+    deleteItem:
+      key: 
+      clip: {fileID: 8300000, guid: 0280d886777ef437c9216b84ce95b8f9, type: 3}
+      volume: 0.542
+      pitchSemitones: 0
 --- !u!4 &2075371132
 Transform:
   m_ObjectHideFlags: 0

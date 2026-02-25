@@ -26,6 +26,10 @@ public class SFXManager : MonoBehaviour
         }
         Instance = this;
 
+        DontDestroyOnLoad(gameObject);
+
+        transform.SetParent(null);
+
         setLookup.Clear();
         foreach (var set in furnitureSets)
         {
@@ -67,6 +71,7 @@ public class SFXManager : MonoBehaviour
             SFXAction.UI_BoxOpen => globalSfx.uiBoxOpen,
             SFXAction.UI_BoxClose => globalSfx.uiBoxClose,
             SFXAction.Invalid  => globalSfx.invalid,
+            SFXAction.UI_DeleteItem => globalSfx.deleteItem,
             _ => null
         };
 

@@ -21,7 +21,8 @@ public enum SFXAction
     UI_PageBack,
     UI_CloseBook,
     UI_BoxOpen,
-    UI_BoxClose
+    UI_BoxClose,
+    UI_DeleteItem
 }
 
 public enum FurnitureSFXCategory

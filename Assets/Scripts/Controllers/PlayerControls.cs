@@ -215,7 +215,7 @@ public class PlayerControls : MonoBehaviour
         if (SelectedFurniture != null)
         {
             StopCoroutine(dragUpdateCoroutine);
-            SelectedFurniture.TryPlace();
+            // SelectedFurniture.TryPlace();
             deletedFurniture = SelectedFurniture;
             SelectedFurniture = null;
         }
@@ -232,6 +232,8 @@ public class PlayerControls : MonoBehaviour
                     x.Prefab.GetComponent<Furniture>().furnitureName
                 )
             );
+        
+        UISFX.Play(SFXAction.UI_DeleteItem);
 
         deletedFurniture.DestroyPrefab();
         GridSystem.Instance.HideGridVisualizer();
