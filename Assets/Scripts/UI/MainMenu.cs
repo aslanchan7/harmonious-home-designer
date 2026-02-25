@@ -23,6 +23,7 @@ public class MainMenu : MonoBehaviour
     {
         // Fade Out Animation
         fadeOutPanel.alpha = 0f;
+        UISFX.Play(SFXAction.UI_Open);
         fadeOutPanel.LeanAlpha(1f, fadeOutAnimTime).setOnComplete(() =>
         {
             StartCoroutine(WaitForFadeOut(0.5f));
@@ -43,6 +44,8 @@ public class MainMenu : MonoBehaviour
         credits.SetActive(true);
         credits.GetComponent<CanvasGroup>().alpha = 0f;
 
+        UISFX.Play(SFXAction.UI_Open);
+
         // Tween alphas
         mainMenu.GetComponent<CanvasGroup>().LeanAlpha(0f, creditsFadeAnimTime).setOnComplete(() =>
         {
@@ -58,6 +61,8 @@ public class MainMenu : MonoBehaviour
         mainMenu.SetActive(true);
         mainMenu.GetComponent<CanvasGroup>().alpha = 0f;
 
+        UISFX.Play(SFXAction.UI_Close);
+
         // Tween alphas
         credits.GetComponent<CanvasGroup>().LeanAlpha(0f, creditsFadeAnimTime).setOnComplete(() =>
         {
@@ -68,6 +73,7 @@ public class MainMenu : MonoBehaviour
 
     public void QuitGame()
     {
+        UISFX.Play(SFXAction.UI_Close);
         Application.Quit();
     }
 
