@@ -146,7 +146,7 @@ public class FengShuiBarUI : MonoBehaviour
             return;
         }
         
-        EndGame(starNumber);
+        CheckForEndGame();
 
         StarParent.SetActive(true);
         Image[] starImages = StarParent.GetComponentsInChildren<Image>();
@@ -156,7 +156,7 @@ public class FengShuiBarUI : MonoBehaviour
         }
     }
 
-    private void EndGame(int starNumber)
+    private void CheckForEndGame()
     {
         if(!endScreenUI.GameContinued)
         {
