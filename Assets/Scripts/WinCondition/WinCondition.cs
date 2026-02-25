@@ -49,6 +49,7 @@ public class WinCondition : MonoBehaviour
         float maxFunctionalPoints = maxPoints[(int)FSEnergyType.Functional];
         Debug.Log("maxfunc poitns: " + maxFunctionalPoints);
         BarController.SetMax(maxFunctionalPoints);
+        points[(int)FSEnergyType.Functional] = maxFunctionalPoints;
         BarController.AddEnergy(
             FSEnergyType.Functional,
             maxFunctionalPoints,
@@ -112,11 +113,10 @@ public class WinCondition : MonoBehaviour
 
     public void UpdateRuleCheck()
     {
-        TryPathfindFrom(GetFixedItems("Main Door")[0]);
-        PreconditionCheck();
-
         float[] oldPoints = (float[])points.Clone();
         points = new float[oldPoints.Length];
+        TryPathfindFrom(GetFixedItems("Main Door")[0]);
+        PreconditionCheck();
         foreach (Rule rule in ruleSet.rules)
         {
             if (preconditions.HasFlag(rule.precondition))
@@ -223,8 +223,16 @@ public class WinCondition : MonoBehaviour
                 (furniture) => GetFurnitures(furniture).Count != 0
             )
         )
+        {
             preconditions |=
                 Rule.Precondition.AtLeastOneRequiredFurniturePresent;
+        }
+        else
+        {
+            points[(int)FSEnergyType.Functional] = maxPoints[
+                (int)FSEnergyType.Functional
+            ];
+        }
     }
 
     public void PopulateWallAndBagua()

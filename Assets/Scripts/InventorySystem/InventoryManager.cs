@@ -44,7 +44,20 @@ public class InventoryManager : MonoBehaviour
             .InstantiatePrefab();
 
         // newFurniture.InitializeState();
+        if (TryPlaceIteratePositions(newFurniture, furniturePrefab))
+            return;
 
+        newFurniture.DisplayRotation += 90;
+        if (!TryPlaceIteratePositions(newFurniture, furniturePrefab))
+            // Destroy if no empty space.
+            Destroy(newFurniture.gameObject);
+    }
+
+    private bool TryPlaceIteratePositions(
+        Furniture newFurniture,
+        GameObject furniturePrefab
+    )
+    {
         Vector2Int gridSize = GridSystem.Instance.Size;
         int numXPositions = gridSize.x - newFurniture.Size.x + 1;
         int numYPositions = gridSize.y - newFurniture.Size.y + 1;
@@ -65,7 +78,7 @@ public class InventoryManager : MonoBehaviour
                         x.Prefab == furniturePrefab
                     );
 
-                    return;
+                    return true;
                 }
 
                 testPosition += Vector2.right;
@@ -74,7 +87,6 @@ public class InventoryManager : MonoBehaviour
             testPosition += rowIncrement;
         }
 
-        // Destroy if no empty space.
-        Destroy(newFurniture.gameObject);
+        return false;
     }
 }
