@@ -10,6 +10,9 @@ public class FengShuiBarUI : MonoBehaviour
     private GameObject _EnergySegmentPrefab;
     public Slider sinSlider;
     public GameObject[] LayerParents;
+    public GameObject StarParent;
+    public Sprite StarEmpty;
+    public Sprite StarFilled;
     public float MinValueToShowIcons;
 
     [Header("Data")]
@@ -131,6 +134,22 @@ public class FengShuiBarUI : MonoBehaviour
                     cumulativeValue = totalValue;
                 }
             }
+        }
+    }
+
+    public void SetStars(int starNumber)
+    {
+        if (starNumber == 0)
+        {
+            StarParent.SetActive(false);
+            return;
+        }
+
+        StarParent.SetActive(true);
+        Image[] starImages = StarParent.GetComponentsInChildren<Image>();
+        for (int i = 0; i < starImages.Length; i++)
+        {
+            starImages[i].sprite = i < starNumber ? StarFilled : StarEmpty;
         }
     }
 

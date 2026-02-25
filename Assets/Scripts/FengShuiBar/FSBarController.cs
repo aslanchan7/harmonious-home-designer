@@ -212,6 +212,11 @@ public class FSBarController : MonoBehaviour
         }
     }
 
+    public void SetStars(int starNumber)
+    {
+        fengShuiBarUI.SetStars(starNumber);
+    }
+
     // Comment out Bonus Slider
     // // Updates the  bonus bar slider to visualiz the mount of bonus Feng Shui energy you have accumulated
     // private void UpdateBonusBar()

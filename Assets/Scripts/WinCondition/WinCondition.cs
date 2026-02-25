@@ -211,6 +211,7 @@ public class WinCondition : MonoBehaviour
                 BarController.AddEnergy(energyType, deltaPoints, false);
             }
         }
+        BarController.SetStars(stars);
     }
 
     private void RegisterRule(Rule rule)
@@ -320,7 +321,10 @@ public class WinCondition : MonoBehaviour
     public void PreconditionFirstStarCheck()
     {
         if (Functional.All(points, point => point == 0))
+        {
+            stars++;
             preconditions |= Rule.Precondition.FirstStar;
+        }
     }
 
     public void PopulateWallAndBagua()
