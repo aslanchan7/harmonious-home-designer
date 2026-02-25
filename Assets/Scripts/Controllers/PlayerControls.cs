@@ -243,18 +243,6 @@ public class PlayerControls : MonoBehaviour
                 )
             );
 
-        if (item != null)
-        {
-            if (item.CurrentPlacedCount == item.MaxPlacements)
-            {
-                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(
-                    item
-                );
-            }
-
-            item.CurrentPlacedCount--;
-        }
-
         deletedFurniture.DestroyPrefab();
         GridSystem.Instance.HideGridVisualizer();
     }

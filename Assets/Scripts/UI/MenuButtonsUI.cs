@@ -19,9 +19,12 @@ public class MenuButtonsUI : MonoBehaviour
     [SerializeField] float inventoryAnimTime = 0.5f;
     [SerializeField] float journalAnimTime = 0.5f;
     [SerializeField] float catalogueAnimTime = 0.5f;
+    private float zoomedOutCameraPosY;
 
     void Start()
     {
+        zoomedOutCameraPosY = Camera.main.transform.position.y + 2f;
+
         FadeInPanel.gameObject.SetActive(true);
         FadeInPanel.alpha = 1f;
         FadeInPanel.LeanAlpha(0f, fadeInAnimTime).setOnComplete(() =>
@@ -55,7 +58,7 @@ public class MenuButtonsUI : MonoBehaviour
         UISFX.Play(SFXAction.UI_Open);
 
         // simultaneously zoom out camera
-        Camera.main.transform.LeanMoveLocalY(Camera.main.transform.position.y + 2f, inventoryAnimTime);
+        Camera.main.transform.LeanMoveLocalY(zoomedOutCameraPosY, inventoryAnimTime);
 
         FadeOutMenuButtonsUI(inventoryAnimTime);
     }
