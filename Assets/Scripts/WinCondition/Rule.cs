@@ -15,6 +15,7 @@ public class Rule
     public enum RuleType
     {
         RequiredArePresent,
+        AtLeastOnePresent,
         UnacceptableAreNotPresent,
         DoorsAreClear,
         Accessible,
@@ -24,6 +25,7 @@ public class Rule
         FurnituresInChaosZoneWithoutPeace,
         CommandPosition,
         BaguaBonus,
+        StarWhenBonusExceed,
     }
 
     public enum ArgumentType
@@ -32,6 +34,7 @@ public class Rule
         FixedItem,
         Zone,
         Direction,
+        Number,
     }
 
     [Flags]
@@ -436,6 +439,41 @@ public class Rule
         };
     }
 
+    public Action StarWhenBonusExceed(float minItemsSecondStar)
+    {
+        return () =>
+        {
+            float sum = 0;
+            foreach (float point in WinCondition.Instance.lifeAreaPoints)
+                sum += point;
+            foreach (float point in WinCondition.Instance.elementPoints)
+                sum += point;
+
+            if (sum >= minItemsSecondStar * basePoints)
+                WinCondition.Instance.stars++;
+        };
+    }
+
+    public Action StarWhenBonusExceed(
+        float minItemsSecondStar,
+        float minItemsThirdStar
+    )
+    {
+        return () =>
+        {
+            float sum = 0;
+            foreach (float point in WinCondition.Instance.lifeAreaPoints)
+                sum += point;
+            foreach (float point in WinCondition.Instance.elementPoints)
+                sum += point;
+
+            if (sum >= minItemsThirdStar * basePoints)
+                WinCondition.Instance.stars += 2;
+            else if (sum >= minItemsSecondStar * basePoints)
+                WinCondition.Instance.stars++;
+        };
+    }
+
     public Action Present(string furnitureCategory)
     {
         List<string> furnitureList = WinCondition
@@ -449,10 +487,55 @@ public class Rule
             GranularRule(
                 furnitureList,
                 (string furniture) =>
-                    WinCondition.Instance.GetFurnitures(furniture).Count == 0,
+                {
+                    List<string> subList = WinCondition
+                        .Instance
+                        .ruleSet
+                        .furnitureDict[furniture];
+                    Debug.Log("checking presense of " + furniture);
+                    Debug.Log("sublist count " + subList.Count);
+                    foreach (var a in subList)
+                        Debug.Log(a);
+                    if (subList.Count == 0)
+                        return WinCondition
+                                .Instance.GetFurnitures(furniture)
+                                .Count == 0;
+                    else
+                        return Functional.All(
+                            subList,
+                            furniture =>
+                                WinCondition
+                                    .Instance.GetFurnitures(furniture)
+                                    .Count == 0
+                        );
+                },
                 FSEnergyType.Functional,
                 maxPoints
             );
+        };
+    }
+
+    public Action AtLeastOnePresent(string furnitureCategory)
+    {
+        List<string> furnitureList = WinCondition
+            .Instance
+            .ruleSet
+            .furnitureDict[furnitureCategory];
+        WinCondition.Instance.AddMaxPoints(FSEnergyType.Functional, basePoints);
+        return () =>
+        {
+            if (
+                Functional.All(
+                    furnitureList,
+                    furniture =>
+                        WinCondition.Instance.GetFurnitures(furniture).Count
+                        == 0
+                )
+            )
+                WinCondition.Instance.AddPoints(
+                    FSEnergyType.Functional,
+                    basePoints
+                );
         };
     }
 

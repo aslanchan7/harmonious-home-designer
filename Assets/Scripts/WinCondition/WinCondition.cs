@@ -27,6 +27,7 @@ public class WinCondition : MonoBehaviour
     public float[] elementPoints = new float[
         Enum.GetNames(typeof(Element)).Length
     ];
+    public int stars = 0;
 
     public void TryPathfindFrom(DirectedBox door)
     {
@@ -123,10 +124,33 @@ public class WinCondition : MonoBehaviour
         float[] oldPoints = (float[])points.Clone();
         float[] oldLifeAreaPoints = (float[])lifeAreaPoints.Clone();
         float[] oldElementPoints = (float[])elementPoints.Clone();
+        int oldStars = stars;
         points = new float[oldPoints.Length];
         lifeAreaPoints = new float[oldLifeAreaPoints.Length];
         elementPoints = new float[oldElementPoints.Length];
+        stars = 0;
         TryPathfindFrom(GetFixedItems("Main Door")[0]);
+
+        foreach (Rule rule in ruleSet.rules)
+        {
+            if (rule.precondition == 0)
+            {
+                rule.Check();
+                Debug.Log(
+                    "after "
+                        + rule.name
+                        + ": "
+                        + points[0]
+                        + ", "
+                        + points[1]
+                        + ", "
+                        + points[2]
+                        + ", "
+                        + points[3]
+                );
+            }
+        }
+
         PreconditionCheck();
         foreach (Rule rule in ruleSet.rules)
         {
@@ -229,6 +253,10 @@ public class WinCondition : MonoBehaviour
                         argument.name
                     );
                     break;
+                case Rule.ArgumentType.Number:
+                    signature[i] = typeof(float);
+                    ruleBuilderArguments[i] = float.Parse(argument.name);
+                    break;
             }
         }
         string methodName = rule.ruleFunction.ruleType.ToString();
@@ -256,7 +284,25 @@ public class WinCondition : MonoBehaviour
         if (
             Functional.Any(
                 furnitureList,
-                (furniture) => GetFurnitures(furniture).Count != 0
+                (string furniture) =>
+                {
+                    List<string> subList = WinCondition
+                        .Instance
+                        .ruleSet
+                        .furnitureDict[furniture];
+                    if (subList.Count == 0)
+                        return WinCondition
+                                .Instance.GetFurnitures(furniture)
+                                .Count != 0;
+                    else
+                        return Functional.Any(
+                            subList,
+                            furniture =>
+                                WinCondition
+                                    .Instance.GetFurnitures(furniture)
+                                    .Count != 0
+                        );
+                }
             )
         )
         {

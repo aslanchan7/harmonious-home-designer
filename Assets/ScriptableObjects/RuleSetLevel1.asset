@@ -15,6 +15,22 @@ MonoBehaviour:
   furnitures:
   - name: Bed
     categories: 5
+  - name: NightStand
+    categories: 1
+  - name: Wardrobe
+    categories: 5
+  - name: Desk
+    categories: 1
+  - name: DeskChair
+    categories: 1
+  - name: Lamp
+    categories: 8
+  - name: PaperLamp
+    categories: 8
+  - name: RockLamp
+    categories: 8
+  - name: LightSource
+    categories: 1
   fixedItems:
   - name: Main Door
     boundingBox:
@@ -52,7 +68,7 @@ MonoBehaviour:
   - name: Bathroom Proximity
     zone:
       position: {x: -3.5, y: -3}
-      size: {x: 2, y: 6}
+      size: {x: 2, y: 4}
     categories: 0
     showInEditor: 0
   rules:
@@ -61,34 +77,34 @@ MonoBehaviour:
       ruleType: 0
       arguments: []
     basePoints: 50
-    precondition: 0
-  - name: Doors are Clear
-    ruleFunction:
-      ruleType: 2
-      arguments: []
-    basePoints: 50
     precondition: 1
-  - name: Furnitures are Accessible
+  - name: Doors are Clear
     ruleFunction:
       ruleType: 3
       arguments: []
     basePoints: 50
     precondition: 1
-  - name: Bed Feet is not Facing Main Door
+  - name: Furnitures are Accessible
     ruleFunction:
       ruleType: 4
       arguments: []
     basePoints: 50
     precondition: 1
-  - name: Bed Head is not Near and Facing Bathroom
+  - name: Bed Feet is not Facing Main Door
     ruleFunction:
       ruleType: 5
       arguments: []
     basePoints: 50
     precondition: 1
-  - name: Bed is against Solid Wall
+  - name: Bed Head is not Near and Facing Bathroom
     ruleFunction:
       ruleType: 6
+      arguments: []
+    basePoints: 50
+    precondition: 1
+  - name: Bed is against Solid Wall
+    ruleFunction:
+      ruleType: 7
       arguments: []
     basePoints: 50
     precondition: 1
@@ -104,3 +120,19 @@ MonoBehaviour:
       arguments: []
     basePoints: 50
     precondition: 1
+  - name: Bagua
+    ruleFunction:
+      ruleType: 10
+      arguments: []
+    basePoints: 20
+    precondition: 2
+  - name: Stars
+    ruleFunction:
+      ruleType: 11
+      arguments:
+      - name: 2
+        type: 4
+      - name: 3
+        type: 4
+    basePoints: 20
+    precondition: 2

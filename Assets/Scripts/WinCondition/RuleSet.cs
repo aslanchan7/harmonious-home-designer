@@ -8,6 +8,7 @@ public enum FurnitureCategory
     Required = 1,
     Unacceptable = 2,
     Accessible = 4,
+    LightSource = 8,
 }
 
 [Flags]
@@ -70,10 +71,8 @@ public class RuleSet : ScriptableObject, ISerializationCallbackReceiver
         furnitureDict = new();
         foreach (FurnitureEntry entry in furnitures)
         {
-            furnitureDict.Add(
-                entry.name,
-                new List<string>(new string[] { entry.name })
-            );
+            if (!furnitureDict.ContainsKey(entry.name))
+                furnitureDict.Add(entry.name, new List<string>());
             foreach (
                 FurnitureCategory category in Enum.GetValues(
                     typeof(FurnitureCategory)

@@ -55,7 +55,7 @@ MonoBehaviour:
   lockRotation: 0
   acceptRotationPassThrough: 0
   requireAllDirectionsAccessible: 0
-  accessibleDirections: 
+  accessibleDirections: 00000000
   energy: 0
   element: 4
   lifeArea: 8
