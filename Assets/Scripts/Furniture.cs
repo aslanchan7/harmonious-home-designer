@@ -289,6 +289,7 @@ public class Furniture : MonoBehaviour
     {
         foreach (Collider collider in Colliders)
         {
+            if (collider == null) continue;
             collider.enabled = enabled;
         }
         TryRecursiveStack((furniture) => furniture.SetColliderEnabled(enabled));
