@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,10 +47,21 @@ public class FSBarController : MonoBehaviour
     {
         UpdateProgressBar();
 
+        CheckForEndOfGame();
+
         // Comment out bonus slider
         // UpdateBonusBar();
 
         // UpdateEnergySegmentGraphics();
+    }
+
+    private void CheckForEndOfGame()
+    {
+        if (totalBadEnergy <= 0)
+        {
+            // TODO: Enable EndScreen
+            // EndScreenUI.Instance.
+        }
     }
 
     // Adds a Feng Shui energy source to its corrosponding list if not already present, otherwise adds amount to an existign energy type
