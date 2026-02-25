@@ -215,7 +215,7 @@ public class PlayerControls : MonoBehaviour
         if (SelectedFurniture != null)
         {
             StopCoroutine(dragUpdateCoroutine);
-            // SelectedFurniture.TryPlace();
+            SelectedFurniture.TryPlace();
             deletedFurniture = SelectedFurniture;
             SelectedFurniture = null;
         }
