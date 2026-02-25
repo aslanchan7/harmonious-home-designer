@@ -21,13 +21,25 @@ public enum SFXAction
 
 public enum FurnitureSFXCategory
 {
+    // Default category for furniture without specific SFX sets
     Default,
+    // Furniture categories with specific SFX sets
     Chair,
     Wardrobe,
     Lamp,
     Table,
-    Corner_Table,
-    Night_Stand,
+    NightStand,
+    Dresser,
     Bed,
-    Trash
+    // Miscellaneous categories
+    Trash,
+    // Plant categories
+    Bamboo,
+    MoneyTree,
+    OrangeBonsai,
+    // Lighting categories
+    RockLamp,
+    PaperLamp
+
+
 }

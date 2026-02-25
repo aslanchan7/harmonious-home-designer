@@ -1951,7 +1951,7 @@ MonoBehaviour:
     pickup:
       key: 
       clip: {fileID: 8300000, guid: 4fc41e46e8177d343a185a6596554290, type: 3}
-      volume: 0.676
+      volume: 0.564
       pitchSemitones: 0
     rotate:
       key: 
@@ -1976,8 +1976,8 @@ MonoBehaviour:
       pitchSemitones: 0
     rotate:
       key: 
-      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
-      volume: 0.618
+      clip: {fileID: 8300000, guid: 70e5b9818ad8d423fb1a762210383be4, type: 3}
+      volume: 0.409
       pitchSemitones: 0
     invalid:
       key: 
@@ -1993,7 +1993,7 @@ MonoBehaviour:
     pickup:
       key: 
       clip: {fileID: 8300000, guid: 4fc41e46e8177d343a185a6596554290, type: 3}
-      volume: 0.583
+      volume: 0.605
       pitchSemitones: 0
     rotate:
       key: 
@@ -2014,12 +2014,12 @@ MonoBehaviour:
     pickup:
       key: 
       clip: {fileID: 8300000, guid: 88569b4351bee5040960c6fb1c337ff0, type: 3}
-      volume: 0.618
+      volume: 0.532
       pitchSemitones: 0
     rotate:
       key: 
-      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
-      volume: 0.638
+      clip: {fileID: 8300000, guid: b7083999b0d68417c9bbcc00c4349cda, type: 3}
+      volume: 0.564
       pitchSemitones: 0
     invalid:
       key: 
@@ -2035,12 +2035,12 @@ MonoBehaviour:
     pickup:
       key: 
       clip: {fileID: 8300000, guid: cb7ee695316543f47bedccdd09d625b1, type: 3}
-      volume: 0.592
+      volume: 0.548
       pitchSemitones: 0
     rotate:
       key: 
-      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
-      volume: 0.618
+      clip: {fileID: 8300000, guid: b7083999b0d68417c9bbcc00c4349cda, type: 3}
+      volume: 0.532
       pitchSemitones: 0
     invalid:
       key: 
@@ -2098,7 +2098,7 @@ MonoBehaviour:
     pickup:
       key: 
       clip: {fileID: 8300000, guid: 4fc41e46e8177d343a185a6596554290, type: 3}
-      volume: 0.583
+      volume: 0.552
       pitchSemitones: 0
     rotate:
       key: 
@@ -2113,14 +2113,119 @@ MonoBehaviour:
   - category: 1
     place:
       key: 
-      clip: {fileID: 0}
-      volume: 0
+      clip: {fileID: 8300000, guid: c7aab3bb2c6a54121a06effcd5d60529, type: 3}
+      volume: 0.638
       pitchSemitones: 0
     pickup:
       key: 
       clip: {fileID: 8300000, guid: 88569b4351bee5040960c6fb1c337ff0, type: 3}
-      volume: 0.644
+      volume: 0.593
       pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+  - category: 9
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: b506a7a40fc134a15941c9612e6b8c69, type: 3}
+      volume: 0.609
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 62edf0e593bb0408caef0f45ca6d7e85, type: 3}
+      volume: 0.401
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+  - category: 10
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 6f021a96d1c724f2e91ee860d8d45ed6, type: 3}
+      volume: 0.609
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 62edf0e593bb0408caef0f45ca6d7e85, type: 3}
+      volume: 0.499
+      pitchSemitones: 0
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.615
+      pitchSemitones: -0.32
+  - category: 11
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 572cb67844d3f418083fd5849d16a9f5, type: 3}
+      volume: 0.609
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 62edf0e593bb0408caef0f45ca6d7e85, type: 3}
+      volume: 0.397
+      pitchSemitones: 0.37
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+  - category: 12
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: d0ef8ec94087c4128ae214d0b5dc865d, type: 3}
+      volume: 0.609
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 88569b4351bee5040960c6fb1c337ff0, type: 3}
+      volume: 0.581
+      pitchSemitones: -1.4
+    rotate:
+      key: 
+      clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}
+      volume: 0.618
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
+      volume: 0.615
+      pitchSemitones: 0
+  - category: 13
+    place:
+      key: 
+      clip: {fileID: 8300000, guid: 5459b0795859e4f5aaeb170af8c44aca, type: 3}
+      volume: 0.254
+      pitchSemitones: 0
+    pickup:
+      key: 
+      clip: {fileID: 8300000, guid: 88569b4351bee5040960c6fb1c337ff0, type: 3}
+      volume: 0.458
+      pitchSemitones: 0.86
     rotate:
       key: 
       clip: {fileID: 8300000, guid: b6c83d1512e20104988b8ae16849b353, type: 3}

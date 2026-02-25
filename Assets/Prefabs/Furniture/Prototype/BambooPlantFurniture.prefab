@@ -89,6 +89,7 @@ MonoBehaviour:
   LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 9
   MeshRenderers: []
   Colliders:
   - {fileID: 4308461518609726671}
