@@ -164,6 +164,10 @@ public class Furniture : MonoBehaviour
                 furniture.SetLocationAsValid();
             }
         }
+        if (canStackOnOthers)
+        {
+            LastValidBase.carrying.Remove(this);
+        }
         WinCondition.Instance.UpdateRuleCheck();
         Destroy(gameObject);
     }
