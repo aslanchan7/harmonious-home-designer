@@ -94,7 +94,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7292361652657448176
 RectTransform:
   m_ObjectHideFlags: 0
@@ -194,6 +194,7 @@ MonoBehaviour:
   elementsGroup: {fileID: 4184513469864957577}
   fadePanel: {fileID: 4615739500977445621}
   fadeAnimTime: 0.5
+  GameContinued: 0
 --- !u!1 &2403876355092146138
 GameObject:
   m_ObjectHideFlags: 0
