@@ -604,6 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ddba530036004e933780baf0f1c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverableButton
+  hoverSounds: 050000000700000008000000
 --- !u!1 &997129412
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,6 +962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ddba530036004e933780baf0f1c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverableButton
+  hoverSounds: 060000000500000009000000
 --- !u!1 &1364203926
 GameObject:
   m_ObjectHideFlags: 0
@@ -1326,6 +1328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ddba530036004e933780baf0f1c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverableButton
+  hoverSounds: 070000000800000009000000
 --- !u!1 &1599506510
 GameObject:
   m_ObjectHideFlags: 0
@@ -2045,6 +2048,31 @@ MonoBehaviour:
       clip: {fileID: 0}
       volume: 1
       pitchSemitones: 0
+    uiMenuHover1:
+      key: 
+      clip: {fileID: 8300000, guid: d077a00cda18044109ef33ea8e120353, type: 3}
+      volume: 0.444
+      pitchSemitones: 0
+    uiMenuHover2:
+      key: 
+      clip: {fileID: 8300000, guid: fea4f6f923449461199d633626d0074c, type: 3}
+      volume: 0.413
+      pitchSemitones: 0
+    uiMenuHover3:
+      key: 
+      clip: {fileID: 8300000, guid: 9ed3660b6e2c44777894104aab9b436b, type: 3}
+      volume: 0.427
+      pitchSemitones: 0
+    uiMenuHover4:
+      key: 
+      clip: {fileID: 8300000, guid: f12091b02e2454089b0c92426ce8c62e, type: 3}
+      volume: 0.498
+      pitchSemitones: 0
+    uiMenuHover5:
+      key: 
+      clip: {fileID: 8300000, guid: 14190968717194d7e9a1c6d95c8f309a, type: 3}
+      volume: 0.427
+      pitchSemitones: 0
     uiOpen:
       key: 
       clip: {fileID: 8300000, guid: 5cb1bd0d1e04e47448d56e42c70034bd, type: 3}
@@ -2250,6 +2278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665ddba530036004e933780baf0f1c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverableButton
+  hoverSounds: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

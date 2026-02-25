@@ -12,12 +12,14 @@ public class PauseMenuUI : MonoBehaviour
 
     void Start()
     {
-        canvasGroup = GetComponent<CanvasGroup>();   
+        canvasGroup = GetComponent<CanvasGroup>();
+        UISFX.Play(SFXAction.UI_Open);   
     }
 
     public void ResumeGame()
     {
         canvasGroup.alpha = 1f;
+        UISFX.Play(SFXAction.UI_Close);
         canvasGroup.LeanAlpha(0f, fadeAnimTime).setOnComplete(() =>
         {
             EventSystem.current.SetSelectedGameObject(null);
@@ -28,6 +30,7 @@ public class PauseMenuUI : MonoBehaviour
     public void ReturnToMainMenu()
     {
         fadeOutPanel.alpha = 0f;
+        UISFX.Play(SFXAction.UI_Close);
         fadeOutPanel.LeanAlpha(1f, fadeAnimTime).setOnComplete(() =>
         {
             SceneManager.LoadScene(0);
@@ -37,6 +40,7 @@ public class PauseMenuUI : MonoBehaviour
     void OnEnable()
     {
         if(canvasGroup == null) return;
+        UISFX.Play(SFXAction.UI_Open);
         canvasGroup.alpha = 0f;
         canvasGroup.LeanAlpha(1f, fadeAnimTime);
     }
