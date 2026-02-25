@@ -242,7 +242,7 @@ public class PlayerControls : MonoBehaviour
                     x.Prefab.GetComponent<Furniture>().furnitureName
                 )
             );
-        
+
         UISFX.Play(SFXAction.UI_DeleteItem);
 
         deletedFurniture.DestroyPrefab();

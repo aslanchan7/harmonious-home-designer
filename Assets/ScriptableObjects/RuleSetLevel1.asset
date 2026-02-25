@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df200a48aedba4e7a9020b4570fe67e9, type: 3}
   m_Name: RuleSetLevel1
   m_EditorClassIdentifier: Assembly-CSharp::RuleSet
+  roomSize: {x: 7, y: 6}
   furnitures:
   - name: Bed
     categories: 5

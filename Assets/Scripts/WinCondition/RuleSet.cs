@@ -52,6 +52,7 @@ public class ZoneEntry
 [CreateAssetMenu(fileName = "New Rule Set", menuName = "Rule Set")]
 public class RuleSet : ScriptableObject, ISerializationCallbackReceiver
 {
+    public Vector2Int roomSize;
     public FurnitureEntry[] furnitures;
     public FixedItemEntry[] fixedItems;
 
@@ -130,6 +131,39 @@ public class RuleSet : ScriptableObject, ISerializationCallbackReceiver
             }
         }
 
+        float halfWidth = roomSize.x / 2.0f;
+        float halfHeight = roomSize.y / 2.0f;
+        List<DirectedBox> walls = new(
+            new DirectedBox[]
+            {
+                new DirectedBox(
+                    new(-halfWidth, halfHeight),
+                    new(roomSize.x, 0),
+                    180
+                ),
+                new DirectedBox(
+                    new(halfWidth, -halfHeight),
+                    new(0, roomSize.y),
+                    -90
+                ),
+                new DirectedBox(
+                    new(-halfWidth, -halfHeight),
+                    new(roomSize.x, 0),
+                    0
+                ),
+                new DirectedBox(
+                    new(-halfWidth, -halfHeight),
+                    new(0, roomSize.y),
+                    90
+                ),
+            }
+        );
+        fixedItemDict.Add("TopWall", new(new DirectedBox[] { walls[0] }));
+        fixedItemDict.Add("RightWall", new(new DirectedBox[] { walls[1] }));
+        fixedItemDict.Add("BottomWall", new(new DirectedBox[] { walls[2] }));
+        fixedItemDict.Add("LeftWall", new(new DirectedBox[] { walls[3] }));
+        fixedItemDict.Add("Wall", walls);
+
         zoneDict = new();
         foreach (ZoneEntry entry in zones)
         {
@@ -158,5 +192,95 @@ public class RuleSet : ScriptableObject, ISerializationCallbackReceiver
                 }
             }
         }
+
+        int thirdWidth = roomSize.x / 3;
+        int widthRemainder = roomSize.x % 3;
+        int sideBaguaZoneWidth =
+            widthRemainder == 2 ? thirdWidth + 1 : thirdWidth;
+        int centerBaguaZoneWidth =
+            widthRemainder == 1 ? thirdWidth + 1 : thirdWidth;
+
+        int thirdHeight = roomSize.y / 3;
+        int heightRemainder = roomSize.y % 3;
+        int sideBaguaZoneHeight =
+            heightRemainder == 2 ? thirdHeight + 1 : thirdHeight;
+        int centerBaguaZoneHeight =
+            heightRemainder == 1 ? thirdHeight + 1 : thirdHeight;
+
+        List<BoundingBox> bagua = new(
+            new BoundingBox[]
+            {
+                new BoundingBox(
+                    new(-halfWidth, halfHeight - sideBaguaZoneHeight),
+                    new(sideBaguaZoneWidth, sideBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(
+                        -halfWidth + sideBaguaZoneWidth,
+                        halfHeight - sideBaguaZoneHeight
+                    ),
+                    new(centerBaguaZoneWidth, sideBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(
+                        halfWidth - sideBaguaZoneWidth,
+                        halfHeight - sideBaguaZoneHeight
+                    ),
+                    new(sideBaguaZoneWidth, sideBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(-halfWidth, -halfHeight + sideBaguaZoneHeight),
+                    new(sideBaguaZoneWidth, centerBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(
+                        -halfWidth + sideBaguaZoneWidth,
+                        -halfHeight + sideBaguaZoneHeight
+                    ),
+                    new(centerBaguaZoneWidth, centerBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(
+                        halfWidth - sideBaguaZoneWidth,
+                        -halfHeight + sideBaguaZoneHeight
+                    ),
+                    new(sideBaguaZoneWidth, centerBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(-halfWidth, -halfHeight),
+                    new(sideBaguaZoneWidth, sideBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(-halfWidth + sideBaguaZoneWidth, -halfHeight),
+                    new(centerBaguaZoneWidth, sideBaguaZoneHeight)
+                ),
+                new BoundingBox(
+                    new(halfWidth - sideBaguaZoneWidth, -halfHeight),
+                    new(sideBaguaZoneWidth, sideBaguaZoneHeight)
+                ),
+            }
+        );
+        zoneDict.Add(
+            "WealthAndProsperity",
+            new(new BoundingBox[] { bagua[0] })
+        );
+        zoneDict.Add("FameAndReputation", new(new BoundingBox[] { bagua[1] }));
+        zoneDict.Add("Relationships", new(new BoundingBox[] { bagua[2] }));
+        zoneDict.Add("Family", new(new BoundingBox[] { bagua[3] }));
+        zoneDict.Add("Health", new(new BoundingBox[] { bagua[4] }));
+        zoneDict.Add(
+            "ChildrenAndCreativity",
+            new(new BoundingBox[] { bagua[5] })
+        );
+        zoneDict.Add(
+            "KnowledgeAndSelfCultivation",
+            new(new BoundingBox[] { bagua[6] })
+        );
+        zoneDict.Add("Career", new(new BoundingBox[] { bagua[7] }));
+        zoneDict.Add(
+            "TravelAndHelpfulPeople",
+            new(new BoundingBox[] { bagua[8] })
+        );
+        zoneDict.Add("Bagua", bagua);
     }
 }

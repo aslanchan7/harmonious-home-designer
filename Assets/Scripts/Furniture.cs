@@ -56,14 +56,24 @@ public class Furniture : MonoBehaviour
 
     public void PlayPickupVFX()
     {
-        if (pickupVFX == null) return;
-        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+        if (pickupVFX == null)
+            return;
+        Instantiate(
+            placeVFX,
+            transform.position + Vector3.up * 0.05f,
+            Quaternion.identity
+        );
     }
 
     public void PlayPlaceVFX()
     {
-        if (placeVFX == null) return;
-        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+        if (placeVFX == null)
+            return;
+        Instantiate(
+            placeVFX,
+            transform.position + Vector3.up * 0.05f,
+            Quaternion.identity
+        );
     }
 
     public Vector2 DisplayPosition
@@ -180,7 +190,6 @@ public class Furniture : MonoBehaviour
             {
                 furniture.PlacedFurnituresUnset();
                 furniture.DisplayBase = this;
-                Debug.Log(furniture.LastValidBase?.name);
                 furniture.SetLocationAsValid();
             }
         );
@@ -302,7 +311,8 @@ public class Furniture : MonoBehaviour
     {
         foreach (Collider collider in Colliders)
         {
-            if (collider == null) continue;
+            if (collider == null)
+                continue;
             collider.enabled = enabled;
         }
         TryRecursiveStack((furniture) => furniture.SetColliderEnabled(enabled));
