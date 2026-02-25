@@ -171,6 +171,16 @@ public class Furniture : MonoBehaviour
     // Update lastValidPos and lastValidRotation;
     public void SetLocationAsValid()
     {
+        SetLocationAsValidSilent();
+        SFXManager.Instance?.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
+        Debug.Log("playing from: " + this.furnitureName);
+        PlayPlaceVFX();
+        PlacedFurnitureSet();
+        WinCondition.Instance.UpdateRuleCheck();
+    }
+
+    public void SetLocationAsValidSilent()
+    {
         if (!hasUnsetPlacedFurniture)
         {
             throw new InvalidOperationException(
@@ -190,16 +200,9 @@ public class Furniture : MonoBehaviour
             {
                 furniture.PlacedFurnituresUnset();
                 furniture.DisplayBase = this;
-                furniture.SetLocationAsValid();
+                furniture.SetLocationAsValidSilent();
             }
         );
-        // TODO: Change the type of sfx played
-
-        // SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
-        SFXManager.Instance?.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
-        PlayPlaceVFX();
-        PlacedFurnitureSet();
-        WinCondition.Instance.UpdateRuleCheck();
     }
 
     public void ResetToValidLocation()

@@ -225,6 +225,15 @@ public class PlayerControls : MonoBehaviour
         if (SelectedFurniture != null)
         {
             StopCoroutine(dragUpdateCoroutine);
+            SelectedFurniture.SetNormalMat();
+            if (SelectedFurniture.CheckValidPos())
+            {
+                SelectedFurniture.SetLocationAsValidSilent();
+            }
+            else
+            {
+                SelectedFurniture.ResetToValidLocation();
+            }
             // SelectedFurniture.TryPlace();
             deletedFurniture = SelectedFurniture;
             SelectedFurniture = null;
