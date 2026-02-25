@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.Contracts;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 [Serializable]
@@ -40,4 +42,5 @@ public class GlobalSFXSet
     public SFXEntry uiBoxOpen;
     public SFXEntry uiBoxClose;
     public SFXEntry invalid;
+    public SFXEntry deleteItem;
 }
