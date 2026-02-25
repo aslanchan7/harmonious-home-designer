@@ -51,6 +51,21 @@ public class Furniture : MonoBehaviour
         InvalidGhostMat;
     public Transform ShapeUnits;
 
+    public ParticleSystem pickupVFX;
+    public ParticleSystem placeVFX;
+
+    public void PlayPickupVFX()
+    {
+        if (pickupVFX == null) return;
+        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+    }
+
+    public void PlayPlaceVFX()
+    {
+        if (placeVFX == null) return;
+        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+    }
+
     public Vector2 DisplayPosition
     {
         get { return new(transform.position.x, transform.position.z); }
@@ -170,8 +185,10 @@ public class Furniture : MonoBehaviour
             }
         );
         // TODO: Change the type of sfx played
+
         // SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         SFXManager.Instance?.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
+        PlayPlaceVFX();
         PlacedFurnitureSet();
         WinCondition.Instance.UpdateRuleCheck();
     }

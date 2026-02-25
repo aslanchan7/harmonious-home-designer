@@ -26,6 +26,11 @@ public class FurnitureSFXSet
 public class GlobalSFXSet
 {
     public SFXEntry uiClick;
+    public SFXEntry uiMenuHover1;
+    public SFXEntry uiMenuHover2;
+    public SFXEntry uiMenuHover3;
+    public SFXEntry uiMenuHover4;
+    public SFXEntry uiMenuHover5;
     public SFXEntry uiOpen;
     public SFXEntry uiClose;
     public SFXEntry uiBookOpen;

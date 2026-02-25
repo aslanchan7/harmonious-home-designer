@@ -8,6 +8,11 @@ public enum SFXAction
     Rotate,
     Invalid,
     UI_Click,
+    UI_MenuHover1,
+    UI_MenuHover2,
+    UI_MenuHover3,
+    UI_MenuHover4,
+    UI_MenuHover5,
 
     UI_Open,
     UI_Close,

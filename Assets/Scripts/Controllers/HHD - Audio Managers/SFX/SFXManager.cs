@@ -53,6 +53,11 @@ public class SFXManager : MonoBehaviour
         SFXEntry entry = action switch
         {
             SFXAction.UI_Click => globalSfx.uiClick,
+            SFXAction.UI_MenuHover1 => globalSfx.uiMenuHover1,
+            SFXAction.UI_MenuHover2 => globalSfx.uiMenuHover2,
+            SFXAction.UI_MenuHover3 => globalSfx.uiMenuHover3,
+            SFXAction.UI_MenuHover4 => globalSfx.uiMenuHover4,
+            SFXAction.UI_MenuHover5 => globalSfx.uiMenuHover5,
             SFXAction.UI_Open  => globalSfx.uiOpen,
             SFXAction.UI_Close => globalSfx.uiClose,
             SFXAction.UI_OpenBook => globalSfx.uiBookOpen,

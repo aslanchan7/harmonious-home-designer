@@ -8,6 +8,9 @@ public class HoverableButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Vector3 origPos;
     private Vector2 origSize;
 
+    [Header("Hover SFX")]
+    [SerializeField] private SFXAction[] hoverSounds;
+
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -17,6 +20,8 @@ public class HoverableButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        PlayRandomHoverSFX();
+        
         rectTransform.localPosition = new(origPos.x, origPos.y + (origSize.y * 0.05f), origPos.z);
         rectTransform.sizeDelta = origSize * 1.1f;
     }
@@ -25,5 +30,14 @@ public class HoverableButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         rectTransform.localPosition = origPos;
         rectTransform.sizeDelta = origSize;
+    }
+
+    private void PlayRandomHoverSFX()
+    {
+        if (hoverSounds == null || hoverSounds.Length == 0)
+            return;
+
+        int index = Random.Range(0, hoverSounds.Length);
+        UISFX.Play(hoverSounds[index]);
     }
 }
