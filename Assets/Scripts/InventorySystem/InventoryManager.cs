@@ -25,11 +25,11 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
-        // Instantiate buttons for each furniture item from inventoryList
+        // // Instantiate buttons for each furniture item from inventoryList
         foreach (var furniture in inventorySO.inventoryList)
         {
             inventoryUI.InstantiateInventoryButton(furniture);
-            furniture.CurrentPlacedCount = 0;
+            // furniture.CurrentPlacedCount = 0;
         }
     }
 
@@ -64,20 +64,6 @@ public class InventoryManager : MonoBehaviour
                     InventoryItem item = inventorySO.inventoryList.Find(x =>
                         x.Prefab == furniturePrefab
                     );
-                    if (item != null)
-                    {
-                        if (item.CurrentPlacedCount >= item.MaxPlacements)
-                        {
-                            // Destory instantiated furniture if reached MaxPlacement
-                            Debug.LogWarning(
-                                $"Limit exceeded for {furniturePrefab.name}!"
-                            );
-                            Destroy(newFurniture.gameObject);
-                            return;
-                        }
-
-                        item.CurrentPlacedCount++;
-                    }
 
                     return;
                 }

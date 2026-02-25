@@ -50,9 +50,15 @@ MonoBehaviour:
   furnitureName: Wardrobe
   Size: {x: 2, y: 1}
   height: 4
+  canBeStackedOn: 0
+  canStackOnOthers: 0
+  lockRotation: 0
+  acceptRotationPassThrough: 0
   LastValidPosition: {x: 0, y: 0}
+  LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 2
   MeshRenderers:
   - Item1: {fileID: 4943139308093267757}
     Item2: {fileID: 2100000, guid: 52deff889bf644a4b97a0f73f51f1bfd, type: 2}
