@@ -44,6 +44,21 @@ public class Furniture : MonoBehaviour
         InvalidGhostMat;
     public Transform ShapeUnits;
 
+    public ParticleSystem pickupVFX;
+    public ParticleSystem placeVFX;
+
+    public void PlayPickupVFX()
+    {
+        if (pickupVFX == null) return;
+        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+    }
+
+    public void PlayPlaceVFX()
+    {
+        if (placeVFX == null) return;
+        Instantiate(placeVFX, transform.position + Vector3.up * 0.05f, Quaternion.identity);
+    }
+
     public Vector2 DisplayPosition
     {
         get { return new(transform.position.x, transform.position.z); }
@@ -160,8 +175,10 @@ public class Furniture : MonoBehaviour
             }
         );
         // TODO: Change the type of sfx played
+
         // SFXManager.Instance.PlaySFX(SFXType.Place_Wood);
         SFXManager.Instance?.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
+        PlayPlaceVFX();
         PlacedFurnitureSet();
         WinCondition.Instance.UpdateRuleCheck();
     }
@@ -253,7 +270,7 @@ public class Furniture : MonoBehaviour
         {
             ResetToValidLocation();
             if (SFXManager.Instance != null)
-            SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Invalid);
+                SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Invalid);
         }
     }
 
@@ -272,6 +289,7 @@ public class Furniture : MonoBehaviour
     {
         foreach (Collider collider in Colliders)
         {
+            if (collider == null) continue;
             collider.enabled = enabled;
         }
         TryRecursiveStack((furniture) => furniture.SetColliderEnabled(enabled));

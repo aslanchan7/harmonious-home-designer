@@ -84,6 +84,8 @@ MonoBehaviour:
   GhostMat: {fileID: 2100000, guid: b640afd4979980c4c85064f5d6898dd7, type: 2}
   InvalidGhostMat: {fileID: 2100000, guid: 0acb0b4739119964fa2ff5fe3ad79eca, type: 2}
   ShapeUnits: {fileID: 2757496635643795403}
+  pickupVFX: {fileID: 7943555879637957585, guid: cb92492b951c4486b85a95d2b18c36b7, type: 3}
+  placeVFX: {fileID: 7943555879637957585, guid: cb92492b951c4486b85a95d2b18c36b7, type: 3}
 --- !u!1 &5587844986477625075
 GameObject:
   m_ObjectHideFlags: 0

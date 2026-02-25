@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class FSBarController : MonoBehaviour
 
     [SerializeField]
     private FengShuiBarUI fengShuiBarUI;
+    [SerializeField] EndScreenUI endScreenUI;
 
     // [SerializeField] private UnityEngine.UI.Slider _BonusSlider;
     //private List<GameObject> GoodEnergySegments = new List<GameObject>();
@@ -46,10 +48,20 @@ public class FSBarController : MonoBehaviour
     {
         UpdateProgressBar();
 
+        CheckForEndOfGame();
+
         // Comment out bonus slider
         // UpdateBonusBar();
 
         // UpdateEnergySegmentGraphics();
+    }
+
+    private void CheckForEndOfGame()
+    {
+        if (totalBadEnergy <= 0 && !endScreenUI.GameContinued)
+        {
+            endScreenUI.gameObject.SetActive(true);
+        }
     }
 
     // Adds a Feng Shui energy source to its corrosponding list if not already present, otherwise adds amount to an existign energy type
