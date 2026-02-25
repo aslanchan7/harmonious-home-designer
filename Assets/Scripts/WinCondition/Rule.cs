@@ -24,9 +24,6 @@ public class Rule
         FurnituresInChaosZoneWithoutPeace,
         CommandPosition,
         BaguaBonus,
-        Present,
-        NotPresent,
-        Clear,
     }
 
     public enum ArgumentType
