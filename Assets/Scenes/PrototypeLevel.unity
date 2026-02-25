@@ -3427,6 +3427,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8246947251150581751, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
+      propertyPath: endScreenUI
+      value: 
+      objectReference: {fileID: 1933680788}
     - target: {fileID: 8484010825459865736, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
       propertyPath: m_Name
       value: FengShuiUI
@@ -5438,7 +5442,6 @@ MonoBehaviour:
   _ProgressSlider: {fileID: 1600169844}
   _SinsSlider: {fileID: 1799214139}
   fengShuiBarUI: {fileID: 1664741797}
-  endScreenUI: {fileID: 1933680788}
   totalBadEnergy: 0
   totalGoodEnergy: 0
   maxE: 100

@@ -14,6 +14,7 @@ public class FengShuiBarUI : MonoBehaviour
     public Sprite StarEmpty;
     public Sprite StarFilled;
     public float MinValueToShowIcons;
+    [SerializeField] EndScreenUI endScreenUI;
 
     [Header("Data")]
     [SerializeField]
@@ -144,12 +145,25 @@ public class FengShuiBarUI : MonoBehaviour
             StarParent.SetActive(false);
             return;
         }
+        
+        EndGame(starNumber);
 
         StarParent.SetActive(true);
         Image[] starImages = StarParent.GetComponentsInChildren<Image>();
         for (int i = 0; i < starImages.Length; i++)
         {
             starImages[i].sprite = i < starNumber ? StarFilled : StarEmpty;
+        }
+    }
+
+    private void EndGame(int starNumber)
+    {
+        if(!endScreenUI.GameContinued)
+        {
+            endScreenUI.gameObject.SetActive(true);
+        } else if(starNumber == 3)
+        {
+            endScreenUI.gameObject.SetActive(true);
         }
     }
 
