@@ -142,11 +142,6 @@ public class WinCondition : MonoBehaviour
         {
             int i = (int)energyType;
             float deltaPoints = points[i] - oldPoints[i];
-            if (energyType == FSEnergyType.Functional)
-            {
-                // For functional points, flip it to compute deductions.
-                deltaPoints = -deltaPoints;
-            }
             if (deltaPoints < 0)
             {
                 BarController.RemoveEnergy(energyType, -deltaPoints, false);

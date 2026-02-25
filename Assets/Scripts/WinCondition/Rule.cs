@@ -93,13 +93,10 @@ public class Rule
                 List<Furniture> furnitureList =
                     WinCondition.Instance.GetFurnitures(furniture);
                 if (furnitureList.Count == 0)
-                    WinCondition.Instance.AddPoints(
-                        FSEnergyType.Functional,
-                        basePoints
-                    );
+                    continue;
                 if (furnitureList[0].requireAllDirectionsAccessible)
                 {
-                    GranularRule(
+                    InvertGranularRule(
                         furnitureList,
                         (furniture) =>
                             Functional.All(
@@ -125,7 +122,7 @@ public class Rule
                 }
                 else
                 {
-                    GranularRule(
+                    InvertGranularRule(
                         furnitureList,
                         (furniture) =>
                             Functional.Any(
@@ -165,7 +162,7 @@ public class Rule
             GranularRule(
                 bedList,
                 (bed) =>
-                    !Functional.Any(
+                    Functional.Any(
                         doors,
                         (door) =>
                         {
@@ -232,7 +229,7 @@ public class Rule
             List<Furniture> bedList = WinCondition.Instance.GetFurnitures(
                 "Bed"
             );
-            GranularRule(
+            InvertGranularRule(
                 bedList,
                 (bed) =>
                     Functional.Any(
@@ -290,11 +287,9 @@ public class Rule
                         new(doorToBedHead.x, 0, doorToBedHead.y)
                     );
 
-                    return !(
-                        Vector2.Angle(-doorToBedHead, bedFootAngle) >= 60
+                    return Vector2.Angle(-doorToBedHead, bedFootAngle) >= 60
                         || Physics.Raycast(ray, out RaycastHit hit, distance)
-                            && hit.collider.CompareTag("Furniture")
-                    );
+                            && hit.collider.CompareTag("Furniture");
                 },
                 FSEnergyType.Rule,
                 basePoints
@@ -377,20 +372,17 @@ public class Rule
             .Instance
             .ruleSet
             .furnitureDict[furnitureCategory];
-        WinCondition.Instance.AddMaxPoints(
-            FSEnergyType.Functional,
-            furnitureList.Count * basePoints
-        );
+        float maxPoints = furnitureList.Count * basePoints;
+        WinCondition.Instance.AddMaxPoints(FSEnergyType.Functional, maxPoints);
         return () =>
         {
-            float points =
-                Functional.Count(
-                    furnitureList,
-                    (string furniture) =>
-                        WinCondition.Instance.GetFurnitures(furniture).Count
-                        != 0
-                ) * basePoints;
-            WinCondition.Instance.AddPoints(FSEnergyType.Functional, points);
+            GranularRule(
+                furnitureList,
+                (string furniture) =>
+                    WinCondition.Instance.GetFurnitures(furniture).Count == 0,
+                FSEnergyType.Functional,
+                maxPoints
+            );
         };
     }
 
@@ -404,38 +396,32 @@ public class Rule
         WinCondition.Instance.AddMaxPoints(FSEnergyType.Functional, maxPoints);
         return () =>
         {
-            WinCondition.Instance.AddPoints(
+            GranularRule(
+                furnitureList,
+                (string furniture) =>
+                    WinCondition.Instance.GetFurnitures(furniture).Count != 0,
                 FSEnergyType.Functional,
                 maxPoints
-                    - Functional.Count<string>(
-                        furnitureList,
-                        (string furniture) =>
-                            WinCondition.Instance.GetFurnitures(furniture).Count
-                            != 0
-                    ) * basePoints
             );
         };
     }
 
     public Action Clear(List<BoundingBox> zones)
     {
-        WinCondition.Instance.AddMaxPoints(
-            FSEnergyType.Functional,
-            zones.Count * basePoints
-        );
+        float maxPoints = zones.Count * basePoints;
+        WinCondition.Instance.AddMaxPoints(FSEnergyType.Functional, maxPoints);
         return () =>
         {
-            WinCondition.Instance.AddPoints(
+            InvertGranularRule(
+                zones,
+                (zone) =>
+                    Functional.SatisfiesAll(
+                        PlacedFurnitures.Instance.furnitureBaseGrid,
+                        zone,
+                        (Furniture furniture) => furniture == null
+                    ),
                 FSEnergyType.Functional,
-                Functional.Count(
-                    zones,
-                    (zone) =>
-                        Functional.SatisfiesAll(
-                            PlacedFurnitures.Instance.furnitureBaseGrid,
-                            zone,
-                            (Furniture furniture) => furniture == null
-                        )
-                ) * basePoints
+                maxPoints
             );
         };
     }
