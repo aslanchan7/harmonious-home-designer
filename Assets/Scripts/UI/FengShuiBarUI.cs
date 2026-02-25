@@ -161,10 +161,7 @@ public class FengShuiBarUI : MonoBehaviour
         if(!endScreenUI.GameContinued)
         {
             endScreenUI.gameObject.SetActive(true);
-        } else if(starNumber == 3)
-        {
-            endScreenUI.gameObject.SetActive(true);
-        }
+        } 
     }
 
     // // TODO: THIS JUST STRAIGHT UP DOESN'T WORK
