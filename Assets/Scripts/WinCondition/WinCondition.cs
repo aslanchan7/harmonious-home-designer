@@ -357,23 +357,39 @@ public class WinCondition : MonoBehaviour
                 ),
             }
         );
-        ruleSet.fixedItemDict.Add(
-            "TopWall",
-            new(new DirectedBox[] { walls[0] })
-        );
-        ruleSet.fixedItemDict.Add(
-            "RightWall",
-            new(new DirectedBox[] { walls[1] })
-        );
-        ruleSet.fixedItemDict.Add(
-            "BottomWall",
-            new(new DirectedBox[] { walls[2] })
-        );
-        ruleSet.fixedItemDict.Add(
-            "LeftWall",
-            new(new DirectedBox[] { walls[3] })
-        );
-        ruleSet.fixedItemDict.Add("Wall", walls);
+        
+        if(!ruleSet.fixedItemDict.ContainsKey("TopWall"))
+        {
+            ruleSet.fixedItemDict.Add(
+                "TopWall",
+                new(new DirectedBox[] { walls[0] })
+            );            
+        }
+        if(!ruleSet.fixedItemDict.ContainsKey("RightWall"))
+        {
+            ruleSet.fixedItemDict.Add(
+                "RightWall",
+                new(new DirectedBox[] { walls[1] })
+            );            
+        }
+        if(!ruleSet.fixedItemDict.ContainsKey("BottomWall"))
+        {
+            ruleSet.fixedItemDict.Add(
+                "BottomWall",
+                new(new DirectedBox[] { walls[2] })
+            );            
+        }
+        if(!ruleSet.fixedItemDict.ContainsKey("LeftWall"))
+        {
+            ruleSet.fixedItemDict.Add(
+                "LeftWall",
+                new(new DirectedBox[] { walls[3] })
+            );            
+        }
+        if(!ruleSet.fixedItemDict.ContainsKey("Wall"))
+        {
+            ruleSet.fixedItemDict.Add("Wall", walls);
+        }
 
         int thirdWidth = roomSize.x / 3;
         int widthRemainder = roomSize.x % 3;
@@ -442,33 +458,63 @@ public class WinCondition : MonoBehaviour
                 ),
             }
         );
-        ruleSet.zoneDict.Add(
-            "WealthAndProsperity",
-            new(new BoundingBox[] { bagua[0] })
-        );
-        ruleSet.zoneDict.Add(
-            "FameAndReputation",
-            new(new BoundingBox[] { bagua[1] })
-        );
-        ruleSet.zoneDict.Add(
-            "Relationships",
-            new(new BoundingBox[] { bagua[2] })
-        );
-        ruleSet.zoneDict.Add("Family", new(new BoundingBox[] { bagua[3] }));
-        ruleSet.zoneDict.Add("Health", new(new BoundingBox[] { bagua[4] }));
-        ruleSet.zoneDict.Add(
-            "ChildrenAndCreativity",
-            new(new BoundingBox[] { bagua[5] })
-        );
-        ruleSet.zoneDict.Add(
-            "KnowledgeAndSelfCultivation",
-            new(new BoundingBox[] { bagua[6] })
-        );
-        ruleSet.zoneDict.Add("Career", new(new BoundingBox[] { bagua[7] }));
-        ruleSet.zoneDict.Add(
-            "TravelAndHelpfulPeople",
-            new(new BoundingBox[] { bagua[8] })
-        );
-        ruleSet.zoneDict.Add("Bagua", bagua);
+        if(!ruleSet.zoneDict.ContainsKey("WealthAndProsperity"))
+        {
+            ruleSet.zoneDict.Add(
+                "WealthAndProsperity",
+                new(new BoundingBox[] { bagua[0] })
+            );            
+        }
+        if(!ruleSet.zoneDict.ContainsKey("FameAndReputation"))
+        {
+            ruleSet.zoneDict.Add(
+                "FameAndReputation",
+                new(new BoundingBox[] { bagua[1] })
+            );            
+        }
+        if(!ruleSet.zoneDict.ContainsKey("Relationships"))
+        {
+            ruleSet.zoneDict.Add(
+                "Relationships",
+                new(new BoundingBox[] { bagua[2] })
+            );            
+        }
+        if(!ruleSet.zoneDict.ContainsKey("Family"))
+        {
+            ruleSet.zoneDict.Add("Family", new(new BoundingBox[] { bagua[3] }));
+        }
+        if(!ruleSet.zoneDict.ContainsKey("Health"))
+        {
+            ruleSet.zoneDict.Add("Health", new(new BoundingBox[] { bagua[4] }));
+        }
+        if(!ruleSet.zoneDict.ContainsKey("ChildrenAndCreativity"))
+        {
+            ruleSet.zoneDict.Add(
+                "ChildrenAndCreativity",
+                new(new BoundingBox[] { bagua[5] })
+            );
+        }
+        if(!ruleSet.zoneDict.ContainsKey("KnowledgeAndSelfCultivation"))
+        {
+            ruleSet.zoneDict.Add(
+                "KnowledgeAndSelfCultivation",
+                new(new BoundingBox[] { bagua[6] })
+            );            
+        }
+        if(!ruleSet.zoneDict.ContainsKey("Career"))
+        {
+            ruleSet.zoneDict.Add("Career", new(new BoundingBox[] { bagua[7] }));
+        }
+        if(!ruleSet.zoneDict.ContainsKey("TravelAndHelpfulPeople"))
+        {
+            ruleSet.zoneDict.Add(
+                "TravelAndHelpfulPeople",
+                new(new BoundingBox[] { bagua[8] })
+            );
+        }
+        if(!ruleSet.zoneDict.ContainsKey("Bagua"))
+        {
+            ruleSet.zoneDict.Add("Bagua", bagua);
+        }
     }
 }
