@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,19 +9,36 @@ public class FengShuiBarUI : MonoBehaviour
     [SerializeField]
     private GameObject _EnergySegmentPrefab;
     public Slider sinSlider;
+    public GameObject[] LayerParents;
+    public float MinValueToShowIcons;
 
     [Header("Data")]
-    [SerializeField] FSEnergyDictionary fSEnergyDictionary;
-    private List<GameObject> BadEnergySegments = new();
+    [SerializeField]
+    FSEnergyDictionary fSEnergyDictionary;
+    private GameObject[] BadEnergySegments = new GameObject[
+        Enum.GetNames(typeof(FSEnergyType)).Length
+    ];
 
     // Creates an instance of the energySegment prefab of the desired type
-    public void CreateEnergySegment(FSEnergyType type, bool polarity, int maxE)
+    public void CreateEnergySegment(
+        FSEnergyType type,
+        bool polarity,
+        float maxE
+    )
     {
         // EnergySegmentController newEnergySegment =
         //     _EnergySegmentPrefab.InstantiatePrefab(sinSlider.transform, maxE, fSEnergyDictionary);
         // Instantiate energy segment & initialize values
-        GameObject energySegmentObj = Instantiate(_EnergySegmentPrefab, sinSlider.transform);
-        EnergySegmentController newEnergySegment = energySegmentObj.GetComponent<EnergySegmentController>();
+        GameObject energySegmentObj = Instantiate(
+            _EnergySegmentPrefab,
+            sinSlider.transform
+        );
+        energySegmentObj.transform.SetParent(
+            LayerParents[(int)type].transform,
+            false
+        );
+        EnergySegmentController newEnergySegment =
+            energySegmentObj.GetComponent<EnergySegmentController>();
         // RectTransform rectTransform = newEnergySegment.gameObject.GetComponent<RectTransform>();
         // newEnergySegment.SetPolarity(polarity);
         // newEnergySegment.SetSize(
@@ -28,11 +46,17 @@ public class FengShuiBarUI : MonoBehaviour
         // );
         // rectTransform.localPosition = Vector3.zero;
 
-        newEnergySegment.Initialize(type, polarity, sinSlider.GetComponent<RectTransform>().sizeDelta, maxE, fSEnergyDictionary);
+        newEnergySegment.Initialize(
+            type,
+            polarity,
+            sinSlider.GetComponent<RectTransform>().sizeDelta,
+            maxE,
+            fSEnergyDictionary
+        );
 
         if (!polarity)
         {
-            BadEnergySegments.Add(newEnergySegment.gameObject);
+            BadEnergySegments[(int)type] = newEnergySegment.gameObject;
         }
         else
         {
@@ -42,18 +66,18 @@ public class FengShuiBarUI : MonoBehaviour
         }
     }
 
-    public void SetMax(int maxE)
+    public void SetMax(float maxE)
     {
         foreach (GameObject segmentObject in BadEnergySegments)
         {
-            segmentObject.GetComponent<Slider>().maxValue = maxE;
+            if (segmentObject != null)
+                segmentObject.GetComponent<Slider>().maxValue = maxE;
         }
     }
 
     // Removes the sin segment of a desired type (only called if amount of that type of sin = 0)
-    public void RemoveEnergySement(FSEnergyType type, bool polarity)
+    public void RemoveEnergySegment(FSEnergyType type, bool polarity)
     {
-        GameObject removedSegment;
         if (polarity)
         {
             Debug.Log(
@@ -62,78 +86,84 @@ public class FengShuiBarUI : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < BadEnergySegments.Count; i++)
-            {
-                removedSegment = BadEnergySegments[i];
-                if (
-                    removedSegment
-                        .GetComponent<EnergySegmentController>()
-                        .GetEnergyType()
-                        .Equals(type)
-                )
-                {
-                    Destroy(BadEnergySegments[i]);
-                    BadEnergySegments.Remove(removedSegment);
-                    Debug.Log("Successfully destroyed segment");
-                }
-            }
+            Destroy(BadEnergySegments[(int)type]);
+            BadEnergySegments[(int)type] = null;
+            Debug.Log("Successfully destroyed segment");
         }
     }
 
     // Updates the value for each sin segment
-    public void UpdateEnergySegmentValues(List<FSEnergy> badEnergies)
+    public void UpdateEnergySegmentValues(
+        List<FSEnergy> badEnergies,
+        float maxEnergy
+    )
     {
-        for (int i = 0; i < BadEnergySegments.Count; i++)
+        float cumulativeValue = 0;
+        bool capped = false;
+        for (int i = BadEnergySegments.Length - 1; i >= 0; i--)
         {
             GameObject currentSegment = BadEnergySegments[i];
+            if (currentSegment == null)
+                continue;
+            if (capped)
+            {
+                Destroy(currentSegment);
+                BadEnergySegments[i] = null;
+            }
             FSEnergyType currentEnergyType = currentSegment
                 .GetComponent<EnergySegmentController>()
                 .GetEnergyType();
             for (int j = 0; j < badEnergies.Count; j++)
             {
-                int currentSourceValue = badEnergies[j].getAmount();
                 if (badEnergies[j].getType().Equals(currentEnergyType))
                 {
-                    currentSegment
-                        .GetComponent<EnergySegmentController>()
-                        .SetValue(currentSourceValue);
+                    float currentValue = badEnergies[j].getAmount();
+                    float totalValue = cumulativeValue + currentValue;
+                    if (totalValue >= maxEnergy)
+                    {
+                        totalValue = maxEnergy;
+                        capped = true;
+                    }
+                    EnergySegmentController controller =
+                        currentSegment.GetComponent<EnergySegmentController>();
+                    controller.SetValue(totalValue);
+                    controller.SetIcon(currentValue >= MinValueToShowIcons);
+                    cumulativeValue = totalValue;
                 }
             }
         }
     }
 
-    // TODO: THIS JUST STRAIGHT UP DOESN'T WORK
-    // Updates the position and slider graphic for each sin type
-    public void UpdateEnergySegmentGraphics(
-        RectTransform sinsSlider,
-        List<FSEnergy> badEnergies,
-        float maxEnergy
-    )
-    {
-        float segmentOffset = 0.0f;
-        float sliderPosX = sinsSlider.localPosition.x;
-        for (int i = 0; i < BadEnergySegments.Count; i++)
-        {
-            GameObject currentSegment = BadEnergySegments[i];
-            FSEnergyType currentEnergyType = BadEnergySegments[i]
-                .GetComponent<EnergySegmentController>()
-                .GetEnergyType();
-            FSEnergy currentEnergy = null;
-            float sliderWidth = sinsSlider.sizeDelta.x;
-            Vector3 displacement = new(sliderPosX - segmentOffset, 0, 0);
-            for (int j = 0; j < badEnergies.Count; j++)
-            {
-                if (currentEnergyType == badEnergies[j].getType())
-                {
-                    currentEnergy = badEnergies[j];
-                }
-            }
-            Debug.Log("current displacement: " + segmentOffset);
-            Debug.Log("slider width: " + sliderWidth);
-            currentSegment.GetComponent<RectTransform>().localPosition =
-                displacement;
-            segmentOffset +=
-                currentEnergy.getAmount() * (sliderWidth / maxEnergy);
-        }
-    }
+    // // TODO: THIS JUST STRAIGHT UP DOESN'T WORK
+    // // Updates the position and slider graphic for each sin type
+    // public void UpdateEnergySegmentGraphics(
+    //     RectTransform sinsSlider,
+    //     List<FSEnergy> badEnergies,
+    //     float maxEnergy
+    // )
+    // {
+    //     // float segmentOffset = 0.0f;
+    //     for (int i = 0; i < BadEnergySegments.Count; i++)
+    //     {
+    //         GameObject currentSegment = BadEnergySegments[i];
+    //         FSEnergyType currentEnergyType = BadEnergySegments[i]
+    //             .GetComponent<EnergySegmentController>()
+    //             .GetEnergyType();
+    //         FSEnergy currentEnergy = null;
+    //         float sliderWidth = sinsSlider.sizeDelta.x;
+    //         for (int j = 0; j < badEnergies.Count; j++)
+    //         {
+    //             if (currentEnergyType == badEnergies[j].getType())
+    //             {
+    //                 currentEnergy = badEnergies[j];
+    //             }
+    //         }
+    //         // Debug.Log("current displacement: " + segmentOffset);
+    //         Debug.Log("slider width: " + sliderWidth);
+    //         currentSegment.GetComponent<RectTransform>().localPosition =
+    //             Vector3.zero;
+    //         // segmentOffset +=
+    //         //     currentEnergy.getAmount() * (sliderWidth / maxEnergy);
+    //     }
+    // }
 }

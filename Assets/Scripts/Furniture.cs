@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bagua;
 using UnityEngine;
 
 public class Furniture : MonoBehaviour
@@ -12,6 +13,11 @@ public class Furniture : MonoBehaviour
     public bool canStackOnOthers; // If ture, this furniture item can stack on top of others (naming variables is very hard...)
     public bool lockRotation;
     public bool acceptRotationPassThrough;
+    public bool requireAllDirectionsAccessible = false;
+    public Direction[] accessibleDirections = new Direction[0];
+    public Energy energy;
+    public Element element;
+    public LifeArea lifeArea;
 
     private Furniture LastValidBase;
     private Furniture DisplayBase;
@@ -33,7 +39,8 @@ public class Furniture : MonoBehaviour
     public Vector2Int StartingSize;
 
     [Header("Audio")]
-    [SerializeField] private FurnitureSFXCategory sfxCategory = FurnitureSFXCategory.Default;
+    [SerializeField]
+    private FurnitureSFXCategory sfxCategory = FurnitureSFXCategory.Default;
 
     public FurnitureSFXCategory SfxCategory => sfxCategory;
 
@@ -95,16 +102,18 @@ public class Furniture : MonoBehaviour
 
         // Match MeshRenderers with Materials
         MeshRenderers.Clear();
-        foreach (MeshRenderer meshRenderer in transform.GetChild(0).GetComponentsInChildren<MeshRenderer>())
+        foreach (
+            MeshRenderer meshRenderer in transform
+                .GetChild(0)
+                .GetComponentsInChildren<MeshRenderer>()
+        )
         {
-            SerializableTuple<MeshRenderer, Material> newTuple = new(meshRenderer, meshRenderer.material);
+            SerializableTuple<MeshRenderer, Material> newTuple = new(
+                meshRenderer,
+                meshRenderer.material
+            );
             MeshRenderers.Add(newTuple);
         }
-    }
-
-    void Start()
-    {
-        InitializeState();
     }
 
     public Furniture InstantiatePrefab()
@@ -117,7 +126,7 @@ public class Furniture : MonoBehaviour
 
     public void DestroyPrefab()
     {
-        WinCondition.Instance.RemoveFurnitureIfRegistered(this);
+        WinCondition.Instance.RemoveFurniture(this);
         PlacedFurnituresUnset();
         if (canBeStackedOn)
         {
@@ -156,6 +165,7 @@ public class Furniture : MonoBehaviour
             {
                 furniture.PlacedFurnituresUnset();
                 furniture.DisplayBase = this;
+                Debug.Log(furniture.LastValidBase?.name);
                 furniture.SetLocationAsValid();
             }
         );
@@ -253,7 +263,10 @@ public class Furniture : MonoBehaviour
         {
             ResetToValidLocation();
             if (SFXManager.Instance != null)
-            SFXManager.Instance.PlayFurnitureSFX(sfxCategory, SFXAction.Invalid);
+                SFXManager.Instance.PlayFurnitureSFX(
+                    sfxCategory,
+                    SFXAction.Invalid
+                );
         }
     }
 
@@ -280,17 +293,13 @@ public class Furniture : MonoBehaviour
     public bool CheckValidPos()
     {
         BoundingBox displayBox = GetDisplayBoundingBox();
-        BoundingBox clamped = displayBox.Clamp();
-        if (clamped != displayBox)
+        if (!GridSystem.Instance.WorldBoxInBound(displayBox))
             return false;
 
-        PlacedFurnitures.Instance.BoundingBoxToIndices(
-            displayBox,
-            out Vector2Int starting,
-            out _
+        Furniture bottomLeftBase = PlacedFurnitures.Instance.GetBase(
+            GridSystem.Instance.WorldToIndex(displayBox.position)
         );
-        Furniture bottomLeftBase = PlacedFurnitures.Instance.GetBase(starting);
-        bool wholeAreaHasSameBase = PlacedFurnitures.Instance.SatisfiesAll(
+        bool wholeAreaHasSameBase = Functional.SatisfiesAll(
             PlacedFurnitures.Instance.furnitureBaseGrid,
             displayBox,
             (Furniture f) => f == bottomLeftBase
@@ -313,7 +322,7 @@ public class Furniture : MonoBehaviour
         DisplayElevation = bottomLeftBase != null ? bottomLeftBase.height : 0;
 
         return bottomLeftBase == null
-            || PlacedFurnitures.Instance.SatisfiesAll(
+            || Functional.SatisfiesAll(
                 PlacedFurnitures.Instance.furnitureStackGrid,
                 displayBox,
                 (Furniture f) => f == null
@@ -342,14 +351,26 @@ public class Furniture : MonoBehaviour
         );
     }
 
-    public Direction GetFace(Direction face)
+    public DirectedBox GetDirectedBox()
+    {
+        return new DirectedBox(
+            LastValidPosition,
+            Mathf.Abs(LastValidRotation) < 0.1f
+            || Mathf.Abs(Mathf.Abs(LastValidRotation) - 180f) < 0.1f
+                ? StartingSize
+                : new(StartingSize.y, StartingSize.x),
+            LastValidRotation
+        );
+    }
+
+    public Direction GetRelativeFace(Direction face)
     {
         return face.Rotate(LastValidRotation);
     }
 
-    public BoundingBox GetNextToFace(Direction face, int width)
+    public BoundingBox GetNextToRelativeFace(Direction face, int width)
     {
-        return GetBoundingBox().GetNextToFace(GetFace(face), width);
+        return GetBoundingBox().GetNextToFace(GetRelativeFace(face), width);
     }
 
     private void AttachOrDetach()
@@ -386,26 +407,5 @@ public class Furniture : MonoBehaviour
                 func(furniture);
             }
         }
-    }
-}
-
-/*
-This class is just a way for me to be able to serialize tuples.
-*/
-[Serializable]
-public class SerializableTuple<T1, T2>
-{
-    public T1 Item1;
-    public T2 Item2;
-
-    public SerializableTuple(T1 item1, T2 item2)
-    {
-        Item1 = item1;
-        Item2 = item2;
-    }
-
-    public override string ToString()
-    {
-        return $"({Item1}, {Item2})";
     }
 }

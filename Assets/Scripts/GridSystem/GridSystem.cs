@@ -75,32 +75,6 @@ public class GridSystem : MonoBehaviour
         return worldPos;
     }
 
-    // public bool ValidPosForFurniture(Furniture furniture, Vector2 pos)
-    // {
-    //     for (int i = 0; i < furniture.Size.x; i++)
-    //     {
-    //         for (int j = 0; j < furniture.Size.y; j++)
-    //         {
-    //             // Raycast at some position based on gridPos and i and j
-    //             Vector2Int gridPos = new((int)(pos.x - furniture.Size.x / 2.0f + i), (int)(pos.y - furniture.Size.y / 2.0f + j));
-    //             Vector3 worldPos = GetWorldPosFromGridPos(gridPos);
-    //             // Vector3 worldPos  = GetWorldPosFromGridPos(gridPos + new Vector2Int(i, j));
-    //             worldPos.y = 10000;
-    //             if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, float.PositiveInfinity))
-    //             {
-    //                 // TODO: Check if able to place on hit object (for now, we assume objects can only place on floor)
-    //                 if (!hit.collider.CompareTag("Floor")) return false;
-    //             }
-    //             else
-    //             {
-    //                 return false;
-    //             }
-    //         }
-    //     }
-
-    //     return true;
-    // }
-
     public void HideGridVisualizer()
     {
         gridVisualizer.SetActive(false);
@@ -111,23 +85,36 @@ public class GridSystem : MonoBehaviour
         gridVisualizer.SetActive(true);
     }
 
-    // Tester function
-    public void CreateTestFurniture()
+    public void WorldBoxToIndices(
+        BoundingBox boundingBox,
+        out Vector2Int starting,
+        out Vector2Int ending
+    )
     {
-        // for (int i = -Size.x / 2; i < Size.x / 2; i++)
-        // {
-        //     for (int j = -Size.y / 2; j < Size.y / 2; j++)
-        //     {
-        //         Vector2Int gridPos = new(i, j);
+        Vector2 offset = (Vector2)Size / 2.0f;
+        starting = Vector2Int.RoundToInt(boundingBox.position + offset);
+        ending = Vector2Int.RoundToInt(boundingBox.opposite + offset);
+    }
 
-        //         if (ValidPosForFurniture(testFurniturePrefab.GetComponent<Furniture>(), gridPos))
-        //         {
-        //             GameObject instantiated = Instantiate(testFurniturePrefab);
-        //             instantiated.GetComponent<Furniture>().TryPlace(gridPos);
+    public Vector2Int WorldToIndex(Vector2 position)
+    {
+        return Vector2Int.RoundToInt(position + (Vector2)Size / 2.0f);
+    }
 
-        //             return;
-        //         }
-        //     }
-        // }
+    public bool WorldBoxInBound(BoundingBox box)
+    {
+        Vector2 halfSize = (Vector2)Size / 2;
+        return -halfSize.x - 0.01f <= box.x
+            && box.oppositeX <= halfSize.x + 0.01f
+            && -halfSize.y - 0.01f <= box.y
+            && box.oppositeY <= halfSize.y + 0.01f;
+    }
+
+    public bool IndexInBound(Vector2Int vector)
+    {
+        return 0 <= vector.x
+            && vector.x < Size.x
+            && 0 <= vector.y
+            && vector.y < Size.y;
     }
 }

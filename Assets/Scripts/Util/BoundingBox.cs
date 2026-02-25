@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 public class BoundingBox
 {
     public Vector2 position;
@@ -263,6 +264,21 @@ public class BoundingBox
         }
     }
 
+    public bool IsFlat()
+    {
+        return sizeX == 0 || sizeY == 0;
+    }
+
+    public bool IsFlatAndVertical()
+    {
+        return sizeX == 0;
+    }
+
+    public bool IsFlatAndHorizontal()
+    {
+        return sizeY == 0;
+    }
+
     public bool IsZero()
     {
         return sizeX == 0 && sizeY == 0;
@@ -286,5 +302,21 @@ public class BoundingBox
     public static bool operator !=(BoundingBox box1, BoundingBox box2)
     {
         return box1.position != box2.position || box1.size != box2.size;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        BoundingBox casted = (BoundingBox)obj;
+        return casted.position == position && casted.size == size;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 }

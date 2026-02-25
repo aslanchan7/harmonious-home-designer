@@ -3137,6 +3137,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FengShuiUI
       objectReference: {fileID: 0}
+    - target: {fileID: 9139438738189921870, guid: bfa7a9ff7ae1ffb46a2f06a1da6dd2f6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5124,11 +5128,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 2055431770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a967683e07194737bdad65ce86062f0, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e2be045612a440f98f13a18377214fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinCondition
   BarController: {fileID: 1998588606}
-  ruleBook: []
+  ruleSet: {fileID: 11400000, guid: 1f9decd46b21f47209e77bfbc9afb726, type: 2}
+  points:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
 --- !u!4 &2055431772
 Transform:
   m_ObjectHideFlags: 0

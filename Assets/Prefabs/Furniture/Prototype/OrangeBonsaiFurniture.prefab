@@ -53,10 +53,16 @@ MonoBehaviour:
   canStackOnOthers: 1
   lockRotation: 0
   acceptRotationPassThrough: 0
+  requireAllDirectionsAccessible: 0
+  accessibleDirections: 
+  energy: 0
+  element: 0
+  lifeArea: 3
   LastValidPosition: {x: 0, y: 0}
   LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 0
   MeshRenderers: []
   Colliders:
   - {fileID: 2022679299697101040}

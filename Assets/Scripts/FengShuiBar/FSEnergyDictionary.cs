@@ -13,7 +13,7 @@ public class FSEnergyDictionaryItem
 {
     public FSEnergyType energyType;
     public Sprite energyIcon;
-    public Sprite energyTooltip; 
+    public Sprite energyTooltip;
     public Color color;
 }
 
@@ -21,8 +21,8 @@ public class FSEnergyDictionaryItem
 public enum FSEnergyType
 {
     // Bad energies, when running addEnergy() or removeEnergy() input false for "polarity" field
+    Functional,
+    Rule,
     Toilet,
     Chaos,
-    Death,
-    Functional,
 }

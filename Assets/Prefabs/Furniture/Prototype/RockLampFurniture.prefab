@@ -212,10 +212,16 @@ MonoBehaviour:
   canStackOnOthers: 1
   lockRotation: 0
   acceptRotationPassThrough: 0
+  requireAllDirectionsAccessible: 0
+  accessibleDirections: 
+  energy: 2
+  element: 0
+  lifeArea: 0
   LastValidPosition: {x: 0, y: 0}
   LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 0
   MeshRenderers:
   - Item1: {fileID: 7218859895353658877}
     Item2: {fileID: 2100000, guid: e03cee6a2213f6646937388736dcbdea, type: 2}

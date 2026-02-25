@@ -20,16 +20,16 @@ public class FSBarController : MonoBehaviour
     [Header("Data")]
     private List<FSEnergy> BadEnergies = new();
     private bool chopped = false;
-    public int totalBadEnergy = 0;
-    public int totalGoodEnergy = 0;
-    public int maxE = 100;
+    public float totalBadEnergy = 0;
+    public float totalGoodEnergy = 0;
+    public float maxE = 100;
 
-    public void SetMax(int maxE)
+    public void SetMax(float maxE)
     {
         this.maxE = maxE;
         _ProgressSlider.maxValue = maxE;
         _SinsSlider.maxValue = maxE;
-        _ProgressSlider.value = 0;
+        _ProgressSlider.value = maxE;
         _SinsSlider.value = maxE;
 
         fengShuiBarUI.SetMax(maxE);
@@ -53,7 +53,7 @@ public class FSBarController : MonoBehaviour
     }
 
     // Adds a Feng Shui energy source to its corrosponding list if not already present, otherwise adds amount to an existign energy type
-    public void AddEnergy(FSEnergyType type, int amount, bool polarity)
+    public void AddEnergy(FSEnergyType type, float amount, bool polarity)
     {
         bool isNewType = true;
         if (polarity)
@@ -101,17 +101,17 @@ public class FSBarController : MonoBehaviour
             }
         }
 
-        TallyEnergy();
-        fengShuiBarUI.UpdateEnergySegmentValues(BadEnergies);
-        fengShuiBarUI.UpdateEnergySegmentGraphics(
-            _SinsSlider.GetComponent<RectTransform>(),
-            BadEnergies,
-            maxE
-        );
+        // TallyEnergy();
+        fengShuiBarUI.UpdateEnergySegmentValues(BadEnergies, maxE);
+        // fengShuiBarUI.UpdateEnergySegmentGraphics(
+        //     _SinsSlider.GetComponent<RectTransform>(),
+        //     BadEnergies,
+        //     maxE
+        // );
     }
 
     // Lowers the amount of a specified energy type
-    public void RemoveEnergy(FSEnergyType type, int amount, bool polarity)
+    public void RemoveEnergy(FSEnergyType type, float amount, bool polarity)
     {
         bool exists = false;
         FSEnergy targetEnergy = null;
@@ -160,7 +160,7 @@ public class FSBarController : MonoBehaviour
                 if (targetEnergy.getAmount() <= 0)
                 {
                     BadEnergies.Remove(targetEnergy);
-                    fengShuiBarUI.RemoveEnergySement(type, polarity);
+                    fengShuiBarUI.RemoveEnergySegment(type, polarity);
                 }
             }
             else
@@ -168,39 +168,39 @@ public class FSBarController : MonoBehaviour
                 Debug.Log("Energy of type: " + type + " not found");
             }
         }
-        TallyEnergy();
-        fengShuiBarUI.UpdateEnergySegmentValues(BadEnergies);
-        fengShuiBarUI.UpdateEnergySegmentGraphics(
-            _SinsSlider.GetComponent<RectTransform>(),
-            BadEnergies,
-            maxE
-        );
+        // TallyEnergy();
+        fengShuiBarUI.UpdateEnergySegmentValues(BadEnergies, maxE);
+        // fengShuiBarUI.UpdateEnergySegmentGraphics(
+        //     _SinsSlider.GetComponent<RectTransform>(),
+        //     BadEnergies,
+        //     maxE
+        // );
     }
 
-    // Calculates total good / bad energies, adjusts energy ratio accordingly
-    private void TallyEnergy()
-    {
-        // int sumGoodEnergy = 0;
-        int sumBadEnergy = 0;
-        // for (int i = 0; i < GoodEnergies.Count; i++)
-        // {
-        //     sumGoodEnergy += GoodEnergies[i].getAmount();
-        // }
-        for (int i = 0; i < BadEnergies.Count; i++)
-        {
-            sumBadEnergy += BadEnergies[i].getAmount();
-        }
-        totalBadEnergy = sumBadEnergy;
-        // totalGoodEnergy = sumGoodEnergy;
-        if (sumBadEnergy > maxE)
-        {
-            chopped = true;
-        }
-        else
-        {
-            chopped = false;
-        }
-    }
+    // // Calculates total good / bad energies, adjusts energy ratio accordingly
+    // private void TallyEnergy()
+    // {
+    //     // int sumGoodEnergy = 0;
+    //     float sumBadEnergy = 0;
+    //     // for (int i = 0; i < GoodEnergies.Count; i++)
+    //     // {
+    //     //     sumGoodEnergy += GoodEnergies[i].getAmount();
+    //     // }
+    //     for (int i = 0; i < BadEnergies.Count; i++)
+    //     {
+    //         sumBadEnergy += BadEnergies[i].getAmount();
+    //     }
+    //     totalBadEnergy = sumBadEnergy;
+    //     // totalGoodEnergy = sumGoodEnergy;
+    //     if (sumBadEnergy > maxE)
+    //     {
+    //         chopped = true;
+    //     }
+    //     else
+    //     {
+    //         chopped = false;
+    //     }
+    // }
 
     // Updates the progress bar slider to visualize  the total amount of sins impeading progress
     private void UpdateProgressBar()
@@ -208,7 +208,7 @@ public class FSBarController : MonoBehaviour
         if (!chopped)
         {
             _SinsSlider.value = totalBadEnergy;
-            _ProgressSlider.value = maxE - totalBadEnergy;
+            // _ProgressSlider.value = maxE - totalBadEnergy;
         }
     }
 
@@ -227,12 +227,12 @@ public class FSEnergy
     private bool isGood;
 
     // The amount of good or bad Feng Shui energy
-    private int amount;
+    private float amount;
 
     // The name of the energy type
     private FSEnergyType type;
 
-    public FSEnergy(bool isGood, int amount, FSEnergyType type)
+    public FSEnergy(bool isGood, float amount, FSEnergyType type)
     {
         this.isGood = isGood;
         this.amount = amount;
@@ -240,7 +240,7 @@ public class FSEnergy
     }
 
     // Access the energy amount
-    public int getAmount()
+    public float getAmount()
     {
         return amount;
     }
@@ -258,7 +258,7 @@ public class FSEnergy
     }
 
     // Set the amount of energy contained in a type of FSEnergy
-    public void setEnergy(int inAmount)
+    public void setEnergy(float inAmount)
     {
         amount = inAmount;
     }
