@@ -3,11 +3,19 @@ using UnityEngine;
 public class MouseIndicator : MonoBehaviour
 {
     private Vector2 _position;
+    private float _elevation;
     private Vector2Int _size;
+
+    private Vector2Int _lastSize;
+    private Vector2 _lastMouseTileCenter;
+
     [Header("Variables")]
     [Header("References")]
-    [SerializeField] PlayerControls playerControls;
-    [SerializeField] GridSystem gridSystem;
+    [SerializeField]
+    PlayerControls playerControls;
+
+    [SerializeField]
+    GridSystem gridSystem;
 
     public Vector2 Position
     {
@@ -15,8 +23,26 @@ public class MouseIndicator : MonoBehaviour
         set
         {
             Vector2 clamped = Clamp(value);
-            transform.position = new (clamped.x, 0.05f, clamped.y);
+            transform.position = new(
+                clamped.x,
+                transform.position.y,
+                clamped.y
+            );
             _position = clamped;
+        }
+    }
+
+    public float Elevation
+    {
+        get { return _elevation; }
+        set
+        {
+            transform.position = new(
+                transform.position.x,
+                value + 0.05f,
+                transform.position.z
+            );
+            _elevation = value;
         }
     }
 
@@ -25,48 +51,94 @@ public class MouseIndicator : MonoBehaviour
         get { return _size; }
         set
         {
-            Vector2 oldSize = _size;
-
             // Set scale of mouse indicator
             transform.localScale = new(value.x, value.y, 1);
             _size = value;
-
-            // Re-set position offset
-            Position += new Vector2(
-                (oldSize.x + value.x) % 2 == 0 ? 0f : 0.5f,
-                (oldSize.y + value.y) % 2 == 0 ? 0f : 0.5f
-            );
         }
     }
 
     void Start()
     {
         // Set starting size
-        Size = new (1, 1);
+        Size = new(1, 1);
+        _lastSize = Size;
 
-        // Set starting position based on grid size and mouseIndicator size 
-        Position = new ((gridSystem.Size.x + this.Size.x) % 2 == 0 ? 0f : 0.5f,
-                        (gridSystem.Size.y + this.Size.y) % 2 == 0 ? 0f : 0.5f);
+        // Set starting position based on grid size and mouseIndicator size
+        Position = new(
+            (gridSystem.Size.x + _size.x) % 2 == 0 ? 0f : 0.5f,
+            (gridSystem.Size.y + _size.y) % 2 == 0 ? 0f : 0.5f
+        );
+        _lastMouseTileCenter = Position;
+
+        Elevation = 0;
     }
 
     void Update()
     {
         // Move mouse based on mousePos in playerControls
-        MoveMouseIndicator(playerControls.MousePos);
+        MoveMouseIndicator();
     }
 
-    public void MoveMouseIndicator(Vector3 mousePos)
+    public void MoveMouseIndicator()
     {
-        // We want to move the mouseIndicator on the x and z axis independently
-        // mousePos is the position of the player's cursor in world space
-        float cellSizeX = gridSystem.grid.cellSize.x;
-        float cellSizeY = gridSystem.grid.cellSize.z;
-        Vector2 deltaPosition = new (
-            cellSizeX * Mathf.Round((mousePos.x - Position.x) / cellSizeX),
-            cellSizeY * Mathf.Round((mousePos.z - Position.y) / cellSizeY)
-        );
-        if (deltaPosition != Vector2.zero)
-            Position += deltaPosition;
+        Furniture selectedFurniture = playerControls.SelectedFurniture;
+        Furniture hoverFurniture = playerControls.HoverFurniture;
+        Vector2 mouseTileCenter = playerControls.MouseTileCenter;
+
+        // If is dragging
+        if (selectedFurniture != null)
+        {
+            if (mouseTileCenter != _lastMouseTileCenter)
+                Position += mouseTileCenter - _lastMouseTileCenter;
+
+            // Check for rotation
+            if (Size != _lastSize)
+            {
+                // Rotate 90deg clockwise around the mouse's tile.
+                Vector2 mouseToFurniture = Position - mouseTileCenter;
+                Vector2 rotatedMouseToFurniture = new(
+                    mouseToFurniture.y,
+                    -mouseToFurniture.x
+                );
+                Position += rotatedMouseToFurniture - mouseToFurniture;
+            }
+        }
+        else if (hoverFurniture != null)
+        {
+            StickToFurniture(hoverFurniture);
+        }
+        else
+        {
+            ResetSizeAndPosition();
+        }
+
+        _lastSize = Size;
+        _lastMouseTileCenter = mouseTileCenter;
+    }
+
+    public void SetSizeAndPosition(Vector2Int newSize, Vector2 newPosition)
+    {
+        Size = newSize;
+        Position = newPosition;
+    }
+
+    public void ResetSizeAndPosition()
+    {
+        Size = Vector2Int.one;
+        Position = playerControls.MouseTileCenter;
+    }
+
+    // Furniture should not be null
+    public void StickToFurniture(Furniture furniture)
+    {
+        if (furniture.DisplayPosition != Position)
+            Position = furniture.DisplayPosition;
+
+        if (furniture.DisplayElevation != Elevation)
+            Elevation = furniture.DisplayElevation;
+
+        if (furniture.Size != Size)
+            Size = furniture.Size;
     }
 
     public void Rotate()
@@ -79,7 +151,7 @@ public class MouseIndicator : MonoBehaviour
     {
         float maxX = (gridSystem.Size.x - this.Size.x) / 2f;
         float maxY = (gridSystem.Size.y - this.Size.y) / 2f;
-        return new (
+        return new(
             Mathf.Clamp(vector2.x, -maxX, maxX),
             Mathf.Clamp(vector2.y, -maxY, maxY)
         );

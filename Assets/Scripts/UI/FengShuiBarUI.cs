@@ -6,26 +6,30 @@ public class FengShuiBarUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    private EnergySegmentController _EnergySegmentPrefab;
+    private GameObject _EnergySegmentPrefab;
     public Slider sinSlider;
 
     [Header("Data")]
+    [SerializeField] FSEnergyDictionary fSEnergyDictionary;
     private List<GameObject> BadEnergySegments = new();
 
     // Creates an instance of the energySegment prefab of the desired type
     public void CreateEnergySegment(FSEnergyType type, bool polarity, int maxE)
     {
-        EnergySegmentController newEnergySegment =
-            _EnergySegmentPrefab.InstantiatePrefab(sinSlider.transform, maxE);
-        RectTransform rectTransform =
-            newEnergySegment.gameObject.GetComponent<RectTransform>();
-        newEnergySegment.SetEnergyType(type);
-        newEnergySegment.SetPolarity(polarity);
-        newEnergySegment.SetSize(
-            sinSlider.GetComponent<RectTransform>().sizeDelta
-        );
-        rectTransform.localPosition = Vector3.zero;
-        // newEnergySegment.gameObject.SetActive(false);
+        // EnergySegmentController newEnergySegment =
+        //     _EnergySegmentPrefab.InstantiatePrefab(sinSlider.transform, maxE, fSEnergyDictionary);
+        // Instantiate energy segment & initialize values
+        GameObject energySegmentObj = Instantiate(_EnergySegmentPrefab, sinSlider.transform);
+        EnergySegmentController newEnergySegment = energySegmentObj.GetComponent<EnergySegmentController>();
+        // RectTransform rectTransform = newEnergySegment.gameObject.GetComponent<RectTransform>();
+        // newEnergySegment.SetPolarity(polarity);
+        // newEnergySegment.SetSize(
+        //     sinSlider.GetComponent<RectTransform>().sizeDelta
+        // );
+        // rectTransform.localPosition = Vector3.zero;
+
+        newEnergySegment.Initialize(type, polarity, sinSlider.GetComponent<RectTransform>().sizeDelta, maxE, fSEnergyDictionary);
+
         if (!polarity)
         {
             BadEnergySegments.Add(newEnergySegment.gameObject);
@@ -35,6 +39,14 @@ public class FengShuiBarUI : MonoBehaviour
             Debug.Log(
                 "Not segmenting good energies at this point in development :/"
             );
+        }
+    }
+
+    public void SetMax(int maxE)
+    {
+        foreach (GameObject segmentObject in BadEnergySegments)
+        {
+            segmentObject.GetComponent<Slider>().maxValue = maxE;
         }
     }
 
