@@ -27,11 +27,11 @@ public class PlayerControls : MonoBehaviour
     private InputActionReference deleteAction;
     [SerializeField]
     private InputActionReference pauseAction;
-    
+
     [Header("References")]
     [SerializeField]
     private MouseIndicator mouseIndicator;
-    
+
     [SerializeField]
     private GameObject pauseMenu;
 
@@ -83,7 +83,7 @@ public class PlayerControls : MonoBehaviour
 
     private void OnPause(InputAction.CallbackContext context)
     {
-        if(pauseMenu.activeSelf)
+        if (pauseMenu.activeSelf)
             pauseMenu.GetComponent<PauseMenuUI>().ResumeGame();
         else
             pauseMenu.SetActive(true);
@@ -232,18 +232,6 @@ public class PlayerControls : MonoBehaviour
                     x.Prefab.GetComponent<Furniture>().furnitureName
                 )
             );
-
-        if (item != null)
-        {
-            if (item.CurrentPlacedCount == item.MaxPlacements)
-            {
-                InventoryManager.Instance.inventoryUI.SetFurnitureButtonActive(
-                    item
-                );
-            }
-
-            item.CurrentPlacedCount--;
-        }
 
         deletedFurniture.DestroyPrefab();
         GridSystem.Instance.HideGridVisualizer();

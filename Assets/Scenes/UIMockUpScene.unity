@@ -148,11 +148,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7da1fbb07278424d8a47aab599f548c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControls
-  MousePos: {x: 0, y: 0, z: 0}
+  MouseTileCenter: {x: 0, y: 0}
+  MouseNormal: {x: 0, y: 0, z: 0}
+  HoverFurniture: {fileID: 0}
+  SelectedFurniture: {fileID: 0}
   clickAction: {fileID: 86437814}
   rotateAction: {fileID: 949383598}
   deleteAction: {fileID: 571315925}
+  pauseAction: {fileID: 0}
   mouseIndicator: {fileID: 367660838}
+  pauseMenu: {fileID: 0}
 --- !u!4 &1419080
 Transform:
   m_ObjectHideFlags: 0
@@ -621,17 +626,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 319e4ff46f9ae4546ac6c0da502de93c, type: 3}
---- !u!114 &339153721 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8581691483487680860, guid: 97b5209e8a2eaa94592b21460acf8e59, type: 3}
-  m_PrefabInstance: {fileID: 1064682970}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb7409d61d93dc343afe3851201d3d0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Furniture
 --- !u!1 &346061841
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,7 +671,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3abc523826c45428e433c80db81ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicManager
-  audioSource: {fileID: 346061844}
+  library: {fileID: 0}
+  crossfadeSeconds: 1
+  initialPlayDelaySeconds: 0
 --- !u!82 &346061844
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1451,10 +1447,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09184817de046de4d9c5555e3a0baae1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SFXManager
-  audioClips:
-  - Clip: {fileID: 8300000, guid: 86a2693e4477e3e4793e1dadbfd64f5f, type: 3}
-    sfxType: 0
-  audioSource: {fileID: 522872963}
+  sfxSource: {fileID: 0}
+  furnitureSets: []
+  globalSfx:
+    uiClick:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiOpen:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiClose:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiBookOpen:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiPageForward:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiPageBack:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiBookClose:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiBoxOpen:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    uiBoxClose:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
+    invalid:
+      key: 
+      clip: {fileID: 0}
+      volume: 1
+      pitchSemitones: 0
 --- !u!1 &523982856
 GameObject:
   m_ObjectHideFlags: 0
@@ -3972,6 +4017,7 @@ MonoBehaviour:
     m_Bits: 192
   Size: {x: 7, y: 6}
   testFurniturePrefab: {fileID: 3693291784662702186, guid: bb0541d51bcbed344b92f49916b66956, type: 3}
+  CenterCellOffset: {x: 0.5, y: 0, z: 0.5}
 --- !u!4 &1950910640
 Transform:
   m_ObjectHideFlags: 0
@@ -4202,17 +4248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a967683e07194737bdad65ce86062f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinCondition
-  Bed: {fileID: 339153721}
   BarController: {fileID: 1830206179}
-  bedIsFacingDoor: 0
-  bedIsAccessible: 0
-  mainDoorIsObstructed: 0
-  bathroomDoorIsObstructed: 0
-  bedHeadIsFacingBathroom: 0
-  bedIsNearBathroom: 0
-  bedIsNearWindow: 0
-  bedIsAgainstSolidWall: 0
-  commandPosition: 0
+  ruleBook: []
 --- !u!4 &2055431772
 Transform:
   m_ObjectHideFlags: 0
@@ -4310,9 +4347,13 @@ MonoBehaviour:
   height: 0
   canBeStackedOn: 0
   canStackOnOthers: 0
+  lockRotation: 0
+  acceptRotationPassThrough: 0
   LastValidPosition: {x: 0, y: 0}
+  LastValidElevation: 0
   LastValidRotation: 0
   StartingSize: {x: 0, y: 0}
+  sfxCategory: 0
   MeshRenderers: []
   Colliders: []
   GhostMat: {fileID: 0}
