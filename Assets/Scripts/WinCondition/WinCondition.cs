@@ -54,7 +54,6 @@ public class WinCondition : MonoBehaviour
             RegisterRule(rule);
         }
         float maxFunctionalPoints = maxPoints[(int)FSEnergyType.Functional];
-        Debug.Log("maxfunc poitns: " + maxFunctionalPoints);
         BarController.SetMax(maxFunctionalPoints);
         points[(int)FSEnergyType.Functional] = maxFunctionalPoints;
         BarController.AddEnergy(
@@ -133,42 +132,14 @@ public class WinCondition : MonoBehaviour
         foreach (Rule rule in ruleSet.rules)
         {
             if (rule.precondition == 0)
-            {
                 rule.Check();
-                Debug.Log(
-                    "after "
-                        + rule.name
-                        + ": "
-                        + points[0]
-                        + ", "
-                        + points[1]
-                        + ", "
-                        + points[2]
-                        + ", "
-                        + points[3]
-                );
-            }
         }
 
         PreconditionCheck();
         foreach (Rule rule in ruleSet.rules)
         {
             if (preconditions.HasFlag(rule.precondition))
-            {
                 rule.Check();
-                Debug.Log(
-                    "after "
-                        + rule.name
-                        + ": "
-                        + points[0]
-                        + ", "
-                        + points[1]
-                        + ", "
-                        + points[2]
-                        + ", "
-                        + points[3]
-                );
-            }
         }
 
         PreconditionFirstStarCheck();
@@ -177,21 +148,7 @@ public class WinCondition : MonoBehaviour
             foreach (Rule rule in ruleSet.rules)
             {
                 if (rule.precondition.HasFlag(Rule.Precondition.FirstStar))
-                {
                     rule.Check();
-                    Debug.Log(
-                        "after "
-                            + rule.name
-                            + ": "
-                            + points[0]
-                            + ", "
-                            + points[1]
-                            + ", "
-                            + points[2]
-                            + ", "
-                            + points[3]
-                    );
-                }
             }
         }
 
