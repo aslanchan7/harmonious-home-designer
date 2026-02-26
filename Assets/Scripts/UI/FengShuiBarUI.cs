@@ -14,7 +14,9 @@ public class FengShuiBarUI : MonoBehaviour
     public Sprite StarEmpty;
     public Sprite StarFilled;
     public float MinValueToShowIcons;
-    [SerializeField] EndScreenUI endScreenUI;
+
+    [SerializeField]
+    EndScreenUI endScreenUI;
 
     [Header("Data")]
     [SerializeField]
@@ -131,6 +133,7 @@ public class FengShuiBarUI : MonoBehaviour
                     EnergySegmentController controller =
                         currentSegment.GetComponent<EnergySegmentController>();
                     controller.SetValue(totalValue);
+                    controller.SetHoverPosition(cumulativeValue, maxEnergy);
                     controller.SetIcon(currentValue >= MinValueToShowIcons);
                     cumulativeValue = totalValue;
                 }
@@ -145,7 +148,7 @@ public class FengShuiBarUI : MonoBehaviour
             StarParent.SetActive(false);
             return;
         }
-        
+
         CheckForEndGame();
 
         StarParent.SetActive(true);
@@ -158,10 +161,10 @@ public class FengShuiBarUI : MonoBehaviour
 
     private void CheckForEndGame()
     {
-        if(!endScreenUI.GameContinued)
+        if (!endScreenUI.GameContinued)
         {
             endScreenUI.gameObject.SetActive(true);
-        } 
+        }
     }
 
     // // TODO: THIS JUST STRAIGHT UP DOESN'T WORK

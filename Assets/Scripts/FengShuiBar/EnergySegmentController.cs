@@ -11,7 +11,7 @@ public class EnergySegmentController : MonoBehaviour
     private Transform segmentFill;
 
     [SerializeField]
-    private Button hoverDetection;
+    public Button hoverDetection;
 
     [Header("Tooltip")]
     [SerializeField]
@@ -57,14 +57,6 @@ public class EnergySegmentController : MonoBehaviour
         SetSize(size);
 
         energySegment.maxValue = maxE;
-        float sliderWidth = energySegment
-            .GetComponent<RectTransform>()
-            .sizeDelta.x;
-        float buttonWidth = sliderWidth - energyValue * (sliderWidth / maxE);
-        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
-            buttonWidth,
-            5
-        );
 
         // Set tooltip image
         fSEnergyDictionaryItem = fSEnergyDictionary.dictionary.Find(x =>
@@ -122,18 +114,18 @@ public class EnergySegmentController : MonoBehaviour
         // }
     }
 
-    void Update()
-    {
-        float sliderWidth = energySegment
-            .GetComponent<RectTransform>()
-            .sizeDelta.x;
-        float buttonWidth =
-            sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
-        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
-            buttonWidth,
-            5
-        );
-    }
+    // void Update()
+    // {
+    //     float sliderWidth = energySegment
+    //         .GetComponent<RectTransform>()
+    //         .sizeDelta.x;
+    //     float buttonWidth =
+    //         sliderWidth - energyValue * (sliderWidth / energySegment.maxValue);
+    //     hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
+    //         buttonWidth,
+    //         5
+    //     );
+    // }
 
     public void SetPolarity(bool sourcePolarity)
     {
@@ -163,6 +155,23 @@ public class EnergySegmentController : MonoBehaviour
     public void SetSize(Vector2 size)
     {
         energySegment.GetComponent<RectTransform>().sizeDelta = size;
+    }
+
+    public void SetHoverPosition(float rightCumulativeValue, float maxEnergy)
+    {
+        float sliderWidth = energySegment
+            .GetComponent<RectTransform>()
+            .sizeDelta.x;
+        float buttonLeft = sliderWidth * (1 - energyValue / maxEnergy);
+        float buttonRight = sliderWidth * rightCumulativeValue / maxEnergy;
+        hoverDetection.GetComponent<RectTransform>().offsetMin = new Vector2(
+            buttonLeft,
+            5
+        );
+        hoverDetection.GetComponent<RectTransform>().offsetMax = new Vector2(
+            -buttonRight,
+            -5
+        );
     }
 
     public void SetIcon(bool enabled)
