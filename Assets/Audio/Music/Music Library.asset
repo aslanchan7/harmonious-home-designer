@@ -15,7 +15,7 @@ MonoBehaviour:
   entries:
   - sceneName: MainMenu
     clip: {fileID: 8300000, guid: 78f75546f5c424c038953dfb254cc824, type: 3}
-    volume: 0.7
+    volume: 0.896
     loop: 0
   - sceneName: PrototypeLevel
     clip: {fileID: 8300000, guid: 74b62da4dfbb73140b49e38df89f0927, type: 3}
