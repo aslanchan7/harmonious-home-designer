@@ -131,9 +131,9 @@ MonoBehaviour:
     ruleFunction:
       ruleType: 11
       arguments:
-      - name: 2
-        type: 4
       - name: 3
+        type: 4
+      - name: 5
         type: 4
     basePoints: 20
     precondition: 2
