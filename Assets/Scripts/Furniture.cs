@@ -32,6 +32,7 @@ public class Furniture : MonoBehaviour
 
     private Furniture LastValidBase;
     private Furniture _displayBase;
+    private Vector2 LastValidOffset;
     private Vector2 DisplayOffset = Vector2.zero;
 
     private bool hasUnsetPlacedFurniture = true;
@@ -92,7 +93,7 @@ public class Furniture : MonoBehaviour
     {
         get
         {
-            Vector2 worldDisplayOffset = GetWorldDisplayOffset();
+            Vector2 worldDisplayOffset = ToWorldOffset(DisplayOffset);
             return new(
                 transform.position.x - worldDisplayOffset.x,
                 transform.position.z - worldDisplayOffset.y
@@ -100,7 +101,7 @@ public class Furniture : MonoBehaviour
         }
         set
         {
-            Vector2 worldDisplayOffset = GetWorldDisplayOffset();
+            Vector2 worldDisplayOffset = ToWorldOffset(DisplayOffset);
             transform.position = new Vector3(
                 value.x + worldDisplayOffset.x,
                 transform.position.y,
@@ -139,23 +140,30 @@ public class Furniture : MonoBehaviour
         get { return _displayBase; }
         set
         {
+            // Center the item first/remove old offset.
+            transform.localPosition -= new Vector3(
+                DisplayOffset.x,
+                0,
+                DisplayOffset.y
+            );
             transform.SetParent(value?.transform, true);
-            Vector2 oldDisplayOffset = DisplayOffset;
+
             // Only applies offset for furnitures of size 1x1.
             DisplayOffset =
                 value != null && StartingSize == Vector2Int.one
                     ? value.GetStackOffsetForRelativePosition(
                         new Vector2(
-                            transform.localPosition.x - oldDisplayOffset.x,
-                            transform.localPosition.z - oldDisplayOffset.y
+                            transform.localPosition.x,
+                            transform.localPosition.z
                         )
                     )
                     : Vector2.zero;
 
-            transform.position += new Vector3(
-                DisplayOffset.x - oldDisplayOffset.x,
+            Vector2 worldDisplayOffset = ToWorldOffset(DisplayOffset);
+            transform.localPosition += new Vector3(
+                DisplayOffset.x,
                 0,
-                DisplayOffset.y - oldDisplayOffset.y
+                DisplayOffset.y
             );
             _displayBase = value;
         }
@@ -169,7 +177,7 @@ public class Furniture : MonoBehaviour
         LastValidElevation = DisplayElevation;
         LastValidRotation = DisplayRotation;
         LastValidBase = null;
-        DisplayBase = null;
+        LastValidOffset = DisplayOffset;
         carrying = new List<Furniture>();
 
         // Match MeshRenderers with Materials
@@ -226,8 +234,6 @@ public class Furniture : MonoBehaviour
         SFXManager.Instance?.PlayFurnitureSFX(sfxCategory, SFXAction.Place);
         Debug.Log("playing from: " + this.furnitureName);
         PlayPlaceVFX();
-        PlacedFurnitureSet();
-        WinCondition.Instance.UpdateRuleCheck();
     }
 
     public void SetLocationAsValidSilent()
@@ -254,14 +260,25 @@ public class Furniture : MonoBehaviour
         LastValidPosition = DisplayPosition;
         LastValidElevation = DisplayElevation;
         LastValidRotation = DisplayRotation;
+        LastValidOffset = DisplayOffset;
+        PlacedFurnituresSet();
+        WinCondition.Instance.UpdateRuleCheck();
     }
 
     public void ResetToValidLocation()
     {
+        if (!hasUnsetPlacedFurniture)
+        {
+            throw new InvalidOperationException(
+                "Trying to set this location as valid without unsetting the "
+                    + "PlacedFurniture object first."
+            );
+        }
         DisplayPosition = LastValidPosition;
         DisplayElevation = LastValidElevation;
         DisplayRotation = LastValidRotation;
-        PlacedFurnitureSet();
+        DisplayBase = LastValidBase;
+        PlacedFurnituresSet();
     }
 
     public void PlacedFurnituresUnset()
@@ -271,7 +288,7 @@ public class Furniture : MonoBehaviour
         hasUnsetPlacedFurniture = true;
     }
 
-    public void PlacedFurnitureSet()
+    public void PlacedFurnituresSet()
     {
         SetColliderEnabled(true);
         PlacedFurnituresSet(this);
@@ -397,6 +414,8 @@ public class Furniture : MonoBehaviour
             || !wholeAreaHasSameBase
         )
         {
+            DisplayBase = null;
+            DisplayElevation = 0;
             return false;
         }
 
@@ -510,14 +529,14 @@ public class Furniture : MonoBehaviour
         return stackOffsets[index.y].row[index.x];
     }
 
-    private Vector2 GetWorldDisplayOffset()
+    private Vector2 ToWorldOffset(Vector2 vector2)
     {
         if (transform.parent == null)
-            return Vector2.zero;
+            return vector2;
         Vector3 offset3d = transform.parent.TransformDirection(
-            DisplayOffset.x,
+            vector2.x,
             0,
-            DisplayOffset.y
+            vector2.y
         );
         return new(offset3d.x, offset3d.z);
     }
