@@ -22,6 +22,7 @@ public class FengShuiBarUI : MonoBehaviour
     private GameObject[] BadEnergySegments = new GameObject[
         Enum.GetNames(typeof(FSEnergyType)).Length
     ];
+    private bool winSfxPlayed = false;
 
     // Creates an instance of the energySegment prefab of the desired type
     public void CreateEnergySegment(
@@ -160,6 +161,12 @@ public class FengShuiBarUI : MonoBehaviour
     {
         if(!endScreenUI.GameContinued)
         {
+
+            if (!winSfxPlayed)
+            {
+                winSfxPlayed = true;
+                UISFX.Play(SFXAction.UI_Win);
+            }
             endScreenUI.gameObject.SetActive(true);
         } 
     }

@@ -45,4 +45,5 @@ public class GlobalSFXSet
     public SFXEntry uiBoxClose;
     public SFXEntry invalid;
     public SFXEntry deleteItem;
+    public SFXEntry uiWin;
 }

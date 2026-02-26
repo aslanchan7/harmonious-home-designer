@@ -12,6 +12,7 @@ public class EndScreenUI : MonoBehaviour
     public void ContinueGame()
     {
         GameContinued = true;
+        UISFX.Play(SFXAction.UI_Open);
         elementsGroup.LeanAlpha(0f, fadeAnimTime).setOnComplete(() =>
         {
             gameObject.SetActive(false);
@@ -21,6 +22,7 @@ public class EndScreenUI : MonoBehaviour
     public void QuitToMainMenu()
     {
         fadePanel.alpha = 0f;
+        UISFX.Play(SFXAction.UI_Close);
         fadePanel.LeanAlpha(1f, fadeAnimTime).setOnComplete(() =>
         {
             SceneManager.LoadScene(0);
