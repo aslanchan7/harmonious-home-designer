@@ -164,7 +164,7 @@ public class Furniture : MonoBehaviour
                 furniture.SetLocationAsValid();
             }
         }
-        if (canStackOnOthers)
+        if (canStackOnOthers && LastValidBase != null)
         {
             LastValidBase.carrying.Remove(this);
         }
@@ -192,9 +192,6 @@ public class Furniture : MonoBehaviour
                     + "PlacedFurniture object first."
             );
         }
-        LastValidPosition = DisplayPosition;
-        LastValidElevation = DisplayElevation;
-        LastValidRotation = DisplayRotation;
         if (canStackOnOthers)
         {
             AttachOrDetach();
@@ -207,6 +204,9 @@ public class Furniture : MonoBehaviour
                 furniture.SetLocationAsValidSilent();
             }
         );
+        LastValidPosition = DisplayPosition;
+        LastValidElevation = DisplayElevation;
+        LastValidRotation = DisplayRotation;
     }
 
     public void ResetToValidLocation()
