@@ -16,6 +16,8 @@ public enum SFXAction
 
     UI_Open,
     UI_Close,
+    UI_CabinetOpen,
+    UI_CabinetClose,
     UI_OpenBook,
     UI_PageForward,
     UI_PageBack,

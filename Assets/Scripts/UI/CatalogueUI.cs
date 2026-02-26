@@ -35,7 +35,7 @@ public class CatalogueUI : MonoBehaviour
             gameObject.SetActive(false);
         });
 
-        UISFX.Play(SFXAction.UI_CloseBook);
+        UISFX.Play(SFXAction.UI_Close);
 
         // fade in menu buttons
         MenuButtonsUI.SetActive(true);

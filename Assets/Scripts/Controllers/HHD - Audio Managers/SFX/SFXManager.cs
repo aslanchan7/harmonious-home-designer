@@ -64,6 +64,8 @@ public class SFXManager : MonoBehaviour
             SFXAction.UI_MenuHover5 => globalSfx.uiMenuHover5,
             SFXAction.UI_Open  => globalSfx.uiOpen,
             SFXAction.UI_Close => globalSfx.uiClose,
+            SFXAction.UI_CabinetOpen => globalSfx.uiCabinetOpen,
+            SFXAction.UI_CabinetClose => globalSfx.uiCabinetClose,
             SFXAction.UI_OpenBook => globalSfx.uiBookOpen,
             SFXAction.UI_PageForward => globalSfx.uiPageForward,
             SFXAction.UI_PageBack => globalSfx.uiPageBack,

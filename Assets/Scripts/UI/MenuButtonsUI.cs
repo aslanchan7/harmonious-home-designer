@@ -39,12 +39,12 @@ public class MenuButtonsUI : MonoBehaviour
         if (SubMenuButtons.activeSelf)
         {
             StartHideSubMenuButtonsAnim();
-            UISFX.Play(SFXAction.UI_BoxClose);
+            UISFX.Play(SFXAction.UI_CabinetClose);
         }
         else
         {
             StartShowSubMenuButtonsAnim();
-            UISFX.Play(SFXAction.UI_BoxOpen);
+            UISFX.Play(SFXAction.UI_CabinetOpen);
         }
     }
 
@@ -55,7 +55,7 @@ public class MenuButtonsUI : MonoBehaviour
         InventoryUI.SetActive(true);
         InventoryUI.GetComponent<CanvasGroup>().LeanAlpha(1f, inventoryAnimTime);
 
-        UISFX.Play(SFXAction.UI_Open);
+        UISFX.Play(SFXAction.UI_BoxOpen);
 
         // simultaneously zoom out camera
         Camera.main.transform.LeanMoveLocalY(zoomedOutCameraPosY, inventoryAnimTime);

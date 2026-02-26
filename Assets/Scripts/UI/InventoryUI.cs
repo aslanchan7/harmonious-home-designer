@@ -89,7 +89,7 @@ public class InventoryUI : MonoBehaviour
             gameObject.SetActive(false);
         });
 
-        UISFX.Play(SFXAction.UI_Close);
+        UISFX.Play(SFXAction.UI_BoxClose);
 
         // simultaneously zoom in camera
         Camera.main.transform.LeanMoveLocalY(targetCameraPosY, fadeOutAnimTime);

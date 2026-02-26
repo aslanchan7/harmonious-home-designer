@@ -35,6 +35,8 @@ public class GlobalSFXSet
     public SFXEntry uiMenuHover5;
     public SFXEntry uiOpen;
     public SFXEntry uiClose;
+    public SFXEntry uiCabinetOpen;
+    public SFXEntry uiCabinetClose;
     public SFXEntry uiBookOpen;
     public SFXEntry uiPageForward;
     public SFXEntry uiPageBack;
