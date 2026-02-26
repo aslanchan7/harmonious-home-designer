@@ -51,7 +51,7 @@ MonoBehaviour:
   height: 1
   canBeStackedOn: 0
   canStackOnOthers: 1
-  lockRotation: 1
+  lockRotation: 0
   acceptRotationPassThrough: 0
   requireAllDirectionsAccessible: 0
   accessibleDirections: 

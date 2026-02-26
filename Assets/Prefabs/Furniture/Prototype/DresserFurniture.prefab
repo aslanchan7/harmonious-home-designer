@@ -49,7 +49,10 @@ MonoBehaviour:
   furnitureName: Dresser
   Size: {x: 1, y: 1}
   height: 1
-  canBeStackedOn: 0
+  canBeStackedOn: 1
+  stackOffsets:
+  - row:
+    - {x: 0, y: 0.25}
   canStackOnOthers: 0
   lockRotation: 0
   acceptRotationPassThrough: 0
