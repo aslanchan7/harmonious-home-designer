@@ -74,6 +74,7 @@ public class SFXManager : MonoBehaviour
             SFXAction.UI_BoxClose => globalSfx.uiBoxClose,
             SFXAction.Invalid  => globalSfx.invalid,
             SFXAction.UI_DeleteItem => globalSfx.deleteItem,
+            SFXAction.UI_Win => globalSfx.uiWin,
             _ => null
         };
 

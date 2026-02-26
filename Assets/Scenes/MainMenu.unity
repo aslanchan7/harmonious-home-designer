@@ -2083,6 +2083,16 @@ MonoBehaviour:
       clip: {fileID: 8300000, guid: acdf7a3065339874fa9fc89b548be31d, type: 3}
       volume: 1
       pitchSemitones: 0
+    uiCabinetOpen:
+      key: 
+      clip: {fileID: 8300000, guid: 64d08c1299d27410d89890b2ae8763bb, type: 3}
+      volume: 0.536
+      pitchSemitones: 0
+    uiCabinetClose:
+      key: 
+      clip: {fileID: 8300000, guid: 090ad8a2cce574669bb530ecf8e1a575, type: 3}
+      volume: 0.529
+      pitchSemitones: 0
     uiBookOpen:
       key: 
       clip: {fileID: 8300000, guid: e0f37b4719a2ac54fb41f373fbfa7731, type: 3}
@@ -2122,6 +2132,11 @@ MonoBehaviour:
       key: 
       clip: {fileID: 8300000, guid: 0280d886777ef437c9216b84ce95b8f9, type: 3}
       volume: 0.542
+      pitchSemitones: 0
+    uiWin:
+      key: 
+      clip: {fileID: 8300000, guid: 89cf6439265d64116ac3d82cb4d6540b, type: 3}
+      volume: 0.59
       pitchSemitones: 0
 --- !u!4 &2075371132
 Transform:
