@@ -82,7 +82,7 @@ public class IconThumbnailEditor : EditorWindow
     void Export()
     {
         sceneCamera.depthTextureMode = DepthTextureMode.Depth;
-        sceneCamera.backgroundColor = new (0, 0, 0, 0);
+        sceneCamera.backgroundColor = new(0, 0, 0, 0);
         UpdateCamera();
 
         SaveTextureAsPNG(previewTexture, selectedAsset.Name);
@@ -93,30 +93,31 @@ public class IconThumbnailEditor : EditorWindow
 
     void SaveTextureAsPNG(Texture2D texture, string filename)
     {
-        if(texture == null)
+        if (texture == null)
         {
             Debug.LogError("No texture was provided");
             return;
         }
 
         string path = EditorUtility.SaveFilePanel("Save Texture As PNG", "", $"{filename}_Icon.png", "png");
-        if(string.IsNullOrEmpty(path))
+        if (string.IsNullOrEmpty(path))
         {
             Debug.Log("Save operation cancelled");
             return;
         }
 
         byte[] pngData = texture.EncodeToPNG();
-        if(pngData != null)
+        if (pngData != null)
         {
             File.WriteAllBytes(path, pngData);
             Debug.Log("Texture saved to: " + path);
-        } else
+        }
+        else
         {
             Debug.LogError("Failed to encode texture to PNG.");
         }
     }
-    
+
     private void OnCameraOrthographicChange(ChangeEvent<bool> evt)
     {
         sceneCamera.orthographic = evt.newValue;
@@ -153,12 +154,12 @@ public class IconThumbnailEditor : EditorWindow
         selectedAsset = inventory.inventoryList[listView.selectedIndex];
         selectedAssetName = selectedAsset.Name;
 
-        if(!previewScene.IsValid())
+        if (!previewScene.IsValid())
         {
             previewScene = EditorSceneManager.NewPreviewScene();
         }
 
-        if(cameraObject == null)
+        if (cameraObject == null)
         {
             cameraObject = new GameObject("Camera");
             cameraObject.transform.position = new Vector3(0, 0, -10);
@@ -183,7 +184,7 @@ public class IconThumbnailEditor : EditorWindow
             cameraRotationField.value = cameraObject.transform.eulerAngles;
         }
 
-        if(instance != null)
+        if (instance != null)
         {
             DestroyImmediate(instance);
         }
@@ -199,7 +200,7 @@ public class IconThumbnailEditor : EditorWindow
     {
         sceneCamera.Render();
 
-        if(previewTexture == null)
+        if (previewTexture == null)
         {
             previewTexture = new(size, size, TextureFormat.RGBAFloat, false, true);
         }
@@ -213,8 +214,8 @@ public class IconThumbnailEditor : EditorWindow
     }
 
     void OnDisable()
-    { 
-        EditorSceneManager.UnloadSceneAsync(previewScene);
+    {
+        SceneManager.UnloadSceneAsync(previewScene);
         DestroyImmediate(sceneCamera);
     }
 }
