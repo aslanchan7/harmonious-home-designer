@@ -216,7 +216,7 @@ MonoBehaviour:
   accessibleDirections: 
   energy: 2
   element: 2
-  lifeArea: 2
+  lifeArea: 4
   LastValidPosition: {x: 0, y: 0}
   LastValidElevation: 0
   LastValidRotation: 0
