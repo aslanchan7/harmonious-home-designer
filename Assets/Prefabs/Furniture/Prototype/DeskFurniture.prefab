@@ -84,9 +84,21 @@ MonoBehaviour:
   Size: {x: 1, y: 3}
   height: 1
   canBeStackedOn: 1
+  stackOffsets:
+  - row:
+    - {x: 0, y: 0.2}
+  - row:
+    - {x: 0, y: 0}
+  - row:
+    - {x: 0, y: -0.2}
   canStackOnOthers: 0
   lockRotation: 0
   acceptRotationPassThrough: 0
+  requireAllDirectionsAccessible: 0
+  accessibleDirections: 00000000b4000000
+  energy: 0
+  element: 0
+  lifeArea: 0
   LastValidPosition: {x: 0, y: 0}
   LastValidElevation: 0
   LastValidRotation: 0

@@ -49,12 +49,15 @@ MonoBehaviour:
   furnitureName: NightStand
   Size: {x: 1, y: 1}
   height: 1
-  canBeStackedOn: 0
+  canBeStackedOn: 1
+  stackOffsets:
+  - row:
+    - {x: -0.25, y: 0.25}
   canStackOnOthers: 0
   lockRotation: 0
   acceptRotationPassThrough: 0
   requireAllDirectionsAccessible: 0
-  accessibleDirections: 
+  accessibleDirections: 5a000000b4000000
   energy: 0
   element: 2
   lifeArea: 2

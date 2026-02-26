@@ -8,19 +8,31 @@ public class Furniture : MonoBehaviour
     [Header("Furniture Settings")]
     public string furnitureName;
     public Vector2Int Size;
+
+    [HideInInspector]
     public float height;
+
+    [Header("Stackability")]
     public bool canBeStackedOn; // If true, other furniture items can stack on top of this one
+    public SerializableRow<Vector2>[] stackOffsets;
     public bool canStackOnOthers; // If ture, this furniture item can stack on top of others (naming variables is very hard...)
-    public bool lockRotation;
-    public bool acceptRotationPassThrough;
+
+    [Header("Rotation attributes")]
+    public bool lockRotation = false;
+    public bool acceptRotationPassThrough = false;
+
+    [Header("Accessibility")]
     public bool requireAllDirectionsAccessible = false;
     public Direction[] accessibleDirections = new Direction[0];
+
+    [Header("Energy attributes")]
     public Energy energy;
     public Element element;
     public LifeArea lifeArea;
 
     private Furniture LastValidBase;
-    private Furniture DisplayBase;
+    private Furniture _displayBase;
+    private Vector2 DisplayOffset = Vector2.zero;
 
     private bool hasUnsetPlacedFurniture = true;
 
@@ -78,13 +90,21 @@ public class Furniture : MonoBehaviour
 
     public Vector2 DisplayPosition
     {
-        get { return new(transform.position.x, transform.position.z); }
+        get
+        {
+            Vector2 worldDisplayOffset = GetWorldDisplayOffset();
+            return new(
+                transform.position.x - worldDisplayOffset.x,
+                transform.position.z - worldDisplayOffset.y
+            );
+        }
         set
         {
+            Vector2 worldDisplayOffset = GetWorldDisplayOffset();
             transform.position = new Vector3(
-                value.x,
+                value.x + worldDisplayOffset.x,
                 transform.position.y,
-                value.y
+                value.y + worldDisplayOffset.y
             );
         }
     }
@@ -111,6 +131,33 @@ public class Furniture : MonoBehaviour
                 transform.eulerAngles.z
             );
             ResetSize();
+        }
+    }
+
+    public Furniture DisplayBase
+    {
+        get { return _displayBase; }
+        set
+        {
+            transform.SetParent(value?.transform, true);
+            Vector2 oldDisplayOffset = DisplayOffset;
+            // Only applies offset for furnitures of size 1x1.
+            DisplayOffset =
+                value != null && StartingSize == Vector2Int.one
+                    ? value.GetStackOffsetForRelativePosition(
+                        new Vector2(
+                            transform.localPosition.x - oldDisplayOffset.x,
+                            transform.localPosition.z - oldDisplayOffset.y
+                        )
+                    )
+                    : Vector2.zero;
+
+            transform.position += new Vector3(
+                DisplayOffset.x - oldDisplayOffset.x,
+                0,
+                DisplayOffset.y - oldDisplayOffset.y
+            );
+            _displayBase = value;
         }
     }
 
@@ -164,7 +211,7 @@ public class Furniture : MonoBehaviour
                 furniture.SetLocationAsValid();
             }
         }
-        if (canStackOnOthers)
+        if (canStackOnOthers && LastValidBase != null)
         {
             LastValidBase.carrying.Remove(this);
         }
@@ -192,9 +239,6 @@ public class Furniture : MonoBehaviour
                     + "PlacedFurniture object first."
             );
         }
-        LastValidPosition = DisplayPosition;
-        LastValidElevation = DisplayElevation;
-        LastValidRotation = DisplayRotation;
         if (canStackOnOthers)
         {
             AttachOrDetach();
@@ -207,6 +251,9 @@ public class Furniture : MonoBehaviour
                 furniture.SetLocationAsValidSilent();
             }
         );
+        LastValidPosition = DisplayPosition;
+        LastValidElevation = DisplayElevation;
+        LastValidRotation = DisplayRotation;
     }
 
     public void ResetToValidLocation()
@@ -424,11 +471,6 @@ public class Furniture : MonoBehaviour
         {
             LastValidBase.carrying.Add(this);
         }
-
-        transform.SetParent(
-            LastValidBase != null ? LastValidBase.transform : null,
-            true
-        );
     }
 
     private delegate void FurnitureFunc(Furniture furniture);
@@ -442,5 +484,41 @@ public class Furniture : MonoBehaviour
                 func(furniture);
             }
         }
+    }
+
+    private Vector2 GetStackOffsetForRelativePosition(Vector2 relativePosition)
+    {
+        Vector2 halfSize = (Vector2)StartingSize / 2.0f;
+        if (
+            Mathf.Abs(relativePosition.x) > halfSize.x - 0.499f
+            || Mathf.Abs(relativePosition.y) > halfSize.y - 0.499f
+        )
+        {
+            throw new Exception(
+                "The given relative position "
+                    + relativePosition
+                    + " is out of bounds for this furniture "
+                    + furnitureName
+                    + " of size "
+                    + StartingSize
+            );
+        }
+
+        Vector2Int index = Vector2Int.RoundToInt(
+            relativePosition + halfSize - new Vector2(0.5f, 0.5f)
+        );
+        return stackOffsets[index.y].row[index.x];
+    }
+
+    private Vector2 GetWorldDisplayOffset()
+    {
+        if (transform.parent == null)
+            return Vector2.zero;
+        Vector3 offset3d = transform.parent.TransformDirection(
+            DisplayOffset.x,
+            0,
+            DisplayOffset.y
+        );
+        return new(offset3d.x, offset3d.z);
     }
 }
