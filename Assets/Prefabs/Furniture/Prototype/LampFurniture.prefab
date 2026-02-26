@@ -56,8 +56,8 @@ MonoBehaviour:
   requireAllDirectionsAccessible: 0
   accessibleDirections: 
   energy: 2
-  element: 0
-  lifeArea: 0
+  element: 1
+  lifeArea: 5
   LastValidPosition: {x: 0, y: 0}
   LastValidElevation: 0
   LastValidRotation: 0
